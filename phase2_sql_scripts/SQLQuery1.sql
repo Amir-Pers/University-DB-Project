@@ -170,3 +170,25 @@ CREATE INDEX IX_Advertisement_CreatedDate ON Advertisement (created_date DESC);
 GO
 
 
+CREATE TABLE Image (
+    image_id INT PRIMARY KEY IDENTITY(1,1),
+    ad_id INT NOT NULL,
+    url NVARCHAR(500) NOT NULL,
+    upload_date DATETIME DEFAULT GETDATE(),
+    CONSTRAINT FK_Image_Advertisement FOREIGN KEY (ad_id) 
+        REFERENCES Advertisement(ad_id)
+        ON DELETE CASCADE
+);
+GO
+
+
+CREATE TABLE Video (
+    video_id INT PRIMARY KEY IDENTITY(1,1),
+    ad_id INT NOT NULL,
+    url NVARCHAR(500) NOT NULL,
+    upload_date DATETIME DEFAULT GETDATE(),
+    CONSTRAINT FK_Video_Advertisement FOREIGN KEY (ad_id) 
+        REFERENCES Advertisement(ad_id)
+        ON DELETE CASCADE
+);
+GO
