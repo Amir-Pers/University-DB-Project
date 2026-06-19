@@ -76,3 +76,42 @@ CREATE TABLE Vehicle (
 GO
 
 
+CREATE TABLE Car (
+    vehicle_id INT PRIMARY KEY,
+    body_type NVARCHAR(50) NOT NULL,
+    engine NVARCHAR(100) NULL,
+    cylinder_volume INT NULL,
+    enginepower INT NULL,
+    torque INT NULL,
+    accelerate DECIMAL(4,2) NULL,
+    CONSTRAINT FK_Car_Vehicle FOREIGN KEY (vehicle_id) 
+        REFERENCES Vehicle(vehicle_id)
+        ON DELETE CASCADE
+);
+GO
+
+
+CREATE TABLE Motorcycle (
+    vehicle_id INT PRIMARY KEY,
+    class NVARCHAR(50) NULL,                 
+    engine NVARCHAR(100) NULL,               
+    engine_cc INT NULL,                      
+    gearbox NVARCHAR(50) NULL,               
+    weight INT NULL,                       
+    CONSTRAINT FK_Motorcycle_Vehicle FOREIGN KEY (vehicle_id) 
+        REFERENCES Vehicle(vehicle_id)
+        ON DELETE CASCADE
+);
+GO
+
+
+CREATE TABLE HeavyVehicle(
+    vehicle_id INT PRIMARY KEY,
+    heavy_type NVARCHAR(50) NOT NULL,
+    [usage] NVARCHAR(100) NULL,  
+    CONSTRAINT FK_HeavyVehicle_Vehicle FOREIGN KEY (vehicle_id) 
+        REFERENCES Vehicle(vehicle_id)
+        ON DELETE CASCADE
+);
+GO
+
