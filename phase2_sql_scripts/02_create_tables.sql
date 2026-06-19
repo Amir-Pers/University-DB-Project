@@ -15,7 +15,6 @@ CREATE TABLE City (
     CONSTRAINT FK_City_Province FOREIGN KEY (province_id) 
         REFERENCES Province(province_id)
         ON DELETE CASCADE
-        ON UPDATE CASCADE
 );
 GO
 
@@ -34,7 +33,6 @@ CREATE TABLE Model (
     CONSTRAINT FK_Model_Brand FOREIGN KEY (brand_id) 
         REFERENCES Brand(brand_id)
         ON DELETE CASCADE
-        ON UPDATE CASCADE
 );
 GO
 
@@ -71,9 +69,11 @@ CREATE TABLE Vehicle (
     CONSTRAINT FK_Vehicle_Model FOREIGN KEY (model_id) 
         REFERENCES Model(model_id)
         ON DELETE CASCADE
-        ON UPDATE CASCADE,
 );
 GO
+
+CREATE INDEX IX_Vehicle_ModelID ON Vehicle (model_id);
+CREATE INDEX IX_Vehicle_ProductionYear ON Vehicle (production_year);
 
 
 CREATE TABLE Car (
@@ -89,6 +89,8 @@ CREATE TABLE Car (
         ON DELETE CASCADE
 );
 GO
+
+CREATE INDEX IX_Car_BodyType ON Car (body_type);
 
 
 CREATE TABLE Motorcycle (
@@ -160,13 +162,18 @@ CREATE TABLE Advertisement (
         ON DELETE CASCADE,
     CONSTRAINT CHK_Advertisement_SellType CHECK (
     sell_type IN (N'نقدی', N'اقساطی', N'توافقی')
+    ),
+    CONSTRAINT CHK_Advertisement_CarCondition CHECK (
+    car_condition IS NULL OR car_condition IN (N'صفر', N'کارکرده')
     )
 );
 GO
 
 CREATE INDEX IX_Advertisement_UserID ON Advertisement (userid);
 CREATE INDEX IX_Advertisement_AddressID ON Advertisement (address_id);
-CREATE INDEX IX_Advertisement_CreatedDate ON Advertisement (created_date DESC);
+CREATE NONCLUSTERED INDEX IX_Advertisement_CarCondition ON Advertisement (car_condition);
+CREATE INDEX IX_Advertisement_Price ON Advertisement (price);
+CREATE NONCLUSTERED INDEX IX_Advertisement_BodyStatus ON Advertisement (body_status);
 GO
 
 
@@ -188,6 +195,21 @@ CREATE TABLE Video (
     url NVARCHAR(500) NOT NULL,
     upload_date DATETIME DEFAULT GETDATE(),
     CONSTRAINT FK_Video_Advertisement FOREIGN KEY (ad_id) 
+        REFERENCES Advertisement(ad_id)
+        ON DELETE CASCADE
+);
+GO
+
+
+CREATE TABLE Instalment (
+    ad_id INT PRIMARY KEY,
+    first_payment DECIMAL(18,0) NOT NULL,
+    second_payment DECIMAL(18,0) NULL,
+    payment_per_instalment DECIMAL(18,0) NOT NULL,
+    payment_count INT NOT NULL,
+    payment_period NVARCHAR(50) NOT NULL,     
+    delivery_date DATE NULL,
+    CONSTRAINT FK_Instalment_Advertisement FOREIGN KEY (ad_id) 
         REFERENCES Advertisement(ad_id)
         ON DELETE CASCADE
 );
