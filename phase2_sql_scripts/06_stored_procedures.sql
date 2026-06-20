@@ -466,3 +466,75 @@ EXEC SP_GetBrandsByCountryOnlyInCities
     @Country = N'آلمان',
     @City1 = N'تهران',
     @City2 = N'ساری';
+
+
+-- SP9
+
+DROP PROCEDURE IF EXISTS SP_GetVehicleDetails;
+GO
+
+CREATE PROCEDURE SP_GetVehicleDetails
+    @ExcludeColor NVARCHAR(50),  
+    @BodyType NVARCHAR(50),       
+    @FuelType NVARCHAR(50),       
+    @ProvinceName NVARCHAR(100)   
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        b.name AS Brand,
+        m.name AS Model,
+        v.production_year AS ProductionYear,
+        v.color_out AS Color,
+        v.color_in AS InteriorColor,
+        v.transmission_type AS Transmission,
+        v.fuel_type AS FuelType,
+        v.consumption AS FuelConsumption,
+        c.body_type AS BodyType,
+        c.engine AS Engine,
+        c.cylinder_volume AS CylinderCC,
+        c.enginepower AS Power_HP,
+        c.torque AS Torque_Nm,
+        c.accelerate AS Acceleration_0_100,
+        p.name AS Province,
+        ct.name AS City,
+        a.price AS Price,
+        a.km_age AS Mileage,
+        a.body_status AS BodyStatus,
+        a.title AS AdTitle,
+        a.created_date AS CreatedDate
+    FROM Vehicle v
+    INNER JOIN Car c ON v.vehicle_id = c.vehicle_id
+    INNER JOIN Model m ON v.model_id = m.model_id
+    INNER JOIN Brand b ON m.brand_id = b.brand_id
+    INNER JOIN Advertisement a ON v.vehicle_id = a.vehicle_id
+    INNER JOIN Address ad ON a.address_id = ad.address_id
+    INNER JOIN City ct ON ad.city_id = ct.city_id
+    INNER JOIN Province p ON ct.province_id = p.province_id
+    WHERE c.body_type = @BodyType
+      AND v.fuel_type = @FuelType
+      AND p.name = @ProvinceName
+      AND v.color_out != @ExcludeColor
+      AND a.published = 1
+      AND a.active_status = 1
+    ORDER BY b.name, v.production_year;
+END
+GO
+
+-- test SP9
+EXEC SP_GetVehicleDetails 
+    @ExcludeColor = N'سفید',
+    @BodyType = N'شاسی‌بلند',
+    @FuelType = N'هیبریدی',
+    @ProvinceName = N'اصفهان';
+Go
+
+EXEC SP_GetVehicleDetails 
+    @ExcludeColor = N'مشکی',
+    @BodyType = N'شاسی‌بلند',
+    @FuelType = N'هیبریدی',
+    @ProvinceName = N'اصفهان';
+Go
+
+

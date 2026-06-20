@@ -389,3 +389,190 @@ END
 GO
 
 
+
+
+-- ==========================================
+-- ۱. اطمینان از وجود استان اصفهان
+-- ==========================================
+DECLARE @ProvinceIsfahan INT = (SELECT province_id FROM Province WHERE name = N'اصفهان');
+IF @ProvinceIsfahan IS NULL
+BEGIN
+    PRINT N'خطا: استان اصفهان وجود ندارد!';
+    RETURN;
+END
+
+-- ==========================================
+-- ۲. اطمینان از وجود شهر اصفهان
+-- ==========================================
+DECLARE @CityIsfahan INT = (SELECT city_id FROM City WHERE name = N'اصفهان' AND province_id = @ProvinceIsfahan);
+IF @CityIsfahan IS NULL
+BEGIN
+    INSERT INTO City (province_id, name) VALUES (@ProvinceIsfahan, N'اصفهان');
+    SET @CityIsfahan = SCOPE_IDENTITY();
+    PRINT N'شهر اصفهان اضافه شد.';
+END
+
+-- ==========================================
+-- ۳. اطمینان از وجود آدرس در اصفهان
+-- ==========================================
+DECLARE @AddressIsfahan INT = (SELECT TOP 1 address_id FROM Address WHERE city_id = @CityIsfahan);
+IF @AddressIsfahan IS NULL
+BEGIN
+    INSERT INTO Address (city_id, neighborhood) VALUES (@CityIsfahan, N'نقش جهان');
+    SET @AddressIsfahan = SCOPE_IDENTITY();
+    PRINT N'آدرس در اصفهان اضافه شد.';
+END
+
+-- ==========================================
+-- ۴. اضافه کردن برند تویوتا (اگر وجود ندارد)
+-- ==========================================
+IF NOT EXISTS (SELECT 1 FROM Brand WHERE name = N'تویوتا')
+BEGIN
+    INSERT INTO Brand (name, country) VALUES (N'تویوتا', N'ژاپن');
+    PRINT N'برند تویوتا اضافه شد.';
+END
+
+-- ==========================================
+-- ۵. اضافه کردن مدل RAV4 برای تویوتا (اگر وجود ندارد)
+-- ==========================================
+DECLARE @BrandToyota INT = (SELECT brand_id FROM Brand WHERE name = N'تویوتا');
+DECLARE @ModelRAV4 INT = (SELECT model_id FROM Model WHERE name = N'RAV4' AND brand_id = @BrandToyota);
+
+IF @ModelRAV4 IS NULL
+BEGIN
+    INSERT INTO Model (brand_id, name) VALUES (@BrandToyota, N'RAV4');
+    SET @ModelRAV4 = SCOPE_IDENTITY();
+    PRINT N'مدل تویوتا RAV4 اضافه شد.';
+END
+
+-- ==========================================
+-- ۶. اضافه کردن برند هیوندای (اگر وجود ندارد)
+-- ==========================================
+IF NOT EXISTS (SELECT 1 FROM Brand WHERE name = N'هیوندای')
+BEGIN
+    INSERT INTO Brand (name, country) VALUES (N'هیوندای', N'کره جنوبی');
+    PRINT N'برند هیوندای اضافه شد.';
+END
+
+-- ==========================================
+-- ۷. اضافه کردن مدل Santa Fe برای هیوندای (اگر وجود ندارد)
+-- ==========================================
+DECLARE @BrandHyundai INT = (SELECT brand_id FROM Brand WHERE name = N'هیوندای');
+DECLARE @ModelSantaFe INT = (SELECT model_id FROM Model WHERE name = N'Santa Fe' AND brand_id = @BrandHyundai);
+
+IF @ModelSantaFe IS NULL
+BEGIN
+    INSERT INTO Model (brand_id, name) VALUES (@BrandHyundai, N'Santa Fe');
+    SET @ModelSantaFe = SCOPE_IDENTITY();
+    PRINT N'مدل هیوندای Santa Fe اضافه شد.';
+END
+
+-- ==========================================
+-- ۸. ایجاد خودروی تویوتا RAV4 هیبریدی با رنگ مشکی
+-- ==========================================
+DECLARE @VehicleRAV4 INT;
+SELECT @VehicleRAV4 = v.vehicle_id
+FROM Vehicle v
+WHERE v.model_id = @ModelRAV4 AND v.fuel_type = N'هیبریدی' AND v.color_out = N'مشکی';
+
+IF @VehicleRAV4 IS NULL
+BEGIN
+    INSERT INTO Vehicle (model_id, production_year, color_out, color_in, transmission_type, fuel_type, consumption)
+    VALUES (@ModelRAV4, 2022, N'مشکی', N'بژ', N'اتوماتیک', N'هیبریدی', 5.0);
+    SET @VehicleRAV4 = SCOPE_IDENTITY();
+
+    INSERT INTO Car (vehicle_id, body_type, engine, cylinder_volume, enginepower, torque, accelerate)
+    VALUES (@VehicleRAV4, N'شاسی‌بلند', N'4 سیلندر 16 سوپاپ', 2000, 180, 280, 7.5);
+    PRINT N'خودروی تویوتا RAV4 هیبریدی مشکی ایجاد شد.';
+END
+ELSE
+BEGIN
+    PRINT N'خودروی تویوتا RAV4 هیبریدی مشکی قبلاً وجود دارد.';
+END
+
+-- ==========================================
+-- ۹. ثبت آگهی برای RAV4 در اصفهان
+-- ==========================================
+IF NOT EXISTS (SELECT 1 FROM Advertisement WHERE vehicle_id = @VehicleRAV4 AND address_id = @AddressIsfahan)
+BEGIN
+    INSERT INTO Advertisement (vehicle_id, userid, address_id, title, sell_type, price, descriptions, published, created_date, updated_date, ad_type, car_condition, remittance_time, km_age, body_status, free_zone, active_status)
+    VALUES (
+        @VehicleRAV4,
+        1,
+        @AddressIsfahan,
+        N'تویوتا RAV4 2022 هیبریدی مشکی',
+        N'نقدی',
+        3000000000,
+        N'هیبریدی، صفر کیلومتر',
+        1, GETDATE(), GETDATE(),
+        N'عادی',
+        N'صفر',
+        N'۱ روزه',
+        0,
+        N'بدون رنگ و زنگ',
+        0, 1
+    );
+    PRINT N'آگهی تویوتا RAV4 در اصفهان ثبت شد.';
+END
+ELSE
+BEGIN
+    PRINT N'آگهی تویوتا RAV4 در اصفهان قبلاً وجود دارد.';
+END
+
+-- ==========================================
+-- ۱۰. ایجاد خودروی هیوندای Santa Fe هیبریدی با رنگ آبی
+-- ==========================================
+DECLARE @VehicleSantaFe INT;
+SELECT @VehicleSantaFe = v.vehicle_id
+FROM Vehicle v
+WHERE v.model_id = @ModelSantaFe AND v.fuel_type = N'هیبریدی' AND v.color_out = N'آبی';
+
+IF @VehicleSantaFe IS NULL
+BEGIN
+    INSERT INTO Vehicle (model_id, production_year, color_out, color_in, transmission_type, fuel_type, consumption)
+    VALUES (@ModelSantaFe, 2023, N'آبی', N'خاکستری', N'اتوماتیک', N'هیبریدی', 6.0);
+    SET @VehicleSantaFe = SCOPE_IDENTITY();
+
+    INSERT INTO Car (vehicle_id, body_type, engine, cylinder_volume, enginepower, torque, accelerate)
+    VALUES (@VehicleSantaFe, N'شاسی‌بلند', N'6 سیلندر 24 سوپاپ', 2500, 210, 300, 7.0);
+    PRINT N'خودروی هیوندای Santa Fe هیبریدی آبی ایجاد شد.';
+END
+ELSE
+BEGIN
+    PRINT N'خودروی هیوندای Santa Fe هیبریدی آبی قبلاً وجود دارد.';
+END
+
+-- ==========================================
+-- ۱۱. ثبت آگهی برای Santa Fe در اصفهان
+-- ==========================================
+IF NOT EXISTS (SELECT 1 FROM Advertisement WHERE vehicle_id = @VehicleSantaFe AND address_id = @AddressIsfahan)
+BEGIN
+    INSERT INTO Advertisement (vehicle_id, userid, address_id, title, sell_type, price, descriptions, published, created_date, updated_date, ad_type, car_condition, remittance_time, km_age, body_status, free_zone, active_status)
+    VALUES (
+        @VehicleSantaFe,
+        2,
+        @AddressIsfahan,
+        N'هیوندای Santa Fe 2023 هیبریدی آبی',
+        N'نقدی',
+        3500000000,
+        N'هیبریدی، کارکرد ۱۰۰۰۰ کیلومتر',
+        1, GETDATE(), GETDATE(),
+        N'نردبانی',
+        N'کارکرده',
+        N'۲ روزه',
+        10000,
+        N'بدون رنگ و زنگ',
+        0, 1
+    );
+    PRINT N'آگهی هیوندای Santa Fe در اصفهان ثبت شد.';
+END
+ELSE
+BEGIN
+    PRINT N'آگهی هیوندای Santa Fe در اصفهان قبلاً وجود دارد.';
+END
+
+PRINT N'==========================================';
+PRINT N'داده‌های تست برای SP9 با موفقیت اضافه شدند.';
+PRINT N'==========================================';
+GO
+
