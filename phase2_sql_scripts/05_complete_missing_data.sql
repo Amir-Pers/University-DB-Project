@@ -267,28 +267,125 @@ GO
 
 
 
+-- ==========================================
+-- ۱. اطمینان از وجود برند BMW
+-- ==========================================
+IF NOT EXISTS (SELECT 1 FROM Brand WHERE name = N'BMW')
+BEGIN
+    INSERT INTO Brand (name, country) VALUES (N'BMW', N'آلمان');
+    PRINT N'برند BMW اضافه شد.';
+END
+
+-- ==========================================
+-- ۲. اطمینان از وجود مدل BMW (X5 یا 320i)
+-- ==========================================
+DECLARE @BrandBMW INT = (SELECT brand_id FROM Brand WHERE name = N'BMW');
+
+-- اگر X5 نبود، از 320i استفاده می‌کنیم (و اگر هیچکدام نبود، X5 را می‌سازیم)
+IF NOT EXISTS (SELECT 1 FROM Model WHERE name = N'X5' AND brand_id = @BrandBMW)
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Model WHERE name = N'320i' AND brand_id = @BrandBMW)
+    BEGIN
+        INSERT INTO Model (brand_id, name) VALUES (@BrandBMW, N'X5');
+        PRINT N'مدل BMW X5 اضافه شد.';
+    END
+    ELSE
+    BEGIN
+        PRINT N'مدل BMW 320i از قبل وجود دارد. از آن استفاده می‌کنیم.';
+    END
+END
+ELSE
+BEGIN
+    PRINT N'مدل BMW X5 از قبل وجود دارد.';
+END
+
+-- ==========================================
+-- ۳. اطمینان از وجود شهر تهران
+-- ==========================================
+DECLARE @ProvinceTehran INT = (SELECT province_id FROM Province WHERE name = N'تهران');
+IF @ProvinceTehran IS NULL
+BEGIN
+    PRINT N'خطا: استان تهران وجود ندارد! لطفاً ابتدا استان تهران را اضافه کنید.';
+    RETURN;
+END
+
+IF NOT EXISTS (SELECT 1 FROM City WHERE name = N'تهران' AND province_id = @ProvinceTehran)
+BEGIN
+    INSERT INTO City (province_id, name) VALUES (@ProvinceTehran, N'تهران');
+    PRINT N'شهر تهران اضافه شد.';
+END
+
+-- ==========================================
+-- ۴. اطمینان از وجود آدرس در تهران
+-- ==========================================
+DECLARE @CityTehran INT = (SELECT city_id FROM City WHERE name = N'تهران' AND province_id = @ProvinceTehran);
+
+IF NOT EXISTS (SELECT 1 FROM Address WHERE city_id = @CityTehran)
+BEGIN
+    INSERT INTO Address (city_id, neighborhood) VALUES (@CityTehran, N'ونک');
+    PRINT N'آدرس در تهران اضافه شد.';
+END
+
+-- ==========================================
+-- ۵. ایجاد خودروی BMW (با مدل موجود)
+-- ==========================================
+DECLARE @ModelBMW INT = (SELECT TOP 1 model_id FROM Model WHERE brand_id = @BrandBMW AND name IN (N'X5', N'320i') ORDER BY model_id);
+DECLARE @AddressTehranID INT = (SELECT TOP 1 address_id FROM Address WHERE city_id = @CityTehran);
+
+IF @ModelBMW IS NOT NULL AND @AddressTehranID IS NOT NULL
+BEGIN
+    -- بررسی اینکه آیا خودرویی با این مدل از قبل وجود دارد
+    DECLARE @ExistingVehicleID INT = (SELECT TOP 1 v.vehicle_id FROM Vehicle v WHERE v.model_id = @ModelBMW);
+    
+    IF @ExistingVehicleID IS NULL
+    BEGIN
+        -- ایجاد خودروی جدید
+        INSERT INTO Vehicle (model_id, production_year, color_out, color_in, transmission_type, fuel_type, consumption)
+        VALUES (@ModelBMW, 2020, N'مشکی', N'مشکی', N'اتوماتیک', N'بنزین', 9.0);
+        SET @ExistingVehicleID = SCOPE_IDENTITY();
+
+        INSERT INTO Car (vehicle_id, body_type, engine, cylinder_volume, enginepower, torque, accelerate)
+        VALUES (@ExistingVehicleID, N'شاسی‌بلند', N'6 سیلندر 24 سوپاپ', 3000, 250, 400, 6.5);
+        PRINT N'خودروی BMW ایجاد شد.';
+    END
+    ELSE
+    BEGIN
+        PRINT N'خودروی BMW قبلاً وجود دارد.';
+    END
+
+    -- ==========================================
+    -- ۶. ثبت آگهی در تهران (اگر وجود نداشته باشد)
+    -- ==========================================
+    IF NOT EXISTS (SELECT 1 FROM Advertisement WHERE vehicle_id = @ExistingVehicleID AND address_id = @AddressTehranID)
+    BEGIN
+        INSERT INTO Advertisement (vehicle_id, userid, address_id, title, sell_type, price, descriptions, published, created_date, updated_date, ad_type, car_condition, remittance_time, km_age, body_status, free_zone, active_status)
+        VALUES (
+            @ExistingVehicleID,
+            1,
+            @AddressTehranID,
+            N'BMW مدل 2020 مشکی',
+            N'نقدی',
+            4500000000,
+            N'وارداتی، کارکرد ۳۰ هزار کیلومتر',
+            1, GETDATE(), GETDATE(),
+            N'نردبانی',
+            N'کارکرده',
+            N'۳ روزه',
+            30000,
+            N'بدون رنگ و زنگ',
+            0, 1
+        );
+        PRINT N'آگهی BMW در تهران ثبت شد.';
+    END
+    ELSE
+    BEGIN
+        PRINT N'آگهی BMW در تهران قبلاً وجود دارد.';
+    END
+END
+ELSE
+BEGIN
+    PRINT N'خطا: مدل BMW یا آدرس تهران پیدا نشد.';
+END
+GO
 
 
-select * from [User]
-where username='u4042';
-
-select * from Model
-where brand_id = 2
-
-select * from Brand
-where brand_id = 2
-
-
-select * from Province as p
-	inner join City as C
-	on p.province_id=c.province_id
-
-select * from Advertisement
-
-
-select * from Vehicle
-where model_id = 42
-
-select * from Address as A
-	inner join city as c
-		on A.city_id = C.city_id

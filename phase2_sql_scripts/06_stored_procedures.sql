@@ -407,27 +407,62 @@ EXEC SP_EstimatePrice
     @BodyStatus = N'سالم و بدون رنگ';
 
 
+-- SP8
 
+DROP PROCEDURE IF EXISTS SP_GetBrandsByCountryOnlyInCities;
+GO
 
+CREATE PROCEDURE SP_GetBrandsByCountryOnlyInCities
+    @Country NVARCHAR(100),   
+    @City1 NVARCHAR(100),     
+    @City2 NVARCHAR(100)      
+AS
+BEGIN
+    SET NOCOUNT ON;
 
+    WITH BrandsInTargetCities AS (
+        SELECT DISTINCT
+            b.brand_id,
+            b.name AS Brand
+        FROM Brand b
+        INNER JOIN Model m ON b.brand_id = m.brand_id
+        INNER JOIN Vehicle v ON m.model_id = v.model_id
+        INNER JOIN Advertisement a ON v.vehicle_id = a.vehicle_id
+        INNER JOIN Address ad ON a.address_id = ad.address_id
+        INNER JOIN City c ON ad.city_id = c.city_id
+        WHERE b.country = @Country
+          AND c.name IN (@City1, @City2)
+          AND a.published = 1
+          AND a.active_status = 1
+    ),
+    BrandsInOtherCities AS (
+        SELECT DISTINCT
+            b.brand_id,
+            b.name AS Brand
+        FROM Brand b
+        INNER JOIN Model m ON b.brand_id = m.brand_id
+        INNER JOIN Vehicle v ON m.model_id = v.model_id
+        INNER JOIN Advertisement a ON v.vehicle_id = a.vehicle_id
+        INNER JOIN Address ad ON a.address_id = ad.address_id
+        INNER JOIN City c ON ad.city_id = c.city_id
+        WHERE b.country = @Country
+          AND c.name NOT IN (@City1, @City2)
+          AND a.published = 1
+          AND a.active_status = 1
+    )
+    SELECT 
+        bt.Brand
+    FROM BrandsInTargetCities bt
+    WHERE NOT EXISTS (
+        SELECT 1 FROM BrandsInOtherCities bo
+        WHERE bo.brand_id = bt.brand_id
+    )
+    ORDER BY bt.Brand;
+END
+GO
 
-select * from [User]
-where username='u4021';
-
-select * from Model
-where name = 'MVM 530'
-
-select * from Brand
-where brand_id = 3
-
-select * from Advertisement
-where userid=11
-
-select * from Vehicle
-where model_id = 42
-
-select * from Address as A
-	inner join city as c
-		on A.city_id = C.city_id
-
-
+-- test SP8
+EXEC SP_GetBrandsByCountryOnlyInCities 
+    @Country = N'آلمان',
+    @City1 = N'تهران',
+    @City2 = N'ساری';
