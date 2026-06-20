@@ -313,6 +313,57 @@ EXEC SP_DeleteLowestKmAge
 
 
 
+-- SP6
+
+DROP PROCEDURE IF EXISTS SP_GetMotorcyclesByBrandAndCC;
+GO
+
+CREATE PROCEDURE SP_GetMotorcyclesByBrandAndCC
+    @Brand1 NVARCHAR(100),
+    @Brand2 NVARCHAR(100) = NULL,  
+    @MaxCC INT,
+    @MinPrice DECIMAL(18,0)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        b.name AS Brand,
+        m.name AS Model,
+        v.production_year AS ProductionYear,
+        mc.class AS Class,
+        mc.engine AS Engine,
+        mc.engine_cc AS EngineCC,
+        mc.gearbox AS Gearbox,
+        mc.weight AS Weight,
+        a.km_age AS Mileage,
+        a.price AS Price,
+        a.body_status AS BodyStatus,
+        a.title AS AdTitle,
+        a.created_date AS CreatedDate
+    FROM Motorcycle mc
+    INNER JOIN Vehicle v ON mc.vehicle_id = v.vehicle_id
+    INNER JOIN Model m ON v.model_id = m.model_id
+    INNER JOIN Brand b ON m.brand_id = b.brand_id
+    INNER JOIN Advertisement a ON v.vehicle_id = a.vehicle_id
+    WHERE (b.name = @Brand1 OR b.name = @Brand2)
+      AND mc.engine_cc < @MaxCC
+      AND a.price > @MinPrice
+      AND a.published = 1
+      AND a.active_status = 1
+    ORDER BY mc.engine_cc ASC;
+END
+GO
+
+
+-- test SP6
+EXEC SP_GetMotorcyclesByBrandAndCC 
+    @Brand1 = N'تی‌وی‌اس',
+    @Brand2 = N'استلز',
+    @MaxCC = 1000,
+    @MinPrice = 300000000;
+
+
 
 select * from [User]
 where username='u4021';

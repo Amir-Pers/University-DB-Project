@@ -89,6 +89,91 @@ GO
 
 
 
+
+-- ==========================================
+-- مرحله ۱: اضافه کردن برندها
+-- ==========================================
+INSERT INTO Brand (name, country) VALUES 
+(N'تی‌وی‌اس', N'هند'),
+(N'استلز', N'ایتالیا');
+GO
+
+-- ==========================================
+-- مرحله ۲: اضافه کردن مدل‌ها برای هر برند
+-- ==========================================
+DECLARE @BrandTVS INT = (SELECT brand_id FROM Brand WHERE name = N'تی‌وی‌اس');
+DECLARE @BrandStel INT = (SELECT brand_id FROM Brand WHERE name = N'استلز');
+
+INSERT INTO Model (brand_id, name) VALUES
+(@BrandTVS, N'Apache RTR 200'),
+(@BrandTVS, N'NTORQ 125'),
+(@BrandStel, N'Stelvio 800'),
+(@BrandStel, N'V85 TT');
+GO
+
+-- ==========================================
+-- مرحله ۳: ساخت موتورسیکلت‌ها
+-- ==========================================
+
+-- ۱. تی‌وی‌اس Apache RTR 200 (حجم ۲۰۰ سی‌سی، قیمت ۳۵۰ میلیون)
+DECLARE @ModelTVS1 INT = (SELECT model_id FROM Model WHERE name = N'Apache RTR 200' AND brand_id = (SELECT brand_id FROM Brand WHERE name = N'تی‌وی‌اس'));
+
+INSERT INTO Vehicle (model_id, production_year, color_out, color_in, transmission_type, fuel_type, consumption)
+VALUES (@ModelTVS1, 1402, N'قرمز', NULL, N'دنده‌ای', N'بنزین', 3.5);
+DECLARE @VehicleTVS1 INT = SCOPE_IDENTITY();
+
+INSERT INTO Motorcycle (vehicle_id, class, engine, engine_cc, gearbox, weight)
+VALUES (@VehicleTVS1, N'اسپرت', N'تک سیلندر', 200, N'۶ دنده', 150);
+
+INSERT INTO Advertisement (vehicle_id, userid, address_id, title, sell_type, price, descriptions, published, created_date, updated_date, ad_type, car_condition, remittance_time, km_age, body_status, free_zone, active_status)
+VALUES (@VehicleTVS1, 1, 1, N'تی‌وی‌اس Apache RTR 200', N'نقدی', 350000000, N'موتور اسپرت، کارکرد کم', 1, GETDATE(), GETDATE(), N'عادی', N'کارکرده', N'۱ هفته', 5000, N'بدون رنگ و زنگ', 0, 1);
+Go
+
+-- ۲. تی‌وی‌اس NTORQ 125 (حجم ۱۲۵ سی‌سی، قیمت ۳۲۰ میلیون)
+DECLARE @ModelTVS2 INT = (SELECT model_id FROM Model WHERE name = N'NTORQ 125' AND brand_id = (SELECT brand_id FROM Brand WHERE name = N'تی‌وی‌اس'));
+
+INSERT INTO Vehicle (model_id, production_year, color_out, color_in, transmission_type, fuel_type, consumption)
+VALUES (@ModelTVS2, 1401, N'آبی', NULL, N'دنده‌ای', N'بنزین', 2.5);
+DECLARE @VehicleTVS2 INT = SCOPE_IDENTITY();
+
+INSERT INTO Motorcycle (vehicle_id, class, engine, engine_cc, gearbox, weight)
+VALUES (@VehicleTVS2, N'اسکوتر', N'تک سیلندر', 125, N'دنده‌ای', 120);
+
+INSERT INTO Advertisement (vehicle_id, userid, address_id, title, sell_type, price, descriptions, published, created_date, updated_date, ad_type, car_condition, remittance_time, km_age, body_status, free_zone, active_status)
+VALUES (@VehicleTVS2, 2, 2, N'تی‌وی‌اس NTORQ 125', N'نقدی', 320000000, N'اسکوتر شهری، صفر', 1, GETDATE(), GETDATE(), N'عادی', N'صفر', N'۱ روزه', 0, N'بدون رنگ و زنگ', 0, 1);
+GO
+
+-- ۳. استلز V85 TT (حجم ۸۵۰ سی‌سی، قیمت ۴۵۰ میلیون)
+DECLARE @ModelStel1 INT = (SELECT model_id FROM Model WHERE name = N'V85 TT' AND brand_id = (SELECT brand_id FROM Brand WHERE name = N'استلز'));
+
+INSERT INTO Vehicle (model_id, production_year, color_out, color_in, transmission_type, fuel_type, consumption)
+VALUES (@ModelStel1, 1401, N'زرد', NULL, N'دنده‌ای', N'بنزین', 4.5);
+DECLARE @VehicleStel1 INT = SCOPE_IDENTITY();
+
+INSERT INTO Motorcycle (vehicle_id, class, engine, engine_cc, gearbox, weight)
+VALUES (@VehicleStel1, N'ادونچر', N'دو سیلندر', 850, N'۶ دنده', 220);
+
+INSERT INTO Advertisement (vehicle_id, userid, address_id, title, sell_type, price, descriptions, published, created_date, updated_date, ad_type, car_condition, remittance_time, km_age, body_status, free_zone, active_status)
+VALUES (@VehicleStel1, 3, 3, N'استلز V85 TT', N'نقدی', 450000000, N'موتور ادونچر، صفر', 1, GETDATE(), GETDATE(), N'عادی', N'صفر', N'۱ روزه', 0, N'بدون رنگ و زنگ', 0, 1);
+
+-- ۴. استلز Stelvio 800 (حجم ۸۰۰ سی‌سی، قیمت ۴۲۰ میلیون)
+DECLARE @ModelStel2 INT = (SELECT model_id FROM Model WHERE name = N'Stelvio 800' AND brand_id = (SELECT brand_id FROM Brand WHERE name = N'استلز'));
+
+INSERT INTO Vehicle (model_id, production_year, color_out, color_in, transmission_type, fuel_type, consumption)
+VALUES (@ModelStel2, 1400, N'سفید', NULL, N'دنده‌ای', N'بنزین', 4.2);
+DECLARE @VehicleStel2 INT = SCOPE_IDENTITY();
+
+INSERT INTO Motorcycle (vehicle_id, class, engine, engine_cc, gearbox, weight)
+VALUES (@VehicleStel2, N'ادونچر', N'دو سیلندر', 800, N'۶ دنده', 210);
+
+INSERT INTO Advertisement (vehicle_id, userid, address_id, title, sell_type, price, descriptions, published, created_date, updated_date, ad_type, car_condition, remittance_time, km_age, body_status, free_zone, active_status)
+VALUES (@VehicleStel2, 4, 4, N'استلز Stelvio 800', N'نقدی', 420000000, N'موتور ادونچر، کارکرد ۱۰۰۰۰', 1, GETDATE(), GETDATE(), N'عادی', N'کارکرده', N'۲ روزه', 10000, N'بدون رنگ و زنگ', 0, 1);
+GO
+
+
+
+
+
 select * from [User]
 where username='u4042';
 
