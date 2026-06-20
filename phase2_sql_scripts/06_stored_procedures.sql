@@ -538,3 +538,51 @@ EXEC SP_GetVehicleDetails
 Go
 
 
+
+-- SP10
+
+DROP PROCEDURE IF EXISTS SP_UpdateColorAndReRunSP9;
+GO
+
+CREATE PROCEDURE SP_UpdateColorAndReRunSP9
+    @ColorFrom NVARCHAR(50),   
+    @ColorTo NVARCHAR(50),     
+    @BodyType NVARCHAR(50),   
+    @FuelType NVARCHAR(50),    
+    @ProvinceName NVARCHAR(100) 
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE v
+    SET v.color_out = @ColorTo
+    FROM Vehicle v
+    INNER JOIN Car c ON v.vehicle_id = c.vehicle_id
+    INNER JOIN Advertisement a ON v.vehicle_id = a.vehicle_id
+    INNER JOIN Address ad ON a.address_id = ad.address_id
+    INNER JOIN City ct ON ad.city_id = ct.city_id
+    INNER JOIN Province p ON ct.province_id = p.province_id
+    WHERE c.body_type = @BodyType
+      AND v.fuel_type = @FuelType
+      AND p.name = @ProvinceName
+      AND v.color_out = @ColorFrom
+      AND a.published = 1
+      AND a.active_status = 1;
+
+    DECLARE @RowsAffected INT = @@ROWCOUNT;
+
+    -- ۲. اجرای مجدد پرسمان ۹ 
+    EXEC SP_GetVehicleDetails 
+        @ExcludeColor = @ColorTo,
+        @BodyType = @BodyType,
+        @FuelType = @FuelType,
+        @ProvinceName = @ProvinceName;
+END
+GO
+
+EXEC SP_UpdateColorAndReRunSP9 
+    @ColorFrom = N'مشکی',
+    @ColorTo = N'سفید',
+    @BodyType = N'شاسی‌بلند',
+    @FuelType = N'هیبریدی',
+    @ProvinceName = N'اصفهان';
