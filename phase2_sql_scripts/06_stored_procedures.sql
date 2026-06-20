@@ -165,6 +165,99 @@ EXEC SP_GetCarsByProvince
 
 
 
+-- SP4
+DROP PROCEDURE IF EXISTS SP_ShowQuery3Sorted;
+GO
+
+CREATE PROCEDURE SP_ShowQuery3Sorted
+    @ProvinceName NVARCHAR(100),
+    @BodyStatus_A NVARCHAR(100),
+    @BodyStatus_B NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @Province_id INT;
+    SET @Province_id = (SELECT province_id FROM Province WHERE name = @ProvinceName);
+
+    -- ایجاد جدول موقت برای ذخیره نتایج
+    CREATE TABLE #TempAds (
+        BrandName NVARCHAR(100),
+        ModelName NVARCHAR(100),
+        KmAge INT,
+        Price DECIMAL(18,0),
+        ProductionYear INT,
+        CreatedDate DATETIME,
+        Title NVARCHAR(255)
+    );
+
+    -- یک بار اجرای کوئری و ذخیره در جدول موقت
+    INSERT INTO #TempAds
+    SELECT 
+        b.name AS BrandName,
+        m.name AS ModelName,
+        a.km_age AS KmAge,
+        a.price AS Price,
+        v.production_year AS ProductionYear,
+        a.created_date AS CreatedDate,
+        a.title AS Title
+    FROM Advertisement AS a
+        INNER JOIN Vehicle AS v ON a.vehicle_id = v.vehicle_id
+        INNER JOIN Model AS m ON v.model_id = m.model_id
+        INNER JOIN Brand AS b ON m.brand_id = b.brand_id
+    WHERE a.address_id IN (
+        SELECT address_id FROM Address
+        WHERE city_id IN (
+            SELECT city_id FROM City
+            WHERE province_id = @Province_id
+        )
+    )
+    AND a.active_status = 1
+    AND a.published = 1
+    AND a.body_status IN (@BodyStatus_A, @BodyStatus_B);
+
+    -- ۴ بار SELECT با ORDER BY مختلف از جدول موقت
+
+    SELECT 
+        N'ارزان‌ترین' AS SortOrder,
+        BrandName, ModelName, KmAge, Price, ProductionYear, CreatedDate, Title
+    FROM #TempAds
+    WHERE Price IS NOT NULL
+    ORDER BY Price ASC;
+
+    SELECT 
+        N'به‌روزترین' AS SortOrder,
+        BrandName, ModelName, KmAge, Price, ProductionYear, CreatedDate, Title
+    FROM #TempAds
+    ORDER BY CreatedDate DESC;
+
+    SELECT 
+        N'جدیدترین سال' AS SortOrder,
+        BrandName, ModelName, KmAge, Price, ProductionYear, CreatedDate, Title
+    FROM #TempAds
+    ORDER BY ProductionYear DESC;
+
+    SELECT 
+        N'کم‌کارکردترین' AS SortOrder,
+        BrandName, ModelName, KmAge, Price, ProductionYear, CreatedDate, Title
+    FROM #TempAds
+    ORDER BY KmAge ASC;
+
+    -- پاک کردن جدول موقت
+    DROP TABLE #TempAds;
+END
+GO
+
+-- test SP4
+EXEC SP_ShowQuery3Sorted 
+    @ProvinceName = N'البرز',
+    @BodyStatus_A = N'بدون رنگ',
+    @BodyStatus_B = N'کاپوت رنگ';
+
+
+
+
+
 select * from [User]
 where username='u4021';
 
