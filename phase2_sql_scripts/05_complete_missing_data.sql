@@ -171,6 +171,101 @@ VALUES (@VehicleStel2, 4, 4, N'استلز Stelvio 800', N'نقدی', 420000000, 
 GO
 
 
+-- ==========================================
+-- مرحله ۱: اضافه کردن مدل‌های بنز (اگر وجود ندارند)
+-- ==========================================
+DECLARE @BrandBenz INT = 28; 
+
+-- مدل‌های بنز
+INSERT INTO Model (brand_id, name)
+SELECT @BrandBenz, name
+FROM (VALUES 
+    (N'E200'),
+    (N'C200'),
+    (N'GLE'),
+    (N'GLC'),
+    (N'S500')
+) AS Models(name)
+WHERE NOT EXISTS (
+    SELECT 1 FROM Model 
+    WHERE brand_id = @BrandBenz AND name = Models.name
+);
+
+PRINT N'مدل‌های بنز اضافه شدند.';
+GO
+
+-- ==========================================
+-- مرحله ۲: درج خودروهای بنز با کارکرد ۱۰۰۰۰ و وضعیت "سالم و بدون رنگ"
+-- ==========================================
+DECLARE @BrandBenzID INT = 28;
+
+-- خودروی ۱: بنز E200 مدل ۲۰۲۰ - قیمت ۲,۵۰۰,۰۰۰,۰۰۰
+DECLARE @ModelE200 INT = (SELECT model_id FROM Model WHERE name = N'E200' AND brand_id = @BrandBenzID);
+IF @ModelE200 IS NOT NULL
+BEGIN
+    INSERT INTO Vehicle (model_id, production_year, color_out, color_in, transmission_type, fuel_type, consumption)
+    VALUES (@ModelE200, 2020, N'مشکی', N'بژ', N'اتوماتیک', N'بنزین', 8.5);
+    DECLARE @VehicleID1 INT = SCOPE_IDENTITY();
+
+    INSERT INTO Car (vehicle_id, body_type, engine, cylinder_volume, enginepower, torque, accelerate)
+    VALUES (@VehicleID1, N'سدان', N'4 سیلندر 16 سوپاپ', 2000, 150, 250, 8.5);
+
+    INSERT INTO Advertisement (vehicle_id, userid, address_id, title, sell_type, price, descriptions, published, created_date, updated_date, ad_type, car_condition, remittance_time, km_age, body_status, free_zone, active_status)
+    VALUES (@VehicleID1, 1, 1, N'بنز E200 2020', N'نقدی', 2500000000, N'کارکرد ۱۰۰۰۰ کیلومتر، سالم و بدون رنگ', 1, GETDATE(), GETDATE(), N'نردبانی', N'کارکرده', N'۱ روزه', 10000, N'سالم و بدون رنگ', 0, 1);
+    PRINT N'خودروی ۱ اضافه شد: E200';
+END
+
+-- خودروی ۲: بنز C200 مدل ۲۰۲۱ - قیمت ۲,۸۰۰,۰۰۰,۰۰۰
+DECLARE @ModelC200 INT = (SELECT model_id FROM Model WHERE name = N'C200' AND brand_id = @BrandBenzID);
+IF @ModelC200 IS NOT NULL
+BEGIN
+    INSERT INTO Vehicle (model_id, production_year, color_out, color_in, transmission_type, fuel_type, consumption)
+    VALUES (@ModelC200, 2021, N'سفید', N'مشکی', N'اتوماتیک', N'بنزین', 8.0);
+    DECLARE @VehicleID2 INT = SCOPE_IDENTITY();
+
+    INSERT INTO Car (vehicle_id, body_type, engine, cylinder_volume, enginepower, torque, accelerate)
+    VALUES (@VehicleID2, N'سدان', N'4 سیلندر 16 سوپاپ', 2000, 160, 260, 8.0);
+
+    INSERT INTO Advertisement (vehicle_id, userid, address_id, title, sell_type, price, descriptions, published, created_date, updated_date, ad_type, car_condition, remittance_time, km_age, body_status, free_zone, active_status)
+    VALUES (@VehicleID2, 2, 2, N'بنز C200 2021', N'نقدی', 2800000000, N'کارکرد ۱۰۰۰۰ کیلومتر، سالم و بدون رنگ', 1, GETDATE(), GETDATE(), N'نردبانی', N'کارکرده', N'۱ روزه', 10000, N'سالم و بدون رنگ', 0, 1);
+    PRINT N'خودروی ۲ اضافه شد: C200';
+END
+
+-- خودروی ۳: بنز GLE مدل ۲۰۲۲ - قیمت ۳,۲۰۰,۰۰۰,۰۰۰
+DECLARE @ModelGLE INT = (SELECT model_id FROM Model WHERE name = N'GLE' AND brand_id = @BrandBenzID);
+IF @ModelGLE IS NOT NULL
+BEGIN
+    INSERT INTO Vehicle (model_id, production_year, color_out, color_in, transmission_type, fuel_type, consumption)
+    VALUES (@ModelGLE, 2022, N'نقره‌ای', N'بژ', N'اتوماتیک', N'بنزین', 9.0);
+    DECLARE @VehicleID3 INT = SCOPE_IDENTITY();
+
+    INSERT INTO Car (vehicle_id, body_type, engine, cylinder_volume, enginepower, torque, accelerate)
+    VALUES (@VehicleID3, N'شاسی‌بلند', N'6 سیلندر 24 سوپاپ', 3000, 250, 380, 7.0);
+
+    INSERT INTO Advertisement (vehicle_id, userid, address_id, title, sell_type, price, descriptions, published, created_date, updated_date, ad_type, car_condition, remittance_time, km_age, body_status, free_zone, active_status)
+    VALUES (@VehicleID3, 3, 3, N'بنز GLE 2022', N'نقدی', 3200000000, N'کارکرد ۱۰۰۰۰ کیلومتر، سالم و بدون رنگ', 1, GETDATE(), GETDATE(), N'نردبانی', N'کارکرده', N'۱ روزه', 10000, N'سالم و بدون رنگ', 0, 1);
+    PRINT N'خودروی ۳ اضافه شد: GLE';
+END
+
+-- خودروی ۴: بنز GLC مدل ۲۰۲۱ - قیمت ۲,۹۰۰,۰۰۰,۰۰۰
+DECLARE @ModelGLC INT = (SELECT model_id FROM Model WHERE name = N'GLC' AND brand_id = @BrandBenzID);
+IF @ModelGLC IS NOT NULL
+BEGIN
+    INSERT INTO Vehicle (model_id, production_year, color_out, color_in, transmission_type, fuel_type, consumption)
+    VALUES (@ModelGLC, 2021, N'آبی', N'خاکستری', N'اتوماتیک', N'بنزین', 8.2);
+    DECLARE @VehicleID4 INT = SCOPE_IDENTITY();
+
+    INSERT INTO Car (vehicle_id, body_type, engine, cylinder_volume, enginepower, torque, accelerate)
+    VALUES (@VehicleID4, N'شاسی‌بلند', N'4 سیلندر 16 سوپاپ', 2000, 170, 270, 7.5);
+
+    INSERT INTO Advertisement (vehicle_id, userid, address_id, title, sell_type, price, descriptions, published, created_date, updated_date, ad_type, car_condition, remittance_time, km_age, body_status, free_zone, active_status)
+    VALUES (@VehicleID4, 4, 4, N'بنز GLC 2021', N'نقدی', 2900000000, N'کارکرد ۱۰۰۰۰ کیلومتر، سالم و بدون رنگ', 1, GETDATE(), GETDATE(), N'نردبانی', N'کارکرده', N'۱ روزه', 10000, N'سالم و بدون رنگ', 0, 1);
+    PRINT N'خودروی ۴ اضافه شد: GLC';
+END
+
+GO
+
+
 
 
 

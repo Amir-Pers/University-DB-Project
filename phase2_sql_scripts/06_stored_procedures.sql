@@ -364,6 +364,52 @@ EXEC SP_GetMotorcyclesByBrandAndCC
     @MinPrice = 300000000;
 
 
+-- SP7
+
+DROP PROCEDURE IF EXISTS SP_EstimatePrice;
+GO
+
+CREATE PROCEDURE SP_EstimatePrice
+    @BrandName NVARCHAR(100),
+    @kmage INT,
+    @BodyStatus NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        b.name AS Brand,
+        @kmage AS Mileage,
+        @BodyStatus AS BodyStatus,
+        MIN(a.price) AS MinPrice,
+        MAX(a.price) AS MaxPrice,
+        AVG(a.price) AS AvgPrice,
+        COUNT(*) AS AdCount
+    FROM Advertisement a
+    INNER JOIN Vehicle v ON a.vehicle_id = v.vehicle_id
+    INNER JOIN Model m ON v.model_id = m.model_id
+    INNER JOIN Brand b ON m.brand_id = b.brand_id
+    WHERE b.name = @BrandName
+      AND a.km_age = @kmage
+      AND a.body_status = @BodyStatus
+      AND a.price IS NOT NULL
+      AND a.published = 1
+      AND a.active_status = 1
+    GROUP BY b.name;  
+END
+GO
+
+
+-- test SP7
+EXEC SP_EstimatePrice 
+    @BrandName = N'بنز',
+    @kmage = 10000,
+    @BodyStatus = N'سالم و بدون رنگ';
+
+
+
+
+
 
 select * from [User]
 where username='u4021';
