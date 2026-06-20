@@ -257,6 +257,62 @@ EXEC SP_ShowQuery3Sorted
 
 
 
+-- SP5
+DROP PROCEDURE IF EXISTS SP_DeleteLowestKmAge;
+GO
+
+CREATE PROCEDURE SP_DeleteLowestKmAge
+    @ProvinceName NVARCHAR(100),
+    @BodyStatus_A NVARCHAR(100),
+    @BodyStatus_B NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @Province_id INT;
+    SET @Province_id = (SELECT province_id FROM Province WHERE name = @ProvinceName);
+
+    -- ۱. پیدا کردن کم‌کارکردترین آگهی
+    DECLARE @AdIDToDelete INT;
+    SELECT TOP 1 @AdIDToDelete = a.ad_id
+    FROM Advertisement a
+    WHERE a.address_id IN (
+        SELECT address_id FROM Address
+        WHERE city_id IN (
+            SELECT city_id FROM City
+            WHERE province_id = @Province_id
+        )
+    )
+    AND a.active_status = 1
+    AND a.published = 1
+    AND a.body_status IN (@BodyStatus_A, @BodyStatus_B)
+    ORDER BY a.km_age ASC;
+
+    -- ۲. حذف کردن (اگر پیدا شد)
+    IF @AdIDToDelete IS NOT NULL
+    BEGIN
+        DELETE FROM Advertisement WHERE ad_id = @AdIDToDelete;
+        PRINT N'آگهی با شناسه ' + CAST(@AdIDToDelete AS NVARCHAR(10)) + N' حذف شد.';
+    END
+    ELSE
+    BEGIN
+        PRINT N'هیچ آگهی با این شرایط یافت نشد.';
+    END
+
+    -- ۳. اجرای مجدد پرسمان ۴
+    EXEC SP_ShowQuery3Sorted @ProvinceName, @BodyStatus_A, @BodyStatus_B;
+END
+GO
+
+
+-- test SP5
+EXEC SP_DeleteLowestKmAge 
+    @ProvinceName = N'البرز',
+    @BodyStatus_A = N'بدون رنگ',
+    @BodyStatus_B = N'کاپوت رنگ';
+
+
+
 
 select * from [User]
 where username='u4021';
