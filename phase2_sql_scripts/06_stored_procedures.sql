@@ -3,47 +3,53 @@ GO
 
 
 --SP 1
+DROP PROCEDURE IF EXISTS InsertAdvertisement;
+GO
+
 CREATE PROCEDURE InsertAdvertisement
-    @userName NVARCHAR(50), @Brand NVARCHAR(100), @Model NVARCHAR(100),
-    @Year INT, @Fuel NVARCHAR(50), @BodyStatus NVARCHAR(50),
-    @Gearbox NVARCHAR(50), @Function INT, @Color NVARCHAR(50), @Province NVARCHAR(100)
+    @userName NVARCHAR(50),@Brand NVARCHAR(100),
+    @Model NVARCHAR(100),@Year INT,
+    @Fuel NVARCHAR(50),@BodyStatus NVARCHAR(50),
+    @Gearbox NVARCHAR(50),@Function INT,
+    @Color NVARCHAR(50),@Province NVARCHAR(100)
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    DECLARE @userid INT, @brandid INT, @modelid INT, 
-    @provinceid INT, @addressid INT, @vehicleid INT;
+    DECLARE
+        @UserId INT, @ModelId INT,
+        @AddressId INT,@VehicleId INT;
 
-    SET @userid = 
-        (SELECT userid FROM [User] WHERE username = @userName);
-    IF @userid IS NULL BEGIN RAISERROR('User not found.', 16, 1) RETURN END
+    SELECT @UserId = userid
+    FROM [User]
+    WHERE username = @userName;
 
-    SET @brandid = 
-        (SELECT brand_id FROM Brand WHERE name = @Brand);
-    IF @brandid IS NULL BEGIN RAISERROR('Brand not found.', 16, 1) RETURN END
+    SELECT @ModelId = m.model_id
+    FROM Model m
+        JOIN Brand b ON b.brand_id = m.brand_id
+    WHERE b.name = @Brand
+        AND m.name = @Model;
 
-    SET @modelid = 
-        (SELECT model_id FROM Model WHERE name = @Model AND brand_id = @brandid);
-    IF @modelid IS NULL BEGIN RAISERROR('Model not found for this brand.', 16, 1) RETURN END
+    SELECT TOP (1) @AddressId = a.address_id
+    FROM Address a
+        JOIN City c ON c.city_id = a.city_id
+        JOIN Province p ON p.province_id = c.province_id
+    WHERE p.name = @Province;
 
-    SET @provinceid = 
-        (SELECT province_id FROM Province WHERE name = @Province);
-    IF @provinceid IS NULL BEGIN RAISERROR('Province not found.', 16, 1) RETURN END
+    SELECT TOP (1) @VehicleId = vehicle_id
+    FROM Vehicle
+    WHERE model_id = @ModelId
+        AND production_year = @Year
+        AND fuel_type = @Fuel
+        AND transmission_type = @Gearbox
+        AND color_out = @Color;
 
-    SET @addressid = (SELECT TOP 1 a.address_id
-                      FROM Address a INNER JOIN City c ON a.city_id = c.city_id
-                      WHERE c.province_id = @provinceid);
-    IF @addressid IS NULL BEGIN RAISERROR('No address in this province.', 16, 1) RETURN END
-
-    SET @vehicleid = (SELECT TOP 1 vehicle_id
-                      FROM Vehicle
-                      WHERE model_id = @modelid AND production_year = @Year
-                        AND fuel_type = @Fuel AND transmission_type = @Gearbox
-                        AND color_out = @Color);
-    IF @vehicleid IS NULL BEGIN
-        RAISERROR('Vehicle not found. Please add vehicle first.', 16, 1)
-        RETURN
-    END
+    IF @UserId IS NULL OR @ModelId IS NULL 
+        OR @AddressId IS NULL OR @VehicleId IS NULL
+    BEGIN
+        PRINT N'Invalid input data';
+        RETURN;
+    END;
 
     INSERT INTO Advertisement (
         vehicle_id, userid, address_id, title, sell_type, price,
@@ -51,9 +57,8 @@ BEGIN
         car_condition, remittance_time, km_age, body_status, free_zone, active_status
     ) VALUES (
         @vehicleid, @userid, @addressid,
-        @Brand + N' ' + @Model + N' ',
-        N'توافقی', NULL, NULL, 1, GETDATE(), GETDATE(),
-        N'عادی', 
+        N' ' + @Model + N' ',N'توافقی', 
+        NULL, NULL, 1, GETDATE(), GETDATE(), N'عادی', 
             CASE 
                 WHEN @Function > 0 THEN N'کارکرده' 
                 ELSE N'صفر' 
@@ -61,7 +66,10 @@ BEGIN
         N'۱ روزه', @Function, @BodyStatus, 0, 1
     );
 
-    PRINT N'Advertisement inserted. ID: ' + CAST(SCOPE_IDENTITY() AS NVARCHAR(10));
+    PRINT N'Advertisement inserted successfully.';
+    select  * from Advertisement
+    order by ad_id desc;
+
 END
 GO
 
@@ -80,33 +88,49 @@ DROP PROCEDURE IF EXISTS SP_ShowAdvertisements;
 GO
 
 CREATE PROCEDURE SP_ShowAdvertisements
-    @Username1 NVARCHAR(50),  
-    @Username2 NVARCHAR(50)    
+    @Username1 NVARCHAR(50),
+    @Username2 NVARCHAR(50)
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    DECLARE @userid1 INT, @userid2 INT;
+    DECLARE @UserId1 INT, @UserId2 INT;
 
     SET @userid1 = (SELECT userid FROM [User] WHERE username = @Username1);
     SET @userid2 = (SELECT userid FROM [User] WHERE username = @Username2);
 
-    IF @userid1 IS NULL OR @userid2 IS NULL
+    IF @UserId1 IS NULL OR @UserId2 IS NULL
+    BEGIN
+        PRINT N'User not found';
         RETURN;
+    END;
 
-    SELECT * FROM Advertisement WHERE userid IN (@userid1, @userid2);
+    PRINT N'Advertisements before delete';
 
-    DELETE FROM Advertisement WHERE userid = @userid2;
+    SELECT *
+    FROM Advertisement
+    WHERE userid IN (@UserId1,@UserId2);
 
-    SELECT * FROM Advertisement WHERE userid IN (@userid1, @userid2);
-END
+    DELETE
+    FROM Advertisement
+    WHERE userid = @UserId2;
+
+    PRINT N'Advertisements after delete';
+
+    SELECT *
+    FROM Advertisement
+    WHERE userid IN (@UserId1,@UserId2);
+END;
 GO
 
 -- test SP2
-EXEC SP_ShowAdvertisements @Username1 = 'u4021', @Username2 = 'u4032';
+EXEC SP_ShowAdvertisements
+    @Username1 = N'u4021',
+    @Username2 = N'u4032';
 GO
 
--- Record insertion for @Username2 = 'u4032'
+
+-- Record insertion for @Username2 = 'u4032' and test again
 INSERT INTO Advertisement (vehicle_id, userid, address_id, title, sell_type, price, 
 	descriptions, published, created_date, updated_date, ad_type, car_condition, remittance_time, 
 	km_age, body_status, free_zone, active_status) VALUES
@@ -132,7 +156,8 @@ BEGIN
     SET NOCOUNT ON;
 
     DECLARE @Province_id INT;
-    SET @Province_id = (SELECT province_id FROM Province WHERE name = @ProvinceName);
+    SET @Province_id = (SELECT province_id 
+        FROM Province WHERE name = @ProvinceName);
 
     SELECT 
         b.name AS BrandName,
@@ -191,7 +216,6 @@ BEGIN
         Title NVARCHAR(255)
     );
 
-    -- یک بار اجرای کوئری و ذخیره در جدول موقت
     INSERT INTO #TempAds
     SELECT 
         b.name AS BrandName,
@@ -216,32 +240,26 @@ BEGIN
     AND a.published = 1
     AND a.body_status IN (@BodyStatus_A, @BodyStatus_B);
 
-    -- ۴ بار SELECT با ORDER BY مختلف از جدول موقت
-
-    SELECT 
-        N'ارزان‌ترین' AS SortOrder,
-        BrandName, ModelName, KmAge, Price, ProductionYear, CreatedDate, Title
+    
+    PRINT N'مرتب سازی بر اساس قیمت';
+    SELECT *
     FROM #TempAds
-    WHERE Price IS NOT NULL
-    ORDER BY Price ASC;
+    ORDER BY Price;
 
-    SELECT 
-        N'به‌روزترین' AS SortOrder,
-        BrandName, ModelName, KmAge, Price, ProductionYear, CreatedDate, Title
+    PRINT N'مرتب سازی بر اساس تاریخ آگهی';
+    SELECT *
     FROM #TempAds
     ORDER BY CreatedDate DESC;
 
-    SELECT 
-        N'جدیدترین سال' AS SortOrder,
-        BrandName, ModelName, KmAge, Price, ProductionYear, CreatedDate, Title
+    PRINT N'مرتب سازی بر اساس سال تولید';
+    SELECT *
     FROM #TempAds
     ORDER BY ProductionYear DESC;
 
-    SELECT 
-        N'کم‌کارکردترین' AS SortOrder,
-        BrandName, ModelName, KmAge, Price, ProductionYear, CreatedDate, Title
+    PRINT N'مرتب سازی بر اساس کارکرد';
+    SELECT *
     FROM #TempAds
-    ORDER BY KmAge ASC;
+    ORDER BY KmAge;
 
     -- پاک کردن جدول موقت
     DROP TABLE #TempAds;
@@ -253,8 +271,6 @@ EXEC SP_ShowQuery3Sorted
     @ProvinceName = N'البرز',
     @BodyStatus_A = N'بدون رنگ',
     @BodyStatus_B = N'کاپوت رنگ';
-
-
 
 
 -- SP5
@@ -270,51 +286,50 @@ BEGIN
     SET NOCOUNT ON;
 
     DECLARE @Province_id INT;
-    SET @Province_id = (SELECT province_id FROM Province WHERE name = @ProvinceName);
+    DECLARE @AdID INT;
 
-    -- ۱. پیدا کردن کم‌کارکردترین آگهی
-    DECLARE @AdIDToDelete INT;
-    SELECT TOP 1 @AdIDToDelete = a.ad_id
+    SELECT @Province_id = province_id
+    FROM Province
+    WHERE name = @ProvinceName;
+
+    SELECT TOP 1 @AdID = a.ad_id
     FROM Advertisement a
-    WHERE a.address_id IN (
-        SELECT address_id FROM Address
-        WHERE city_id IN (
-            SELECT city_id FROM City
-            WHERE province_id = @Province_id
-        )
-    )
-    AND a.active_status = 1
-    AND a.published = 1
-    AND a.body_status IN (@BodyStatus_A, @BodyStatus_B)
-    ORDER BY a.km_age ASC;
+    JOIN Address ad ON a.address_id = ad.address_id
+    JOIN City c ON ad.city_id = c.city_id
+    WHERE c.province_id = @Province_id
+      AND a.active_status = 1
+      AND a.published = 1
+      AND a.body_status IN (@BodyStatus_A, @BodyStatus_B)
+    ORDER BY a.km_age;
 
-    -- ۲. حذف کردن (اگر پیدا شد)
-    IF @AdIDToDelete IS NOT NULL
+    IF @AdID IS NULL
     BEGIN
-        DELETE FROM Advertisement WHERE ad_id = @AdIDToDelete;
-        PRINT N'آگهی با شناسه ' + CAST(@AdIDToDelete AS NVARCHAR(10)) + N' حذف شد.';
-    END
-    ELSE
-    BEGIN
-        PRINT N'هیچ آگهی با این شرایط یافت نشد.';
-    END
+        PRINT N'آگهی‌ای پیدا نشد';
+        RETURN;
+    END;
 
-    -- ۳. اجرای مجدد پرسمان ۴
-    EXEC SP_ShowQuery3Sorted @ProvinceName, @BodyStatus_A, @BodyStatus_B;
+    DELETE FROM Advertisement
+    WHERE ad_id = @AdID;
+
+    PRINT N'آگهی حذف شد';
+
+    EXEC SP_ShowQuery3Sorted
+        @ProvinceName,
+        @BodyStatus_A,
+        @BodyStatus_B;
 END
 GO
 
-
 -- test SP5
-EXEC SP_DeleteLowestKmAge 
+EXEC SP_DeleteLowestKmAge
     @ProvinceName = N'البرز',
     @BodyStatus_A = N'بدون رنگ',
     @BodyStatus_B = N'کاپوت رنگ';
+GO
 
 
 
 -- SP6
-
 DROP PROCEDURE IF EXISTS SP_GetMotorcyclesByBrandAndCC;
 GO
 
@@ -342,16 +357,16 @@ BEGIN
         a.title AS AdTitle,
         a.created_date AS CreatedDate
     FROM Motorcycle mc
-    INNER JOIN Vehicle v ON mc.vehicle_id = v.vehicle_id
-    INNER JOIN Model m ON v.model_id = m.model_id
-    INNER JOIN Brand b ON m.brand_id = b.brand_id
-    INNER JOIN Advertisement a ON v.vehicle_id = a.vehicle_id
+        INNER JOIN Vehicle v ON mc.vehicle_id = v.vehicle_id
+        INNER JOIN Model m ON v.model_id = m.model_id
+        INNER JOIN Brand b ON m.brand_id = b.brand_id
+        INNER JOIN Advertisement a ON v.vehicle_id = a.vehicle_id
     WHERE (b.name = @Brand1 OR b.name = @Brand2)
-      AND mc.engine_cc < @MaxCC
-      AND a.price > @MinPrice
-      AND a.published = 1
-      AND a.active_status = 1
-    ORDER BY mc.engine_cc ASC;
+        AND mc.engine_cc <= @MaxCC
+        AND a.price >= @MinPrice
+        AND a.published = 1
+        AND a.active_status = 1
+    ORDER BY mc.engine_cc;
 END
 GO
 
@@ -365,7 +380,6 @@ EXEC SP_GetMotorcyclesByBrandAndCC
 
 
 -- SP7
-
 DROP PROCEDURE IF EXISTS SP_EstimatePrice;
 GO
 
@@ -379,8 +393,6 @@ BEGIN
 
     SELECT 
         b.name AS Brand,
-        @kmage AS Mileage,
-        @BodyStatus AS BodyStatus,
         MIN(a.price) AS MinPrice,
         MAX(a.price) AS MaxPrice,
         AVG(a.price) AS AvgPrice,
@@ -408,56 +420,54 @@ EXEC SP_EstimatePrice
 
 
 -- SP8
-
 DROP PROCEDURE IF EXISTS SP_GetBrandsByCountryOnlyInCities;
 GO
 
 CREATE PROCEDURE SP_GetBrandsByCountryOnlyInCities
-    @Country NVARCHAR(100),   
-    @City1 NVARCHAR(100),     
-    @City2 NVARCHAR(100)      
+    @Country NVARCHAR(100),
+    @City1 NVARCHAR(100),
+    @City2 NVARCHAR(100)
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    WITH BrandsInTargetCities AS (
+    WITH BrandsInCities AS
+    (
         SELECT DISTINCT
             b.brand_id,
-            b.name AS Brand
+            b.name
         FROM Brand b
-        INNER JOIN Model m ON b.brand_id = m.brand_id
-        INNER JOIN Vehicle v ON m.model_id = v.model_id
-        INNER JOIN Advertisement a ON v.vehicle_id = a.vehicle_id
-        INNER JOIN Address ad ON a.address_id = ad.address_id
-        INNER JOIN City c ON ad.city_id = c.city_id
+        JOIN Model m ON b.brand_id = m.brand_id
+        JOIN Vehicle v ON m.model_id = v.model_id
+        JOIN Advertisement a ON v.vehicle_id = a.vehicle_id
+        JOIN Address ad ON a.address_id = ad.address_id
+        JOIN City c ON ad.city_id = c.city_id
         WHERE b.country = @Country
-          AND c.name IN (@City1, @City2)
-          AND a.published = 1
+          AND c.name IN (@City1,@City2)
           AND a.active_status = 1
+          AND a.published = 1
     ),
-    BrandsInOtherCities AS (
+    OtherCities AS
+    (
         SELECT DISTINCT
-            b.brand_id,
-            b.name AS Brand
+            b.brand_id
         FROM Brand b
-        INNER JOIN Model m ON b.brand_id = m.brand_id
-        INNER JOIN Vehicle v ON m.model_id = v.model_id
-        INNER JOIN Advertisement a ON v.vehicle_id = a.vehicle_id
-        INNER JOIN Address ad ON a.address_id = ad.address_id
-        INNER JOIN City c ON ad.city_id = c.city_id
+        JOIN Model m ON b.brand_id = m.brand_id
+        JOIN Vehicle v ON m.model_id = v.model_id
+        JOIN Advertisement a ON v.vehicle_id = a.vehicle_id
+        JOIN Address ad ON a.address_id = ad.address_id
+        JOIN City c ON ad.city_id = c.city_id
         WHERE b.country = @Country
-          AND c.name NOT IN (@City1, @City2)
-          AND a.published = 1
+          AND c.name NOT IN (@City1,@City2)
           AND a.active_status = 1
+          AND a.published = 1
     )
-    SELECT 
-        bt.Brand
-    FROM BrandsInTargetCities bt
-    WHERE NOT EXISTS (
-        SELECT 1 FROM BrandsInOtherCities bo
-        WHERE bo.brand_id = bt.brand_id
-    )
-    ORDER BY bt.Brand;
+
+    SELECT name AS Brand
+    FROM BrandsInCities
+    WHERE brand_id NOT IN (SELECT brand_id FROM OtherCities)
+    ORDER BY name;
+
 END
 GO
 
@@ -469,7 +479,6 @@ EXEC SP_GetBrandsByCountryOnlyInCities
 
 
 -- SP9
-
 DROP PROCEDURE IF EXISTS SP_GetVehicleDetails;
 GO
 
@@ -530,6 +539,7 @@ EXEC SP_GetVehicleDetails
     @ProvinceName = N'اصفهان';
 Go
 
+-- test 2 SP9
 EXEC SP_GetVehicleDetails 
     @ExcludeColor = N'مشکی',
     @BodyType = N'شاسی‌بلند',
@@ -538,41 +548,36 @@ EXEC SP_GetVehicleDetails
 Go
 
 
-
 -- SP10
-
 DROP PROCEDURE IF EXISTS SP_UpdateColorAndReRunSP9;
 GO
 
 CREATE PROCEDURE SP_UpdateColorAndReRunSP9
-    @ColorFrom NVARCHAR(50),   
-    @ColorTo NVARCHAR(50),     
-    @BodyType NVARCHAR(50),   
-    @FuelType NVARCHAR(50),    
-    @ProvinceName NVARCHAR(100) 
+    @ColorFrom NVARCHAR(50),
+    @ColorTo NVARCHAR(50),
+    @BodyType NVARCHAR(50),
+    @FuelType NVARCHAR(50),
+    @ProvinceName NVARCHAR(100)
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    UPDATE v
-    SET v.color_out = @ColorTo
-    FROM Vehicle v
-    INNER JOIN Car c ON v.vehicle_id = c.vehicle_id
-    INNER JOIN Advertisement a ON v.vehicle_id = a.vehicle_id
-    INNER JOIN Address ad ON a.address_id = ad.address_id
-    INNER JOIN City ct ON ad.city_id = ct.city_id
-    INNER JOIN Province p ON ct.province_id = p.province_id
-    WHERE c.body_type = @BodyType
-      AND v.fuel_type = @FuelType
-      AND p.name = @ProvinceName
-      AND v.color_out = @ColorFrom
-      AND a.published = 1
-      AND a.active_status = 1;
+    UPDATE Vehicle
+    SET color_out = @ColorTo
+    FROM Vehicle
+    JOIN Car ON Vehicle.vehicle_id = Car.vehicle_id
+    JOIN Advertisement ON Vehicle.vehicle_id = Advertisement.vehicle_id
+    JOIN Address ON Advertisement.address_id = Address.address_id
+    JOIN City ON Address.city_id = City.city_id
+    JOIN Province ON City.province_id = Province.province_id
+    WHERE Vehicle.color_out = @ColorFrom
+      AND Car.body_type = @BodyType
+      AND Vehicle.fuel_type = @FuelType
+      AND Province.name = @ProvinceName
+      AND Advertisement.published = 1
+      AND Advertisement.active_status = 1;
 
-    DECLARE @RowsAffected INT = @@ROWCOUNT;
-
-    -- ۲. اجرای مجدد پرسمان ۹ 
-    EXEC SP_GetVehicleDetails 
+    EXEC SP_GetVehicleDetails
         @ExcludeColor = @ColorTo,
         @BodyType = @BodyType,
         @FuelType = @FuelType,
@@ -580,9 +585,11 @@ BEGIN
 END
 GO
 
-EXEC SP_UpdateColorAndReRunSP9 
+-- test SP10
+EXEC SP_UpdateColorAndReRunSP9
     @ColorFrom = N'مشکی',
     @ColorTo = N'سفید',
     @BodyType = N'شاسی‌بلند',
     @FuelType = N'هیبریدی',
     @ProvinceName = N'اصفهان';
+GO
