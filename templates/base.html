@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>کاروان | خرید و فروش خودرو و موتورسیکلت</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- لینک به فایل CSS جداگانه -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+<body>
+
+  <div class="bg-ambient" aria-hidden="true">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+    <div class="grain"></div>
+  </div>
+
+  <header>
+    <div class="nav">
+      <div class="logo"><div class="mark">🚗</div>کاروان</div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" title="تغییر تم">
+          <span class="ico ico-moon">🌙</span>
+          <span class="ico ico-sun">☀️</span>
+        </button>
+        <button class="icon-btn" id="btnAccount" title="حساب کاربری">👤</button>
+        <button class="btn btn-amber" id="btnAddAd">+ ثبت آگهی</button>
+      </div>
+    </div>
+  </header>
+
+  {% block content %}
+
+  {% endblock %}
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand">
+            <div class="mark">🚗</div>کاروان
+          </div>
+          <p class="footer-desc">پلتفرم رایگان خرید و فروش خودرو و موتورسیکلت. آگهی‌تو در چند ثانیه ثبت کن و مستقیم با
+            خریدار یا فروشنده در ارتباط باش، بدون واسطه و بدون کارمزد.</p>
+          <div class="footer-social">
+            <a href="#" title="اینستاگرام">📷</a>
+            <a href="#" title="تلگرام">✈️</a>
+            <a href="#" title="واتساپ">💬</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>دسترسی سریع</h4>
+          <ul>
+            <li><a href="#" id="footLinkCar">خودروها</a></li>
+            <li><a href="#" id="footLinkMoto">موتورسیکلت‌ها</a></li>
+            <li><a href="#" id="footLinkAdd">ثبت آگهی</a></li>
+            <li><a href="#" id="footLinkAcc">حساب کاربری</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>پشتیبانی</h4>
+          <ul>
+            <li><a href="#">سوالات متداول</a></li>
+            <li><a href="#">قوانین و مقررات</a></li>
+            <li><a href="#">حریم خصوصی</a></li>
+            <li><a href="#">تماس با ما</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="footYear"></span> کاروان · تمامی حقوق محفوظ است</span>
+        <span>ساخته شده با <span class="heart">♥</span> · نسخه نمایشی، داده‌ها فقط روی همین مرورگر ذخیره می‌شن</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Ad Detail Modal -->
+  <div class="overlay" id="detailOverlay">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>جزئیات آگهی</h3><button class="close-x" data-close="detailOverlay">✕</button>
+      </div>
+      <div id="detailContent"></div>
+    </div>
+  </div>
+
+  <!-- Add Ad Modal -->
+  <div class="overlay" id="addOverlay">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>ثبت آگهی جدید</h3><button class="close-x" data-close="addOverlay">✕</button>
+      </div>
+      <div class="form-err" id="addErr"></div>
+      <form id="addForm">
+        <div class="field">
+          <label>نوع آگهی</label>
+          <div class="type-toggle">
+            <button type="button" data-val="car" class="ad-type active">🚗 خودرو</button>
+            <button type="button" data-val="moto" class="ad-type">🏍️ موتورسیکلت</button>
+          </div>
+        </div>
+        <div class="field-grid">
+          <div class="field"><label>برند</label><input id="adBrand" placeholder="مثلا پژو 206" required></div>
+          <div class="field"><label>مدل</label><input id="adModel" placeholder="مثلا تیپ ۵" required></div>
+        </div>
+        <div class="field-grid">
+          <div class="field"><label>سال ساخت</label><input id="adYear" type="number" placeholder="1401" required></div>
+          <div class="field"><label>کارکرد (کیلومتر)</label><input id="adKm" type="number" placeholder="50000" required>
+          </div>
+        </div>
+        <div class="field-grid">
+          <div class="field"><label>قیمت (میلیون تومان)</label><input id="adPrice" type="number" placeholder="350"
+              required></div>
+          <div class="field"><label>شهر</label><input id="adCity" placeholder="تهران" required></div>
+        </div>
+        <div class="field"><label>شماره تماس</label><input id="adPhone" placeholder="09xxxxxxxxx" required></div>
+        <div class="field"><label>توضیحات</label><textarea id="adDesc" rows="3"
+            placeholder="توضیح کوتاهی درباره وضعیت خودرو یا موتور…"></textarea></div>
+        <button type="submit" class="btn btn-amber" style="width:100%; margin-top:6px;">ثبت آگهی</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div class="overlay" id="authOverlay">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="authTitle">ورود به حساب</h3><button class="close-x" data-close="authOverlay">✕</button>
+      </div>
+      <div class="tabs">
+        <button type="button" class="auth-tab active" data-val="login">ورود</button>
+        <button type="button" class="auth-tab" data-val="signup">ثبت‌نام</button>
+      </div>
+      <div class="form-err" id="authErr"></div>
+      <form id="authForm">
+        <div class="field hidden" id="nameField"><label>نام و نام خانوادگی</label><input id="authName"
+            placeholder="نام شما"></div>
+        <div class="field"><label>ایمیل</label><input id="authEmail" type="email" placeholder="example@mail.com"
+            required></div>
+        <div class="field"><label>رمز عبور</label><input id="authPass" type="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-amber" style="width:100%; margin-top:6px;" id="authSubmitBtn">ورود</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Account Modal -->
+  <div class="overlay" id="accountOverlay">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>حساب کاربری</h3><button class="close-x" data-close="accountOverlay">✕</button>
+      </div>
+      <div id="accountContent"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- لینک به فایل JS جداگانه -->
+  <script src="{% static 'js/script.js' %}"></script>
+</body>
+
+</html>

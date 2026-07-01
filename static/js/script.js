@@ -109,12 +109,13 @@ function renderListings(){
     return;
   }
 
-  grid.innerHTML = filtered.map(l=>{
+  grid.innerHTML = filtered.map((l,i)=>{
     const icon = l.type==='car' ? '🚗' : '🏍️';
     const mediaClass = l.type==='car' ? 'media-car' : 'media-moto';
     const badgeClass = l.type==='car' ? 'badge-car' : 'badge-moto';
+    const delay = Math.min(i,8) * 0.05;
     return `
-    <div class="card" data-id="${l.id}">
+    <div class="card" data-id="${l.id}" style="animation-delay:${delay}s">
       <div class="card-media ${mediaClass}">
         ${icon}
         <span class="badge ${badgeClass}">${l.type==='car'?'خودرو':'موتورسیکلت'}</span>
@@ -139,10 +140,24 @@ function renderListings(){
   });
 }
 
+function animateCount(el, target){
+  const start = parseInt(el.textContent.replace(/[^0-9]/g,'')) || 0;
+  if(start === target){ el.textContent = fa(target); return; }
+  const duration = 600;
+  const t0 = performance.now();
+  function tick(now){
+    const p = Math.min(1, (now - t0) / duration);
+    const eased = 1 - Math.pow(1 - p, 3);
+    const val = Math.round(start + (target - start) * eased);
+    el.textContent = fa(val);
+    if(p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
 function updateStats(){
-  document.getElementById('statTotal').textContent = fa(listings.length);
-  document.getElementById('statCar').textContent = fa(listings.filter(l=>l.type==='car').length);
-  document.getElementById('statMoto').textContent = fa(listings.filter(l=>l.type==='moto').length);
+  animateCount(document.getElementById('statTotal'), listings.length);
+  animateCount(document.getElementById('statCar'), listings.filter(l=>l.type==='car').length);
+  animateCount(document.getElementById('statMoto'), listings.filter(l=>l.type==='moto').length);
 }
 
 /* ============ DETAIL MODAL ============ */
@@ -347,6 +362,43 @@ function openAccount(){
   openModal('accountOverlay');
 }
 
+/* ============ FOOTER LINKS ============ */
+function initFooterLinks(){
+  const yearEl = document.getElementById('footYear');
+  if(yearEl) yearEl.textContent = fa(new Date().getFullYear());
+
+  const scrollToListings = ()=>{
+    document.getElementById('listingGrid').scrollIntoView({behavior:'smooth', block:'start'});
+  };
+  const carLink = document.getElementById('footLinkCar');
+  const motoLink = document.getElementById('footLinkMoto');
+  const addLink = document.getElementById('footLinkAdd');
+  const accLink = document.getElementById('footLinkAcc');
+
+  if(carLink) carLink.addEventListener('click', e=>{
+    e.preventDefault();
+    document.getElementById('fType').value = 'car';
+    refreshBrandOptions();
+    renderListings();
+    scrollToListings();
+  });
+  if(motoLink) motoLink.addEventListener('click', e=>{
+    e.preventDefault();
+    document.getElementById('fType').value = 'moto';
+    refreshBrandOptions();
+    renderListings();
+    scrollToListings();
+  });
+  if(addLink) addLink.addEventListener('click', e=>{
+    e.preventDefault();
+    document.getElementById('btnAddAd').click();
+  });
+  if(accLink) accLink.addEventListener('click', e=>{
+    e.preventDefault();
+    document.getElementById('btnAccount').click();
+  });
+}
+
 /* ============ INIT ============ */
 function init(){
   initTheme();
@@ -354,6 +406,7 @@ function init(){
   initFilters();
   initAddAdFlow();
   initAuth();
+  initFooterLinks();
   refreshBrandOptions();
   renderListings();
   updateStats();
