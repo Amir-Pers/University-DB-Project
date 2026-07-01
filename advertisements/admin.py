@@ -31,7 +31,7 @@ class AdvertisementAdmin(admin.ModelAdmin):
 
 
 class ImageAdmin(admin.ModelAdmin):
-    list_display = ("image_id", "ad","url","upload_date",)
+    list_display = ("image_id", "ad","image","upload_date",)
     ordering = ["-upload_date"]
 
 

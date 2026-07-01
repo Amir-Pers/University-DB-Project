@@ -36,8 +36,14 @@ class Advertisement(models.Model):
 class Image(models.Model):
     image_id = models.AutoField(primary_key=True)
     ad = models.ForeignKey(Advertisement, on_delete=models.CASCADE, related_name="images")
-    url = models.CharField(max_length=500)
+    # url = models.CharField(max_length=500)
+    image = models.ImageField(
+        upload_to="cars/",
+        db_column="url",
+        max_length=500,
+    )
     upload_date = models.DateTimeField(blank=True, null=True)
+
 
     class Meta:
         managed = False
