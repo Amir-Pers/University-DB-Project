@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Advertisement, Image, Video, Instalment
+from django.utils.html import format_html
 # Register your models here.
 
 
@@ -19,7 +20,7 @@ class InstalmentInline(admin.StackedInline):
     max_num = 1
 
 class AdvertisementAdmin(admin.ModelAdmin):
-    list_display = ["ad_id", "title", "userid__username", "ad_type", "active_status",
+    list_display = ["ad_id", "title", "userid", "ad_type", "active_status",
                     "published", "created_date", "updated_date"]
     search_fields = ("title", "userid__username", 
                     "vehicle__model__name", "vehicle__model__brand__name",)
@@ -46,4 +47,4 @@ class InstalmentAdmin(admin.ModelAdmin):
 admin.site.register(Advertisement, AdvertisementAdmin)
 admin.site.register(Image, ImageAdmin)
 admin.site.register(Video, VideoAdmin)
-admin.site.register(Instalment)
+admin.site.register(Instalment, InstalmentAdmin)
