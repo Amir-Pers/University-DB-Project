@@ -1,0 +1,13 @@
+USE CarMarketDB;
+GO
+
+DELETE FROM Image;
+DELETE FROM Video;
+DELETE FROM Instalment;
+DELETE FROM Advertisement;
+GO
+
+DBCC CHECKIDENT ('Advertisement', RESEED, 0);
+DBCC CHECKIDENT ('Image', RESEED, 0);
+DBCC CHECKIDENT ('Video', RESEED, 0);
+GO
