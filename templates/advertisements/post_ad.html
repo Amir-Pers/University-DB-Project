@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -6,7 +7,7 @@
 <title>ثبت آگهی | کاروان</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 
@@ -19,7 +20,7 @@
 
 <header>
   <div class="nav">
-    <a href="index.html" class="logo"><div class="mark">🚗</div>کاروان</a>
+    <a href="{% url 'home:index' %}" class="logo"><div class="mark">🚗</div>کاروان</a>
     <div class="nav-actions">
       <button class="theme-toggle" id="themeToggle" title="تغییر تم">
         <span class="ico ico-moon">🌙</span>
@@ -33,7 +34,7 @@
 
 <main>
   <section class="page-hero reveal">
-    <div class="crumb"><a href="index.html">خانه</a> / <span>ثبت آگهی</span></div>
+    <div class="crumb"><a href="{% url 'home:index' %}">خانه</a> / <span>ثبت آگهی</span></div>
     <h1>ثبت آگهی جدید</h1>
     <p>مشخصات خودرو یا موتورسیکلتت رو کامل و صادقانه وارد کن تا سریع‌تر خریدار پیدا کنی.</p>
   </section>
@@ -115,8 +116,8 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="assets/app.js"></script>
-<script src="assets/bg-animation.js"></script>
+<script src="{% static 'js/app.js' %}"></script>
+<script src="{% static 'js/bg-animation.js' %}"></script>
 <script>
 let adType = 'car';
 

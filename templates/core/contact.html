@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -234,7 +235,7 @@ main{max-width:1180px; margin:0 auto; padding:0 18px 40px;}
 
 <header>
   <div class="nav">
-    <a class="logo" href="./karevan.html"><div class="mark">🚗</div>کاروان</a>
+    <a class="logo" href="{% url 'home:index' %}"><div class="mark">🚗</div>کاروان</a>
     <div class="nav-actions">
       <button class="theme-toggle" id="themeToggle" title="تغییر تم">
         <span class="ico ico-moon">🌙</span>

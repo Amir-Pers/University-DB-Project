@@ -1,3 +1,4 @@
+{% laod static %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -19,7 +20,7 @@
 
 <header>
   <div class="nav">
-    <a href="index.html" class="logo"><div class="mark">🚗</div>کاروان</a>
+    <a href="{% url 'home:index' %}" class="logo"><div class="mark">🚗</div>کاروان</a>
     <div class="nav-actions">
       <button class="theme-toggle" id="themeToggle" title="تغییر تم">
         <span class="ico ico-moon">🌙</span>
