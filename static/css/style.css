@@ -257,6 +257,11 @@ main{max-width:1180px; margin:0 auto; padding:0 18px 80px;}
 .form-err{background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.35); color:#f87171; font-size:13px; padding:9px 12px; border-radius:10px; margin-bottom:12px; display:none;}
 
 /* ============ DETAIL ============ */
+.detail-page-card{
+  max-width:640px; margin:22px auto 10px; background:var(--card); border:1px solid var(--line);
+  border-radius:22px; padding:26px; box-shadow:0 20px 50px -30px rgba(0,0,0,.5);
+}
+.detail-page-card.empty-state{ padding:10px; }
 .detail-hero{
   position:relative; height:200px; border-radius:18px; overflow:hidden;
   display:flex; align-items:center; justify-content:center; margin-bottom:18px;

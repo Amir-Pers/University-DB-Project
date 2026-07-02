@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -6,7 +7,7 @@
 <title>حساب کاربری | کاروان</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 
@@ -116,8 +117,8 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="assets/app.js"></script>
-<script src="assets/bg-animation.js"></script>
+<script src="{% static 'js/app.js' %}"></script>
+<script src="{% static 'js/bg-animation.js' %}"></script>
 <script>
 let authMode = 'login';
 

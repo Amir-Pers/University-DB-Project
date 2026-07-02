@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -6,7 +7,7 @@
 <title>کاروان | خرید و فروش خودرو و موتورسیکلت</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 
@@ -97,7 +98,7 @@
           <li><a href="faq.html">سوالات متداول</a></li>
           <li><a href="terms.html">قوانین و مقررات</a></li>
           <li><a href="privacy.html">حریم خصوصی</a></li>
-          <li><a href="contact.html">تماس با ما</a></li>
+          <li><a href="#">تماس با ما</a></li>
         </ul>
       </div>
     </div>
@@ -107,19 +108,11 @@
   </div>
 </footer>
 
-<!-- Ad Detail Modal (kept as a quick popup, not a full page) -->
-<div class="overlay" id="detailOverlay">
-  <div class="modal">
-    <div class="modal-head"><h3>جزئیات آگهی</h3><button class="close-x" data-close="detailOverlay">✕</button></div>
-    <div id="detailContent"></div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
-<script src="assets/app.js"></script>
-<script src="assets/bg-animation.js"></script>
-<script src="assets/hero-road.js"></script>
+<script src="{% static 'js/app.js' %}"></script>
+<script src="{% static 'js/bg-animation.js' %}"></script>
+<script src="{% static 'js/hero-road.js' %}"></script>
 <script>
 let listings = loadListings();
 
@@ -197,7 +190,7 @@ function renderListings(resetPage = true){
     `${fa(pageItems.length)} از ${fa(filtered.length)} آگهی نمایش داده شده`;
 
   grid.querySelectorAll('.card').forEach(c=>{
-    c.addEventListener('click', ()=> openDetail(parseInt(c.dataset.id)));
+    c.addEventListener('click', ()=> { window.location.href = 'ad-details.html?id=' + c.dataset.id; });
   });
 }
 
@@ -230,111 +223,6 @@ function updateStats(){
   animateCount(document.getElementById('statTotal'), listings.length);
   animateCount(document.getElementById('statCar'), listings.filter(l=>l.type==='car').length);
   animateCount(document.getElementById('statMoto'), listings.filter(l=>l.type==='moto').length);
-}
-
-/* ---- علاقه‌مندی‌ها (ذخیره در localStorage) ---- */
-function loadFavorites(){
-  try{ return JSON.parse(localStorage.getItem('karevan_favorites')) || []; }
-  catch(e){ return []; }
-}
-function isFavorite(id){ return loadFavorites().includes(id); }
-function toggleFavorite(id){
-  const favs = loadFavorites();
-  const idx = favs.indexOf(id);
-  if(idx === -1) favs.push(id); else favs.splice(idx,1);
-  localStorage.setItem('karevan_favorites', JSON.stringify(favs));
-  return favs.includes(id);
-}
-
-/* ---- شمارش انیمیشنی هر عدد با فرمت دلخواه ---- */
-function animateNumber(el, target, duration, formatFn){
-  const t0 = performance.now();
-  function tick(now){
-    const p = Math.min(1, (now - t0) / duration);
-    const eased = 1 - Math.pow(1 - p, 3);
-    el.textContent = formatFn(Math.round(target * eased));
-    if(p < 1) requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-}
-
-function openDetail(id){
-  const l = listings.find(x=>x.id===id);
-  if(!l) return;
-  const icon = l.type==='car' ? '🚗' : '🏍️';
-  const mediaClass = l.type==='car' ? 'media-car' : 'media-moto';
-  const badgeClass = l.type==='car' ? 'badge-car' : 'badge-moto';
-  const typeLabel = l.type==='car' ? 'خودرو' : 'موتورسیکلت';
-  const fav = isFavorite(l.id);
-
-  document.getElementById('detailContent').innerHTML = `
-    <div class="detail-hero ${mediaClass}">
-      <div class="detail-hero-glow"></div>
-      <span class="detail-type-badge ${badgeClass}">${typeLabel}</span>
-      <button class="detail-fav ${fav?'active':''}" id="favBtn" title="افزودن به علاقه‌مندی‌ها">${fav?'❤️':'🤍'}</button>
-      <div class="detail-icon">${icon}</div>
-    </div>
-
-    <div class="detail-title-row">
-      <div class="detail-title-main">
-        <h3>${l.brand} ${l.model}</h3>
-        <p class="detail-sub">📍 ${l.city} · مدل ${fa(l.year)}</p>
-      </div>
-      <div class="detail-price-tag"><b id="dPrice">۰</b><span>تومان</span></div>
-    </div>
-
-    <div class="detail-grid">
-      <div class="detail-item"><div class="di-ico">🛣️</div><div><span>کارکرد</span><b id="dKm">۰ کیلومتر</b></div></div>
-      <div class="detail-item"><div class="di-ico">📅</div><div><span>سال ساخت</span><b>${fa(l.year)}</b></div></div>
-      <div class="detail-item"><div class="di-ico">📍</div><div><span>شهر</span><b>${l.city}</b></div></div>
-      <div class="detail-item"><div class="di-ico">🏷️</div><div><span>نوع آگهی</span><b>${typeLabel}</b></div></div>
-    </div>
-
-    <div class="detail-desc">
-      <span class="detail-desc-label">توضیحات فروشنده</span>
-      <p>${l.desc || 'بدون توضیحات.'}</p>
-    </div>
-
-    <div class="detail-actions">
-      <button class="btn btn-amber ringing" id="callBtn">📞 نمایش شماره تماس</button>
-      <button class="btn btn-ghost" id="shareBtn" title="اشتراک‌گذاری آگهی">🔗</button>
-    </div>
-  `;
-
-  // شمارش انیمیشنی قیمت و کارکرد
-  animateNumber(document.getElementById('dPrice'), l.price, 700, toman);
-  animateNumber(document.getElementById('dKm'), l.km, 700, v => fa(v) + ' کیلومتر');
-
-  // نمایش شماره تماس
-  document.getElementById('callBtn').onclick = function(){
-    this.textContent = '📞 ' + l.phone;
-    this.classList.remove('ringing');
-  };
-
-  // اشتراک‌گذاری / کپی لینک
-  document.getElementById('shareBtn').onclick = async function(){
-    const shareText = `${l.brand} ${l.model} · ${toman(l.price)} تومان · ${l.city} — کاروان`;
-    if(navigator.share){
-      try{ await navigator.share({ title:'کاروان', text: shareText }); }
-      catch(e){ /* کاربر لغو کرد */ }
-    } else {
-      try{
-        await navigator.clipboard.writeText(shareText);
-        showToast('اطلاعات آگهی کپی شد');
-      }catch(e){ showToast('امکان کپی وجود نداشت'); }
-    }
-  };
-
-  // علاقه‌مندی
-  document.getElementById('favBtn').onclick = function(){
-    const nowFav = toggleFavorite(l.id);
-    this.textContent = nowFav ? '❤️' : '🤍';
-    this.classList.toggle('active', nowFav);
-    this.classList.remove('pop'); void this.offsetWidth; this.classList.add('pop');
-    showToast(nowFav ? 'به علاقه‌مندی‌ها اضافه شد' : 'از علاقه‌مندی‌ها حذف شد');
-  };
-
-  openModal('detailOverlay');
 }
 
 function initFilters(){

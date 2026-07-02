@@ -1,10 +1,24 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-# Create your views here.
-
-def http(request):
-    return HttpResponse("<p>Salam</p>")
+from advertisements.models import Advertisement
 
 
-def home(request):
-    return render(request, "index.html")
+def index(request):
+
+    advertisements = (
+        Advertisement.objects.filter(active_status=True, published=True)
+        .select_related(
+            "vehicle",
+            "vehicle__model",
+            "vehicle__model__brand",
+            "userid",
+            "address",
+            "address__city",
+        )
+        .order_by("-created_date")
+    )
+
+    context = {
+        "advertisements": advertisements,
+    }
+
+    return render(request, "home/index.html", context)
