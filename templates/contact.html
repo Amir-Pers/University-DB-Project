@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تماس با ما | کاروان</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ============ THEME VARIABLES ============ */
+:root,
+[data-theme="dark"]{
+  --bg:#15161a; --bg2:#1c1e24; --card:#212329; --line:#2c2f37;
+  --amber:#f5a524; --amber-soft:rgba(245,165,36,.15);
+  --teal:#2dd4bf; --teal-soft:rgba(45,212,191,.15);
+  --text:#f1f1f3; --muted:#9a9ca5;
+  --header-bg:rgba(21,22,26,.85);
+  --btn-text:#15161a;
+}
+[data-theme="light"]{
+  --bg:#f7f5f1; --bg2:#ffffff; --card:#ffffff; --line:#e6e2da;
+  --amber:#d3790f; --amber-soft:rgba(211,121,15,.12);
+  --teal:#0f9c8d; --teal-soft:rgba(15,156,141,.12);
+  --text:#221f1a; --muted:#7a766c;
+  --header-bg:rgba(247,245,241,.85);
+  --btn-text:#15161a;
+}
+
+/* ============ RESET ============ */
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  font-family:'Vazirmatn',sans-serif; background:var(--bg); color:var(--text);
+  min-height:100vh; overflow-x:hidden; transition:background .3s, color .3s; position:relative;
+}
+a{color:inherit; text-decoration:none;}
+button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+input,select,textarea{font-family:inherit; color:var(--text); background:var(--bg2); border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-size:14px; outline:none; width:100%; transition:border-color .2s, box-shadow .2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--amber); box-shadow:0 0 0 3px var(--amber-soft);}
+::placeholder{color:#6c6e78;}
+
+/* ============ AMBIENT ANIMATED BACKGROUND ============ */
+.bg-ambient{position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none;}
+.bg-ambient .blob{position:absolute; border-radius:50%; filter:blur(70px); opacity:.55; will-change:transform;}
+.bg-ambient .b1{width:46vmax; height:46vmax; top:-18vmax; right:-14vmax; background:radial-gradient(circle, var(--amber-soft), transparent 70%); animation:driftA 26s ease-in-out infinite;}
+.bg-ambient .b2{width:40vmax; height:40vmax; bottom:-16vmax; left:-12vmax; background:radial-gradient(circle, var(--teal-soft), transparent 70%); animation:driftB 32s ease-in-out infinite;}
+.bg-ambient .b3{width:28vmax; height:28vmax; top:40%; left:50%; background:radial-gradient(circle, var(--amber-soft), transparent 72%); animation:driftC 38s ease-in-out infinite; opacity:.35;}
+.bg-ambient .grain{position:absolute; inset:0; opacity:.5; mix-blend-mode:overlay; background-image:radial-gradient(rgba(255,255,255,.4) 0.5px, transparent 0.5px); background-size:3px 3px;}
+[data-theme="light"] .bg-ambient .grain{ opacity:.15; }
+@keyframes driftA{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-6vmax,8vmax) scale(1.08);}}
+@keyframes driftB{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(7vmax,-6vmax) scale(1.1);}}
+@keyframes driftC{0%,100%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-46%,-56%) scale(1.15);}}
+@media (prefers-reduced-motion: reduce){ .bg-ambient .blob{animation:none !important;} }
+
+/* ============ ENTRANCE ANIMATIONS ============ */
+@keyframes fadeUp{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);}}
+@keyframes popIn{from{opacity:0; transform:scale(.94) translateY(10px);} to{opacity:1; transform:scale(1) translateY(0);}}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.18);}}
+.reveal{animation:fadeUp .6s cubic-bezier(.2,.7,.3,1) both;}
+.reveal-1{animation-delay:.08s;}
+.reveal-2{animation-delay:.16s;}
+.reveal-3{animation-delay:.24s;}
+
+/* ============ HEADER ============ */
+header{position:sticky; top:0; z-index:50; backdrop-filter:blur(10px); background:var(--header-bg); border-bottom:1px solid var(--line);}
+.nav{max-width:1180px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:14px 18px;}
+.logo{display:flex; align-items:center; gap:8px; font-weight:800; font-size:20px;}
+.logo .mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--amber),#c9790f);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--btn-text); transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
+.logo:hover .mark{transform:rotate(-8deg) scale(1.06);}
+.nav-actions{display:flex; align-items:center; gap:8px;}
+.icon-btn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--bg2);border:1px solid var(--line); font-size:16px; transition:transform .2s, border-color .2s;}
+.icon-btn:hover{transform:translateY(-2px); border-color:var(--amber);}
+.btn{padding:10px 18px;border-radius:12px;font-weight:600;font-size:14px;transition:transform .15s, box-shadow .15s, border-color .15s;}
+.btn-amber{background:var(--amber); color:var(--btn-text);}
+.btn-amber:hover{box-shadow:0 8px 20px -6px var(--amber-soft); transform:translateY(-1px);}
+.btn-amber:active{transform:scale(.97);}
+.btn-ghost{background:var(--bg2); border:1px solid var(--line);}
+.btn-ghost:hover{border-color:var(--amber); transform:translateY(-1px);}
+.theme-toggle{width:40px; height:40px; border-radius:50%; background:var(--bg2); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:17px; position:relative; overflow:hidden;}
+.theme-toggle .ico{transition:.25s; position:absolute;}
+.theme-toggle .ico-sun{opacity:0; transform:translateY(10px) rotate(-30deg);}
+.theme-toggle .ico-moon{opacity:1; transform:translateY(0) rotate(0);}
+[data-theme="light"] .theme-toggle .ico-sun{opacity:1; transform:translateY(0) rotate(0);}
+[data-theme="light"] .theme-toggle .ico-moon{opacity:0; transform:translateY(-10px) rotate(30deg);}
+
+/* ============ LAYOUT ============ */
+main{max-width:1180px; margin:0 auto; padding:0 18px 40px;}
+.breadcrumb{display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--muted); margin:22px 0 0;}
+.breadcrumb a:hover{color:var(--amber);}
+.breadcrumb .sep{opacity:.5;}
+
+.hero{
+  margin-top:14px; border-radius:24px; padding:44px 28px; position:relative; overflow:hidden; text-align:center;
+  background: radial-gradient(circle at 80% 0%, var(--amber-soft), transparent 55%),
+              radial-gradient(circle at 10% 100%, var(--teal-soft), transparent 50%),
+              var(--bg2);
+  border:1px solid var(--line);
+}
+.hero h1{font-size:30px; font-weight:800; line-height:1.5; margin-bottom:10px;}
+.hero h1 span{color:var(--amber);}
+.hero p{color:var(--muted); font-size:15px; max-width:520px; line-height:1.9; margin:0 auto;}
+
+/* ============ INFO CARDS ============ */
+.info-grid{display:grid; grid-template-columns:1fr; gap:14px; margin-top:26px;}
+@media(min-width:640px){ .info-grid{grid-template-columns:1fr 1fr;} }
+@media(min-width:980px){ .info-grid{grid-template-columns:repeat(4,1fr);} }
+.info-card{
+  background:var(--card); border:1px solid var(--line); border-radius:18px; padding:20px;
+  display:flex; flex-direction:column; gap:8px; transition:transform .25s cubic-bezier(.2,.7,.3,1), border-color .25s, box-shadow .25s;
+  animation:popIn .5s cubic-bezier(.2,.7,.3,1) both;
+}
+.info-card:hover{transform:translateY(-5px); border-color:var(--amber); box-shadow:0 16px 32px -14px rgba(0,0,0,.35);}
+.info-card .ico{
+  width:44px; height:44px; border-radius:12px; background:var(--amber-soft); color:var(--amber);
+  display:flex; align-items:center; justify-content:center; font-size:20px; transition:transform .3s;
+}
+.info-card:hover .ico{transform:scale(1.1) rotate(-6deg);}
+.info-card h4{font-size:14.5px; font-weight:700; margin-top:4px;}
+.info-card p{font-size:13px; color:var(--muted); line-height:1.7;}
+.info-card a.value{font-size:13.5px; font-weight:600; color:var(--text); direction:ltr; text-align:right;}
+.info-card a.value:hover{color:var(--amber);}
+
+/* ============ CONTACT GRID ============ */
+.contact-grid{display:grid; grid-template-columns:1fr; gap:20px; margin-top:34px;}
+@media(min-width:900px){ .contact-grid{grid-template-columns:1.3fr 1fr;} }
+
+.form-card, .side-card{
+  background:var(--card); border:1px solid var(--line); border-radius:20px; padding:26px;
+  animation:fadeUp .6s cubic-bezier(.2,.7,.3,1) both;
+}
+.form-card h3, .side-card h3{font-size:18px; font-weight:800; margin-bottom:6px;}
+.form-card p.hint, .side-card p.hint{color:var(--muted); font-size:13px; margin-bottom:20px;}
+
+.field{margin-bottom:14px;}
+.field label{display:block; font-size:12.5px; color:var(--muted); margin-bottom:6px;}
+.field-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+@media(max-width:480px){ .field-grid{grid-template-columns:1fr;} }
+.form-err{background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.35); color:#f87171; font-size:13px; padding:9px 12px; border-radius:10px; margin-bottom:14px; display:none;}
+
+.submit-row{display:flex; align-items:center; gap:12px; margin-top:6px;}
+.submit-row .btn{flex:1;}
+.form-success{
+  display:none; text-align:center; padding:36px 12px; animation:popIn .4s cubic-bezier(.2,.7,.3,1) both;
+}
+.form-success .check{
+  width:60px; height:60px; border-radius:50%; background:var(--teal-soft); color:var(--teal);
+  display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 14px;
+  animation:pulse 1.4s ease-in-out 1;
+}
+.form-success h4{font-size:17px; font-weight:800; margin-bottom:6px;}
+.form-success p{color:var(--muted); font-size:13.5px;}
+
+/* side card */
+.quick-actions{display:flex; flex-direction:column; gap:10px; margin-bottom:20px;}
+.quick-actions .btn{width:100%; display:flex; align-items:center; justify-content:center; gap:8px;}
+.hours-list{list-style:none; display:flex; flex-direction:column; gap:10px; margin-bottom:20px;}
+.hours-list li{display:flex; justify-content:space-between; font-size:13px; padding-bottom:10px; border-bottom:1px dashed var(--line);}
+.hours-list li:last-child{border-bottom:none; padding-bottom:0;}
+.hours-list li span:first-child{color:var(--muted);}
+.hours-list li b{font-weight:700;}
+.hours-list li.today{color:var(--amber);}
+.hours-list li.today b{color:var(--amber);}
+
+.map-box{
+  position:relative; height:170px; border-radius:14px; overflow:hidden; margin-bottom:20px;
+  background:
+    linear-gradient(var(--line) 1px, transparent 1px) 0 0/26px 26px,
+    linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0/26px 26px,
+    var(--bg2);
+  border:1px solid var(--line);
+}
+.map-box .pin{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-100%);
+  width:34px; height:34px; border-radius:50% 50% 50% 0; background:var(--amber);
+  transform-origin:bottom center; box-shadow:0 6px 14px -4px rgba(0,0,0,.4);
+  animation:pinDrop .6s cubic-bezier(.34,1.56,.64,1) both;
+}
+.map-box .pin::after{content:"🚗"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:14px; transform:rotate(45deg);}
+.map-box .pin{transform:translate(-50%,-100%) rotate(-45deg);}
+.map-box .ring{
+  position:absolute; top:50%; left:50%; width:14px; height:14px; border-radius:50%;
+  background:var(--amber-soft); transform:translate(-50%,-50%); animation:ring 2.4s ease-out infinite;
+}
+@keyframes pinDrop{from{opacity:0; transform:translate(-50%,-160%) rotate(-45deg);}to{opacity:1; transform:translate(-50%,-100%) rotate(-45deg);}}
+@keyframes ring{0%{box-shadow:0 0 0 0 var(--amber-soft);}100%{box-shadow:0 0 0 22px transparent;}}
+
+/* ============ FAQ ============ */
+.faq{margin-top:44px;}
+.faq-item{background:var(--card); border:1px solid var(--line); border-radius:16px; margin-bottom:10px; overflow:hidden;}
+.faq-q{display:flex; align-items:center; justify-content:space-between; padding:16px 18px; cursor:pointer; font-weight:600; font-size:14px;}
+.faq-q .plus{transition:transform .3s; color:var(--amber); font-size:18px;}
+.faq-item.open .faq-q .plus{transform:rotate(45deg);}
+.faq-a{max-height:0; overflow:hidden; transition:max-height .35s ease, padding .35s ease; padding:0 18px;}
+.faq-item.open .faq-a{padding:0 18px 16px;}
+.faq-a p{color:var(--muted); font-size:13.5px; line-height:1.9;}
+
+/* ============ FOOTER ============ */
+.site-footer{margin-top:64px; border-top:1px solid var(--line); background:linear-gradient(180deg, transparent, var(--amber-soft) 400%);}
+.footer-inner{max-width:1180px; margin:0 auto; padding:44px 18px 28px;}
+.footer-top{display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:32px;}
+@media(max-width:760px){ .footer-top{grid-template-columns:1fr; gap:28px;} }
+.footer-brand{display:flex; align-items:center; gap:8px; font-weight:800; font-size:18px; margin-bottom:10px;}
+.footer-brand .mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--amber),#c9790f);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--btn-text);}
+.footer-desc{color:var(--muted); font-size:13px; line-height:1.9; max-width:320px;}
+.footer-col h4{font-size:13.5px; font-weight:700; margin-bottom:14px;}
+.footer-col ul{list-style:none; display:flex; flex-direction:column; gap:10px;}
+.footer-col ul li a{color:var(--muted); font-size:13px; transition:color .2s, transform .2s; display:inline-block;}
+.footer-col ul li a:hover{color:var(--amber); transform:translateX(-3px);}
+.footer-social{display:flex; gap:8px; margin-top:14px;}
+.footer-social a{width:36px; height:36px; border-radius:50%; background:var(--bg2); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:15px; transition:.2s;}
+.footer-social a:hover{border-color:var(--amber); transform:translateY(-3px); background:var(--amber-soft);}
+.footer-bottom{margin-top:36px; padding-top:20px; border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; color:var(--muted); font-size:12px;}
+.footer-bottom .heart{color:var(--amber); display:inline-block; animation:pulse 1.8s ease-in-out infinite;}
+
+/* ============ TOAST ============ */
+.toast{
+  position:fixed; bottom:18px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--card);
+  border:1px solid var(--amber); color:var(--text); padding:12px 20px; border-radius:14px; font-size:13.5px;
+  z-index:300; opacity:0; transition:.25s; box-shadow:0 10px 30px rgba(0,0,0,.4);
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+.hidden{display:none !important;}
+</style>
+</head>
+<body>
+
+<div class="bg-ambient" aria-hidden="true">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <div class="grain"></div>
+</div>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html"><div class="mark">🚗</div>کاروان</a>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" title="تغییر تم">
+        <span class="ico ico-moon">🌙</span>
+        <span class="ico ico-sun">☀️</span>
+      </button>
+      <a class="btn btn-ghost" href="./karevan.html">بازگشت به آگهی‌ها</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="breadcrumb reveal">
+    <a href="./karevan.html">کاروان</a>
+    <span class="sep">/</span>
+    <span>تماس با ما</span>
+  </div>
+
+  <section class="hero reveal">
+    <h1>در <span>تماس</span> باشیم</h1>
+    <p>سوال داری، مشکلی پیش اومده یا پیشنهادی داری؟ تیم کاروان همیشه آماده‌ی شنیدن حرف‌های شماست. پیام بذار، معمولاً کمتر از یک روز کاری جواب می‌دیم.</p>
+  </section>
+
+  <div class="info-grid">
+    <div class="info-card reveal reveal-1" style="animation-delay:.05s">
+      <div class="ico">📞</div>
+      <h4>تماس تلفنی</h4>
+      <p>پاسخگویی شنبه تا پنجشنبه</p>
+      <a class="value" href="tel:02191234567">021-91234567</a>
+    </div>
+    <div class="info-card reveal reveal-1" style="animation-delay:.1s">
+      <div class="ico">✉️</div>
+      <h4>ایمیل پشتیبانی</h4>
+      <p>معمولاً تا ۲۴ ساعت پاسخ می‌دیم</p>
+      <a class="value" href="mailto:support@karevan.example">support@karevan.example</a>
+    </div>
+    <div class="info-card reveal reveal-1" style="animation-delay:.15s">
+      <div class="ico">📍</div>
+      <h4>دفتر مرکزی</h4>
+      <p>تهران، خیابان ولیعصر</p>
+      <span class="value">بالاتر از میدان ونک، برج کاروان</span>
+    </div>
+    <div class="info-card reveal reveal-1" style="animation-delay:.2s">
+      <div class="ico">💬</div>
+      <h4>چت آنلاین</h4>
+      <p>سریع‌ترین راه ارتباط</p>
+      <a class="value" href="#quickActions">شروع گفتگو</a>
+    </div>
+  </div>
+
+  <div class="contact-grid">
+    <div class="form-card reveal reveal-2">
+      <div id="formWrap">
+        <h3>پیام بفرست</h3>
+        <p class="hint">فرم زیر رو پر کن، تیم پشتیبانی کاروان در اسرع وقت باهات تماس می‌گیره.</p>
+        <div class="form-err" id="contactErr"></div>
+        <form id="contactForm">
+          <div class="field-grid">
+            <div class="field"><label>نام و نام خانوادگی</label><input id="cName" placeholder="مثلا امیرحسین رضایی" required></div>
+            <div class="field"><label>شماره تماس</label><input id="cPhone" placeholder="09xxxxxxxxx" required></div>
+          </div>
+          <div class="field"><label>ایمیل</label><input id="cEmail" type="email" placeholder="example@mail.com" required></div>
+          <div class="field">
+            <label>موضوع</label>
+            <select id="cSubject">
+              <option value="support">پشتیبانی فنی</option>
+              <option value="ad">مشکل در آگهی</option>
+              <option value="cooperation">همکاری و تبلیغات</option>
+              <option value="other">سایر موارد</option>
+            </select>
+          </div>
+          <div class="field"><label>پیام شما</label><textarea id="cMessage" rows="5" placeholder="توضیح بده چطور می‌تونیم کمکت کنیم…" required></textarea></div>
+          <div class="submit-row">
+            <button type="submit" class="btn btn-amber">ارسال پیام</button>
+          </div>
+        </form>
+      </div>
+      <div class="form-success" id="formSuccess">
+        <div class="check">✓</div>
+        <h4>پیامت با موفقیت ارسال شد</h4>
+        <p>ممنون که با کاروان تماس گرفتی، تیم پشتیبانی به‌زودی باهات تماس می‌گیره.</p>
+        <button class="btn btn-ghost" id="btnAnotherMsg" style="margin-top:18px;">ارسال پیام دیگر</button>
+      </div>
+    </div>
+
+    <div class="side-card reveal reveal-3" id="quickActions">
+      <h3>راه‌های سریع‌تر</h3>
+      <p class="hint">اگه عجله داری، از این راه‌ها هم می‌تونی سریع بهمون برسی.</p>
+      <div class="quick-actions">
+        <button class="btn btn-amber">💬 چت در واتساپ</button>
+        <button class="btn btn-ghost">✈️ پیام در تلگرام</button>
+        <a class="btn btn-ghost" href="tel:02191234567">📞 تماس مستقیم</a>
+      </div>
+
+      <div class="map-box" aria-hidden="true">
+        <div class="ring"></div>
+        <div class="pin"></div>
+      </div>
+
+      <ul class="hours-list">
+        <li><span>شنبه تا چهارشنبه</span><b>۹:۰۰ تا ۱۸:۰۰</b></li>
+        <li><span>پنجشنبه</span><b>۹:۰۰ تا ۱۳:۰۰</b></li>
+        <li><span>جمعه</span><b>تعطیل</b></li>
+      </ul>
+
+      <div class="footer-social">
+        <a href="#" title="اینستاگرام">📷</a>
+        <a href="#" title="تلگرام">✈️</a>
+        <a href="#" title="واتساپ">💬</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="faq">
+    <div class="section-head" style="display:flex; align-items:center; justify-content:space-between; margin:0 0 14px;">
+      <h2 style="font-size:19px; font-weight:800;">سوالات پرتکرار</h2>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">چطور می‌تونم آگهی‌ام رو ویرایش کنم؟<span class="plus">+</span></div>
+      <div class="faq-a"><p>وارد حساب کاربری‌ات شو، از بخش «آگهی‌های من» آگهی مورد نظر رو انتخاب کن و اطلاعاتش رو به‌روزرسانی کن.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">ثبت آگهی هزینه داره؟<span class="plus">+</span></div>
+      <div class="faq-a"><p>نه، ثبت آگهی در کاروان کاملاً رایگانه و هیچ کارمزدی از خریدار یا فروشنده گرفته نمی‌شه.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">چقدر طول می‌کشه به پیام‌هام جواب بدید؟<span class="plus">+</span></div>
+      <div class="faq-a"><p>تیم پشتیبانی معمولاً در همون روز کاری، حداکثر تا ۲۴ ساعت به پیام‌ها پاسخ می‌ده.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">چطور می‌تونم گزارش تخلف بدم؟<span class="plus">+</span></div>
+      <div class="faq-a"><p>از همین فرم تماس با ما، موضوع «پشتیبانی فنی» رو انتخاب کن و شماره آگهی مورد نظر رو در پیامت بنویس.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand"><div class="mark">🚗</div>کاروان</div>
+        <p class="footer-desc">پلتفرم رایگان خرید و فروش خودرو و موتورسیکلت. آگهی‌تو در چند ثانیه ثبت کن و مستقیم با خریدار یا فروشنده در ارتباط باش، بدون واسطه و بدون کارمزد.</p>
+        <div class="footer-social">
+          <a href="#" title="اینستاگرام">📷</a>
+          <a href="#" title="تلگرام">✈️</a>
+          <a href="#" title="واتساپ">💬</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>دسترسی سریع</h4>
+        <ul>
+          <li><a href="./karevan.html">خودروها و موتورسیکلت‌ها</a></li>
+          <li><a href="./karevan.html">ثبت آگهی</a></li>
+          <li><a href="./karevan.html">حساب کاربری</a></li>
+          <li><a href="#" aria-current="page" style="color:var(--amber);">تماس با ما</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>پشتیبانی</h4>
+        <ul>
+          <li><a href="#">سوالات متداول</a></li>
+          <li><a href="#">قوانین و مقررات</a></li>
+          <li><a href="#">حریم خصوصی</a></li>
+          <li><a href="#">تماس با ما</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="footYear"></span> کاروان · تمامی حقوق محفوظ است</span>
+      <span>ساخته شده با <span class="heart">♥</span> · نسخه نمایشی، داده‌ها فقط روی همین مرورگر ذخیره می‌شن</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="assets/bg-animation.js"></script>
+<script>
+/* ============ THEME (synced with main site) ============ */
+function loadTheme(){ return localStorage.getItem('karevan_theme') || 'dark'; }
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('karevan_theme', theme);
+}
+function initTheme(){
+  applyTheme(loadTheme());
+  document.getElementById('themeToggle').addEventListener('click', ()=>{
+    const current = document.documentElement.getAttribute('data-theme');
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  });
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* ============ CONTACT FORM ============ */
+function initContactForm(){
+  const form = document.getElementById('contactForm');
+  const errBox = document.getElementById('contactErr');
+  form.addEventListener('submit', e=>{
+    e.preventDefault();
+    errBox.style.display = 'none';
+    const name = document.getElementById('cName').value.trim();
+    const phone = document.getElementById('cPhone').value.trim();
+    const email = document.getElementById('cEmail').value.trim();
+    const message = document.getElementById('cMessage').value.trim();
+
+    if(!name || !phone || !email || !message){
+      errBox.textContent = 'لطفا همه فیلدهای ضروری رو پر کن.';
+      errBox.style.display = 'block';
+      return;
+    }
+
+    document.getElementById('formWrap').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+    showToast('پیامت با موفقیت ارسال شد ✅');
+  });
+
+  document.getElementById('btnAnotherMsg').addEventListener('click', ()=>{
+    form.reset();
+    document.getElementById('formSuccess').style.display = 'none';
+    document.getElementById('formWrap').style.display = 'block';
+  });
+}
+
+/* ============ FAQ ACCORDION ============ */
+function initFaq(){
+  document.querySelectorAll('.faq-item').forEach(item=>{
+    const q = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+    q.addEventListener('click', ()=>{
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(other=>{
+        if(other !== item){
+          other.classList.remove('open');
+          other.querySelector('.faq-a').style.maxHeight = null;
+        }
+      });
+      if(isOpen){
+        item.classList.remove('open');
+        a.style.maxHeight = null;
+      } else {
+        item.classList.add('open');
+        a.style.maxHeight = a.scrollHeight + 40 + 'px';
+      }
+    });
+  });
+}
+
+/* ============ INIT ============ */
+function init(){
+  initTheme();
+  initContactForm();
+  initFaq();
+  document.getElementById('footYear').textContent = new Date().getFullYear().toLocaleString('fa-IR');
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

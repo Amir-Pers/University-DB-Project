@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ثبت آگهی | کاروان</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="bg-ambient" aria-hidden="true">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <div class="grain"></div>
+</div>
+
+<header>
+  <div class="nav">
+    <a href="index.html" class="logo"><div class="mark">🚗</div>کاروان</a>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" title="تغییر تم">
+        <span class="ico ico-moon">🌙</span>
+        <span class="ico ico-sun">☀️</span>
+      </button>
+      <button class="icon-btn" id="btnAccount" title="حساب کاربری">👤</button>
+      <button class="btn btn-amber" id="btnAddAd">+ ثبت آگهی</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero reveal">
+    <div class="crumb"><a href="index.html">خانه</a> / <span>ثبت آگهی</span></div>
+    <h1>ثبت آگهی جدید</h1>
+    <p>مشخصات خودرو یا موتورسیکلتت رو کامل و صادقانه وارد کن تا سریع‌تر خریدار پیدا کنی.</p>
+  </section>
+
+  <!-- Shown if user is not logged in -->
+  <div id="loginRequired" class="content-card reveal reveal-1 hidden" style="text-align:center; padding:40px 24px;">
+    <div style="font-size:36px; margin-bottom:10px;">🔒</div>
+    <p style="color:var(--muted); font-size:14px; margin-bottom:18px;">برای ثبت آگهی، اول باید وارد حساب کاربری خودت بشی.</p>
+    <a href="account.html" class="btn btn-amber">ورود / ثبت‌نام</a>
+  </div>
+
+  <!-- Shown if logged in -->
+  <div id="addAdSection" class="content-card reveal reveal-1 hidden">
+    <div class="form-err" id="addErr"></div>
+    <form id="addForm">
+      <div class="field">
+        <label>نوع آگهی</label>
+        <div class="type-toggle">
+          <button type="button" data-val="car" class="ad-type active">🚗 خودرو</button>
+          <button type="button" data-val="moto" class="ad-type">🏍️ موتورسیکلت</button>
+        </div>
+      </div>
+      <div class="field-grid">
+        <div class="field"><label>برند</label><input id="adBrand" placeholder="مثلا پژو 206" required></div>
+        <div class="field"><label>مدل</label><input id="adModel" placeholder="مثلا تیپ ۵" required></div>
+      </div>
+      <div class="field-grid">
+        <div class="field"><label>سال ساخت</label><input id="adYear" type="number" placeholder="1401" required></div>
+        <div class="field"><label>کارکرد (کیلومتر)</label><input id="adKm" type="number" placeholder="50000" required></div>
+      </div>
+      <div class="field-grid">
+        <div class="field"><label>قیمت (میلیون تومان)</label><input id="adPrice" type="number" placeholder="350" required></div>
+        <div class="field"><label>شهر</label><input id="adCity" placeholder="تهران" required></div>
+      </div>
+      <div class="field"><label>شماره تماس</label><input id="adPhone" placeholder="09xxxxxxxxx" required></div>
+      <div class="field"><label>توضیحات</label><textarea id="adDesc" rows="3" placeholder="توضیح کوتاهی درباره وضعیت خودرو یا موتور…"></textarea></div>
+      <button type="submit" class="btn btn-amber" style="width:100%; margin-top:6px;">ثبت آگهی</button>
+    </form>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand"><div class="mark">🚗</div>کاروان</div>
+        <p class="footer-desc">پلتفرم رایگان خرید و فروش خودرو و موتورسیکلت. آگهی‌تو در چند ثانیه ثبت کن و مستقیم با خریدار یا فروشنده در ارتباط باش، بدون واسطه و بدون کارمزد.</p>
+        <div class="footer-social">
+          <a href="#" title="اینستاگرام">📷</a>
+          <a href="#" title="تلگرام">✈️</a>
+          <a href="#" title="واتساپ">💬</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>دسترسی سریع</h4>
+        <ul>
+          <li><a href="index.html?type=car">خودروها</a></li>
+          <li><a href="index.html?type=moto">موتورسیکلت‌ها</a></li>
+          <li><a href="post-ad.html">ثبت آگهی</a></li>
+          <li><a href="account.html">حساب کاربری</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>پشتیبانی</h4>
+        <ul>
+          <li><a href="faq.html">سوالات متداول</a></li>
+          <li><a href="terms.html">قوانین و مقررات</a></li>
+          <li><a href="privacy.html">حریم خصوصی</a></li>
+          <li><a href="#">تماس با ما</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="footYear"></span> کاروان · تمامی حقوق محفوظ است</span>
+      <span>ساخته شده با <span class="heart">♥</span> · نسخه نمایشی، داده‌ها فقط روی همین مرورگر ذخیره می‌شن</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="assets/app.js"></script>
+<script src="assets/bg-animation.js"></script>
+<script>
+let adType = 'car';
+
+function guardAccess(){
+  const session = loadSession();
+  const loginBox = document.getElementById('loginRequired');
+  const formBox = document.getElementById('addAdSection');
+  if(session){
+    loginBox.classList.add('hidden');
+    formBox.classList.remove('hidden');
+  } else {
+    loginBox.classList.remove('hidden');
+    formBox.classList.add('hidden');
+    showToast('برای ثبت آگهی اول وارد حساب شو');
+  }
+  return session;
+}
+
+function initAddAdFlow(){
+  document.querySelectorAll('.ad-type').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      document.querySelectorAll('.ad-type').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      adType = b.dataset.val;
+    });
+  });
+
+  document.getElementById('addForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    const session = loadSession();
+    if(!session){ guardAccess(); return; }
+
+    const errBox = document.getElementById('addErr');
+    errBox.style.display = 'none';
+
+    const brand = document.getElementById('adBrand').value.trim();
+    const model = document.getElementById('adModel').value.trim();
+    const year = parseInt(document.getElementById('adYear').value);
+    const km = parseInt(document.getElementById('adKm').value);
+    const price = parseFloat(document.getElementById('adPrice').value);
+    const city = document.getElementById('adCity').value.trim();
+    const phone = document.getElementById('adPhone').value.trim();
+    const desc = document.getElementById('adDesc').value.trim();
+
+    if(!brand || !model || !year || !km || !price || !city || !phone){
+      errBox.textContent = 'لطفا همه فیلدهای ضروری رو پر کن.';
+      errBox.style.display = 'block';
+      return;
+    }
+
+    const listings = loadListings();
+    const newAd = {
+      id: Date.now(),
+      type: adType, brand, model, year, km, price, city, phone, desc,
+      owner: session.email
+    };
+    listings.push(newAd);
+    saveListings(listings);
+    document.getElementById('addForm').reset();
+    showToast('آگهی با موفقیت ثبت شد ✅');
+    setTimeout(()=>{ window.location.href = 'account.html'; }, 900);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  guardAccess();
+  initAddAdFlow();
+});
+</script>
+</body>
+</html>
