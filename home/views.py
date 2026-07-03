@@ -117,3 +117,16 @@ def index(request):
     }
 
     return render(request, "home/index.html", context)
+
+
+def contact_view(request):
+    return render(request, "home/contact.html")
+
+def faq_view(request):
+    return render(request, "home/faq.html")
+
+def privacy_view(request):
+    return render(request, "home/privacy.html")
+
+def terms_view(request):
+    return render(request, "home/terms.html")

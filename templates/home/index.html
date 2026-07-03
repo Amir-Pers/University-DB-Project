@@ -1,283 +1,190 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
+{% block content %}
+<main>
+  <section class="hero reveal">
+    <canvas id="heroRoad" class="hero-canvas" aria-hidden="true"></canvas>
+    <div class="hero-scrim" aria-hidden="true"></div>
+    <h1>خرید و فروش <span>خودرو و موتورسیکلت</span><br>سریع، امن و بدون واسطه</h1>
+    <p>آگهی‌تو رایگان ثبت کن یا بین صدها خودرو و موتور فیلتر شده، دقیقا همونی که دنبالشی رو پیدا کن.</p>
+    <div class="hero-stats">
+      <div class="stat"><b id="statTotal">{{ total_ads }}</b><span>آگهی فعال</span></div>
+      <div class="stat"><b id="statCar">{{ car_count }}</b><span>خودرو</span></div>
+      <div class="stat"><b id="statMoto">{{ motorcycle_count }}</b><span>موتورسیکلت</span></div>
+    </div>
+  </section>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>کاروان | خرید و فروش خودرو و موتورسیکلت</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <style>
-    .filter-actions {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
+  <section class="filters reveal reveal-1">
+    <form method="GET" action="" id="filterForm" class="filter-row">
 
-    #fPriceMin,
-    #fPriceMax {
-      min-width: 170px;
-      width: 170px;
-    }
-  </style>
-</head>
+      <input id="fSearch" name="fSearch" value="{{ request.GET.fSearch|default:'' }}"
+        placeholder="جستجو برند یا مدل…" />
 
-<body>
+      <select id="fType" name="fType">
+        {% for choice in type_choices %}
+        <option value="{{ choice.value }}" {% if choice.is_selected %}selected{% endif %}>
+          {{ choice.label }}
+        </option>
+        {% endfor %}
+      </select>
 
-  <div class="bg-ambient" aria-hidden="true">
-    <div class="blob b1"></div>
-    <div class="blob b2"></div>
-    <div class="blob b3"></div>
-    <div class="grain"></div>
+      <select id="fBrand" name="fBrand">
+        <option value="">برند: همه</option>
+        {% for item in brand_list %}
+        <option value="{{ item.brand.brand_id }}" {% if item.is_selected %}selected{% endif %}>
+          {{ item.brand.name }}
+        </option>
+        {% endfor %}
+      </select>
+
+      <input id="fPriceMin" name="fPriceMin" type="number" value="{{ request.GET.fPriceMin|default:'' }}"
+        placeholder="حداقل قیمت (میلیون)" />
+
+      <input id="fPriceMax" name="fPriceMax" type="number" value="{{ request.GET.fPriceMax|default:'' }}"
+        placeholder="حداکثر قیمت (میلیون)" />
+
+      <div class="filter-actions">
+        <button type="button" class="btn btn-ghost" id="btnResetFilter">
+          پاک کردن
+        </button>
+
+        <button type="submit" class="btn btn-amber">
+          جستجو
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <div class="section-head">
+    <h2>آگهی‌های اخیر</h2>
+    <span id="resultCount"></span>
   </div>
 
-  <header>
-    <div class="nav">
-      <a href="index.html" class="logo">
-        <div class="mark">🚗</div>کاروان
-      </a>
-      <div class="nav-actions">
-        <button class="theme-toggle" id="themeToggle" title="تغییر تم">
-          <span class="ico ico-moon">🌙</span>
-          <span class="ico ico-sun">☀️</span>
-        </button>
-        <button class="icon-btn" id="btnAccount" title="حساب کاربری">👤</button>
-        <button class="btn btn-amber" id="btnAddAd">+ ثبت آگهی</button>
+  <div class="grid" id="listingGrid">
+
+    {% for ad in advertisements %}
+
+    <div class="card" data-id="{{ ad.ad_id }}" onclick="window.location.href='/advertisements/{{ ad.ad_id }}/'">
+
+      <div class="card-media">
+
+        {% with ad.images.first as image %}
+        {% if image %}
+        <img src="{{ image.image.url }}" alt="{{ ad.title }}" class="card-image">
+        {% else %}
+
+        {% if ad.vehicle.car %}
+        <div class="card-placeholder">🚗</div>
+        {% elif ad.vehicle.motorcycle %}
+        <div class="card-placeholder">🏍️</div>
+        {% endif %}
+
+        {% endif %}
+        {% endwith %}
+
+        {% if ad.vehicle.car %}
+        <span class="badge badge-car">خودرو</span>
+        {% elif ad.vehicle.motorcycle %}
+        <span class="badge badge-moto">موتورسیکلت</span>
+        {% endif %}
+
       </div>
-    </div>
-  </header>
 
-  <main>
-    <section class="hero reveal">
-      <canvas id="heroRoad" class="hero-canvas" aria-hidden="true"></canvas>
-      <div class="hero-scrim" aria-hidden="true"></div>
-      <h1>خرید و فروش <span>خودرو و موتورسیکلت</span><br>سریع، امن و بدون واسطه</h1>
-      <p>آگهی‌تو رایگان ثبت کن یا بین صدها خودرو و موتور فیلتر شده، دقیقا همونی که دنبالشی رو پیدا کن.</p>
-      <div class="hero-stats">
-        <div class="stat"><b id="statTotal">{{ total_ads }}</b><span>آگهی فعال</span></div>
-        <div class="stat"><b id="statCar">{{ car_count }}</b><span>خودرو</span></div>
-        <div class="stat"><b id="statMoto">{{ motorcycle_count }}</b><span>موتورسیکلت</span></div>
-      </div>
-    </section>
+      <div class="card-body">
 
-    <section class="filters reveal reveal-1">
-      <form method="GET" action="" id="filterForm" class="filter-row">
-
-        <input id="fSearch" name="fSearch" value="{{ request.GET.fSearch|default:'' }}"
-          placeholder="جستجو برند یا مدل…" />
-
-        <select id="fType" name="fType">
-          {% for choice in type_choices %}
-          <option value="{{ choice.value }}" {% if choice.is_selected %}selected{% endif %}>
-            {{ choice.label }}
-          </option>
-          {% endfor %}
-        </select>
-
-        <select id="fBrand" name="fBrand">
-          <option value="">برند: همه</option>
-          {% for item in brand_list %}
-          <option value="{{ item.brand.brand_id }}" {% if item.is_selected %}selected{% endif %}>
-            {{ item.brand.name }}
-          </option>
-          {% endfor %}
-        </select>
-
-        <input id="fPriceMin" name="fPriceMin" type="number" value="{{ request.GET.fPriceMin|default:'' }}"
-          placeholder="حداقل قیمت (میلیون)" />
-
-        <input id="fPriceMax" name="fPriceMax" type="number" value="{{ request.GET.fPriceMax|default:'' }}"
-          placeholder="حداکثر قیمت (میلیون)" />
-
-        <div class="filter-actions">
-          <button type="button" class="btn btn-ghost" id="btnResetFilter">
-            پاک کردن
-          </button>
-
-          <button type="submit" class="btn btn-amber">
-            جستجو
-          </button>
-        </div>
-      </form>
-    </section>
-
-    <div class="section-head">
-      <h2>آگهی‌های اخیر</h2>
-      <span id="resultCount"></span>
-    </div>
-
-    <div class="grid" id="listingGrid">
-
-      {% for ad in advertisements %}
-
-      <div class="card" data-id="{{ ad.ad_id }}" onclick="window.location.href='/advertisements/{{ ad.ad_id }}/'">
-
-        <div class="card-media">
-
-          {% with ad.images.first as image %}
-          {% if image %}
-          <img src="{{ image.image.url }}" alt="{{ ad.title }}" class="card-image">
-          {% else %}
-
-          {% if ad.vehicle.car %}
-          <div class="card-placeholder">🚗</div>
-          {% elif ad.vehicle.motorcycle %}
-          <div class="card-placeholder">🏍️</div>
-          {% endif %}
-
-          {% endif %}
-          {% endwith %}
-
-          {% if ad.vehicle.car %}
-          <span class="badge badge-car">خودرو</span>
-          {% elif ad.vehicle.motorcycle %}
-          <span class="badge badge-moto">موتورسیکلت</span>
-          {% endif %}
-
+        <div class="card-title">
+          {{ ad.vehicle.model.brand.name }}
+          {{ ad.vehicle.model.name }}
         </div>
 
-        <div class="card-body">
+        <div class="card-sub">
+          مدل {{ ad.vehicle.production_year }}
+          ·
+          {{ ad.address.city.name }}
+        </div>
 
-          <div class="card-title">
-            {{ ad.vehicle.model.brand.name }}
-            {{ ad.vehicle.model.name }}
-          </div>
+        <div class="card-meta">
+          <span>📍 {{ ad.address.city.name }}</span>
 
-          <div class="card-sub">
-            مدل {{ ad.vehicle.production_year }}
-            ·
-            {{ ad.address.city.name }}
-          </div>
+          {% if ad.km_age %}
+          <span>⏱️ {{ ad.km_age }} کیلومتر</span>
+          {% endif %}
+        </div>
 
-          <div class="card-meta">
-            <span>📍 {{ ad.address.city.name }}</span>
+        <div class="card-price">
+          <span style="font-size:12px;color:var(--muted);">
+            قیمت
+          </span>
 
-            {% if ad.km_age %}
-            <span>⏱️ {{ ad.km_age }} کیلومتر</span>
+          <span class="price-val">
+            {% if ad.price %}
+            {{ ad.price }} تومان
+            {% else %}
+            توافقی
             {% endif %}
-          </div>
-
-          <div class="card-price">
-            <span style="font-size:12px;color:var(--muted);">
-              قیمت
-            </span>
-
-            <span class="price-val">
-              {% if ad.price %}
-              {{ ad.price }} تومان
-              {% else %}
-              توافقی
-              {% endif %}
-            </span>
-          </div>
-
+          </span>
         </div>
 
       </div>
-
-      {% empty %}
-
-      <div class="empty" style="grid-column:1/-1;">
-        <div class="ico">🔍</div>
-        آگهی‌ای پیدا نشد.
-      </div>
-
-      {% endfor %}
 
     </div>
-    <div class="load-more-wrap" id="loadMoreWrap">
-      <button class="btn btn-ghost" id="btnLoadMore">نمایش آگهی‌های بیشتر</button>
-      <span class="load-more-hint" id="loadMoreHint"></span>
+
+    {% empty %}
+
+    <div class="empty" style="grid-column:1/-1;">
+      <div class="ico">🔍</div>
+      آگهی‌ای پیدا نشد.
     </div>
-  </main>
 
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div class="footer-top">
-        <div>
-          <div class="footer-brand">
-            <div class="mark">🚗</div>کاروان
-          </div>
-          <p class="footer-desc">پلتفرم رایگان خرید و فروش خودرو و موتورسیکلت. آگهی‌تو در چند ثانیه ثبت کن و مستقیم با
-            خریدار یا فروشنده در ارتباط باش، بدون واسطه و بدون کارمزد.</p>
-          <div class="footer-social">
-            <a href="#" title="اینستاگرام">📷</a>
-            <a href="#" title="تلگرام">✈️</a>
-            <a href="#" title="واتساپ">💬</a>
-          </div>
-        </div>
-        <div class="footer-col">
-          <h4>دسترسی سریع</h4>
-          <ul>
-            <li><a href="#" id="footLinkCar">خودروها</a></li>
-            <li><a href="#" id="footLinkMoto">موتورسیکلت‌ها</a></li>
-            <li><a href="post-ad.html">ثبت آگهی</a></li>
-            <li><a href="account.html">حساب کاربری</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>پشتیبانی</h4>
-          <ul>
-            <li><a href="faq.html">سوالات متداول</a></li>
-            <li><a href="terms.html">قوانین و مقررات</a></li>
-            <li><a href="privacy.html">حریم خصوصی</a></li>
-            <li><a href="#">تماس با ما</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span> <span id="footYear"></span> © کلیه حقوق مادی و معنوی این وبسایت متعلق به کاروان می باشد .</span>
-      </div>
-    </div>
-  </footer>
+    {% endfor %}
 
-  <div class="toast" id="toast"></div>
+  </div>
+  <div class="load-more-wrap" id="loadMoreWrap">
+    <button class="btn btn-ghost" id="btnLoadMore">نمایش آگهی‌های بیشتر</button>
+    <span class="load-more-hint" id="loadMoreHint"></span>
+  </div>
+</main>
+{% endblock %}
 
-  <script src="{% static 'js/app.js' %}"></script>
-  <script src="{% static 'js/bg-animation.js' %}"></script>
-  <script src="{% static 'js/hero-road.js' %}"></script>
-  <script>
-    const PAGE_SIZE = 6;
-    let visibleCount = PAGE_SIZE;
+{% block extra_js %}
+<script src="{% static 'js/hero-road.js' %}"></script>
+<script>
+  const PAGE_SIZE = 6;
+  let visibleCount = PAGE_SIZE;
 
-    function initFooterQuickLinks() {
-      const scrollToListings = () => {
-        document.getElementById('listingGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      };
-      const carLink = document.getElementById('footLinkCar');
-      const motoLink = document.getElementById('footLinkMoto');
-      if (carLink) carLink.addEventListener('click', e => {
+  function initFooterQuickLinks() {
+    const scrollToListings = () => {
+      document.getElementById('listingGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    const carLink = document.getElementById('footLinkCar');
+    const motoLink = document.getElementById('footLinkMoto');
+    if (carLink) carLink.addEventListener('click', e => {
+      e.preventDefault();
+      document.getElementById('fType').value = 'car';
+      refreshBrandOptions();
+      renderListings();
+      scrollToListings();
+    });
+    if (motoLink) motoLink.addEventListener('click', e => {
+      e.preventDefault();
+      document.getElementById('fType').value = 'moto';
+      refreshBrandOptions();
+      renderListings();
+      scrollToListings();
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    const resetBtn = document.getElementById('btnResetFilter');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function (e) {
         e.preventDefault();
-        document.getElementById('fType').value = 'car';
-        refreshBrandOptions();
-        renderListings();
-        scrollToListings();
-      });
-      if (motoLink) motoLink.addEventListener('click', e => {
-        e.preventDefault();
-        document.getElementById('fType').value = 'moto';
-        refreshBrandOptions();
-        renderListings();
-        scrollToListings();
+        window.location.href = window.location.pathname;
       });
     }
-    document.addEventListener('DOMContentLoaded', function () {
-      const resetBtn = document.getElementById('btnResetFilter');
-      if (resetBtn) {
-        resetBtn.addEventListener('click', function (e) {
-          e.preventDefault();
-          window.location.href = window.location.pathname;
-        });
-      }
-    });
+  });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      initFooterQuickLinks();
-    });
-  </script>
-</body>
-
-</html>
+  document.addEventListener('DOMContentLoaded', () => {
+    initFooterQuickLinks();
+  });
+</script>
+{% endblock %}

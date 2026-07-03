@@ -1,0 +1,11 @@
+    .filter-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #fPriceMin,
+    #fPriceMax {
+      min-width: 170px;
+      width: 170px;
+    }

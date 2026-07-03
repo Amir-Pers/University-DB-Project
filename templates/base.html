@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>کاروان | خرید و فروش خودرو و موتورسیکلت</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+  <link rel="stylesheet" href="{% static 'css/contact.css' %}">
+</head>
+
+<body>
+
+  <div class="bg-ambient" aria-hidden="true">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+    <div class="grain"></div>
+  </div>
+
+  <header>
+    <div class="nav">
+      <a href="{% url 'home:index' %}" class="logo">
+        <div class="mark">🚗</div>کاروان
+      </a>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" title="تغییر تم">
+          <span class="ico ico-moon">🌙</span>
+          <span class="ico ico-sun">☀️</span>
+        </button>
+        <button class="icon-btn" id="btnAccount" title="حساب کاربری">👤</button>
+        <button class="btn btn-amber" id="btnAddAd">+ ثبت آگهی</button>
+      </div>
+    </div>
+  </header>
+
+  {% block content %}
+
+  {% endblock %}
+
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand">
+            <div class="mark">🚗</div>کاروان
+          </div>
+          <p class="footer-desc">پلتفرم رایگان خرید و فروش خودرو و موتورسیکلت. آگهی‌تو در چند ثانیه ثبت کن و مستقیم با
+            خریدار یا فروشنده در ارتباط باش، بدون واسطه و بدون کارمزد.</p>
+          <div class="footer-social">
+            <a href="#" title="اینستاگرام">📷</a>
+            <a href="#" title="تلگرام">✈️</a>
+            <a href="#" title="واتساپ">💬</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>دسترسی سریع</h4>
+          <ul>
+            <li><a href="#" id="footLinkCar">خودروها</a></li>
+            <li><a href="#" id="footLinkMoto">موتورسیکلت‌ها</a></li>
+            <li><a href="post-ad.html">ثبت آگهی</a></li>
+            <li><a href="account.html">حساب کاربری</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>پشتیبانی</h4>
+          <ul>
+            <li><a href="{% url 'home:faq' %}">سوالات متداول</a></li>
+            <li><a href="{% url 'home:terms' %}">قوانین و مقررات</a></li>
+            <li><a href="{% url 'home:privacy' %}">حریم خصوصی</a></li>
+            <li><a href="{% url 'home:contact' %}">تماس با ما</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span> <span id="footYear"></span> © کلیه حقوق مادی و معنوی این وبسایت متعلق به کاروان می باشد .</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="{% static 'js/app.js' %}"></script>
+  <script src="{% static 'js/bg-animation.js' %}"></script>
+
+  {% block extra_js %}
+
+  {% endblock %}
+
+</body>
+
+</html>

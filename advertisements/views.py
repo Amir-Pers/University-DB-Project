@@ -30,3 +30,6 @@ def advertisement_detail(request, ad_id):
             "ad": advertisement,
         },
 )
+
+def post_ad_view(request):
+    return render(request, "advertisements/post_ad.html")

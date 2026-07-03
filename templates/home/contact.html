@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<main>
+  <div class="breadcrumb reveal">
+    <a href="{% url 'home:index' %}">کاروان</a>
+    <span class="sep">/</span>
+    <span>تماس با ما</span>
+  </div>
+
+  <section class="hero reveal">
+    <h1>در <span>تماس</span> باشیم</h1>
+    <p>سوال داری، مشکلی پیش اومده یا پیشنهادی داری؟ تیم کاروان همیشه آماده‌ی شنیدن حرف‌های شماست. پیام بذار، معمولاً کمتر از یک روز کاری جواب می‌دیم.</p>
+  </section>
+
+  <div class="info-grid">
+    <div class="info-card reveal reveal-1" style="animation-delay:.05s">
+      <div class="ico">📞</div>
+      <h4>تماس تلفنی</h4>
+      <p>پاسخگویی شنبه تا پنجشنبه</p>
+      <a class="value" href="tel:02191234567">021-91234567</a>
+    </div>
+    <div class="info-card reveal reveal-1" style="animation-delay:.1s">
+      <div class="ico">✉️</div>
+      <h4>ایمیل پشتیبانی</h4>
+      <p>معمولاً تا ۲۴ ساعت پاسخ می‌دیم</p>
+      <a class="value" href="mailto:support@karevan.example">support@karevan.example</a>
+    </div>
+    <div class="info-card reveal reveal-1" style="animation-delay:.15s">
+      <div class="ico">📍</div>
+      <h4>دفتر مرکزی</h4>
+      <p>تهران، خیابان ولیعصر</p>
+      <span class="value">بالاتر از میدان ونک، برج کاروان</span>
+    </div>
+    <div class="info-card reveal reveal-1" style="animation-delay:.2s">
+      <div class="ico">💬</div>
+      <h4>چت آنلاین</h4>
+      <p>سریع‌ترین راه ارتباط</p>
+      <a class="value" href="#quickActions">شروع گفتگو</a>
+    </div>
+  </div>
+
+  <div class="contact-grid">
+    <div class="form-card reveal reveal-2">
+      <div id="formWrap">
+        <h3>پیام بفرست</h3>
+        <p class="hint">فرم زیر رو پر کن، تیم پشتیبانی کاروان در اسرع وقت باهات تماس می‌گیره.</p>
+        <div class="form-err" id="contactErr"></div>
+        <form id="contactForm">
+          <div class="field-grid">
+            <div class="field"><label>نام و نام خانوادگی</label><input id="cName" placeholder="مثلا امیرحسین رضایی" required></div>
+            <div class="field"><label>شماره تماس</label><input id="cPhone" placeholder="09xxxxxxxxx" required></div>
+          </div>
+          <div class="field"><label>ایمیل</label><input id="cEmail" type="email" placeholder="example@mail.com" required></div>
+          <div class="field">
+            <label>موضوع</label>
+            <select id="cSubject">
+              <option value="support">پشتیبانی فنی</option>
+              <option value="ad">مشکل در آگهی</option>
+              <option value="cooperation">همکاری و تبلیغات</option>
+              <option value="other">سایر موارد</option>
+            </select>
+          </div>
+          <div class="field"><label>پیام شما</label><textarea id="cMessage" rows="5" placeholder="توضیح بده چطور می‌تونیم کمکت کنیم…" required></textarea></div>
+          <div class="submit-row">
+            <button type="submit" class="btn btn-amber">ارسال پیام</button>
+          </div>
+        </form>
+      </div>
+      <div class="form-success" id="formSuccess">
+        <div class="check">✓</div>
+        <h4>پیامت با موفقیت ارسال شد</h4>
+        <p>ممنون که با کاروان تماس گرفتی، تیم پشتیبانی به‌زودی باهات تماس می‌گیره.</p>
+        <button class="btn btn-ghost" id="btnAnotherMsg" style="margin-top:18px;">ارسال پیام دیگر</button>
+      </div>
+    </div>
+
+    <div class="side-card reveal reveal-3" id="quickActions">
+      <h3>راه‌های سریع‌تر</h3>
+      <p class="hint">اگه عجله داری، از این راه‌ها هم می‌تونی سریع بهمون برسی.</p>
+      <div class="quick-actions">
+        <button class="btn btn-amber">💬 چت در واتساپ</button>
+        <button class="btn btn-ghost">✈️ پیام در تلگرام</button>
+        <a class="btn btn-ghost" href="tel:02191234567">📞 تماس مستقیم</a>
+      </div>
+
+      <div class="map-box" aria-hidden="true">
+        <div class="ring"></div>
+        <div class="pin"></div>
+      </div>
+
+      <ul class="hours-list">
+        <li><span>شنبه تا چهارشنبه</span><b>۹:۰۰ تا ۱۸:۰۰</b></li>
+        <li><span>پنجشنبه</span><b>۹:۰۰ تا ۱۳:۰۰</b></li>
+        <li><span>جمعه</span><b>تعطیل</b></li>
+      </ul>
+
+      <div class="footer-social">
+        <a href="#" title="اینستاگرام">📷</a>
+        <a href="#" title="تلگرام">✈️</a>
+        <a href="#" title="واتساپ">💬</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="faq">
+    <div class="section-head" style="display:flex; align-items:center; justify-content:space-between; margin:0 0 14px;">
+      <h2 style="font-size:19px; font-weight:800;">سوالات پرتکرار</h2>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">چطور می‌تونم آگهی‌ام رو ویرایش کنم؟<span class="plus">+</span></div>
+      <div class="faq-a"><p>وارد حساب کاربری‌ات شو، از بخش «آگهی‌های من» آگهی مورد نظر رو انتخاب کن و اطلاعاتش رو به‌روزرسانی کن.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">ثبت آگهی هزینه داره؟<span class="plus">+</span></div>
+      <div class="faq-a"><p>نه، ثبت آگهی در کاروان کاملاً رایگانه و هیچ کارمزدی از خریدار یا فروشنده گرفته نمی‌شه.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">چقدر طول می‌کشه به پیام‌هام جواب بدید؟<span class="plus">+</span></div>
+      <div class="faq-a"><p>تیم پشتیبانی معمولاً در همون روز کاری، حداکثر تا ۲۴ ساعت به پیام‌ها پاسخ می‌ده.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">چطور می‌تونم گزارش تخلف بدم؟<span class="plus">+</span></div>
+      <div class="faq-a"><p>از همین فرم تماس با ما، موضوع «پشتیبانی فنی» رو انتخاب کن و شماره آگهی مورد نظر رو در پیامت بنویس.</p></div>
+    </div>
+  </section>
+</main>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/contact.js' %}"></script>
+{% endblock %}
