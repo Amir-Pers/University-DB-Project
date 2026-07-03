@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="reveal reveal-1">
+  
+  <!-- هدر داشبورد (مشخصات کاربر) -->
+  <div class="content-card acc-header" style="margin-top: 24px;">
+    <div class="avatar">👤</div>
+    <div>
+      <div class="name">احمد رضایی</div>
+      <div class="email">شماره همراه: ۰۹۱۲۳۴۵۶۷۸۹</div>
+    </div>
+    <button class="btn btn-amber">+ ثبت آگهی جدید</button>
+  </div>
+
+  <!-- بدنه اصلی داشبورد: سایدبار + محتوا -->
+  <div style="display: grid; grid-template-columns: 1fr; gap: 22px; margin-top: 22px;" id="dashboard-grid">
+    <style>
+      @media(min-width: 768px) {
+        #dashboard-grid { grid-template-columns: 280px 1fr !important; }
+      }
+    </style>
+
+    <!-- منوی سایدبار -->
+    <div class="content-card" style="margin-top: 0; padding: 16px; height: fit-content;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <a href="#" class="btn btn-amber" style="text-align: right; display: block; width: 100%; padding: 12px 16px;">📝 آگهی‌های من</a>
+        <a href="#" class="btn btn-ghost" style="text-align: right; display: block; width: 100%; padding: 12px 16px; border: none;">❤️ علاقه‌مندی‌ها</a>
+        <a href="#" class="btn btn-ghost" style="text-align: right; display: block; width: 100%; padding: 12px 16px; border: none;">⚙️ تنظیمات حساب</a>
+        <hr style="border: 0; border-top: 1px solid var(--line); margin: 8px 0;">
+        <a href="#" class="btn btn-ghost" style="text-align: right; display: block; width: 100%; padding: 12px 16px; border: none; color: #f87171;">🚪 خروج</a>
+      </div>
+    </div>
+
+    <!-- بخش مدیریت و آمار آگهی‌ها -->
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      
+      <!-- گرید باکس‌های آماری شبیه باما -->
+      <div class="detail-info-grid" style="margin: 0;">
+        <div class="detail-box">
+          <span>آگهی‌های فعال</span>
+          <strong>۱ آگهی</strong>
+        </div>
+        <div class="detail-box">
+          <span>در انتظار تایید</span>
+          <strong>۰</strong>
+        </div>
+        <div class="detail-box">
+          <span>نشان شده‌ها</span>
+          <strong>۴ خودرو</strong>
+        </div>
+      </div>
+
+      <!-- لیست آگهی‌ها -->
+      <div class="acc-ads-header">
+        <h3>آگهی‌های ثبت شده شما</h3>
+        <span style="font-size: 13px; color: var(--muted);">تعداد: ۱</span>
+      </div>
+
+      <!-- کارت آگهی اختصاصی کاربر مبتنی بر استایل پلتفرم شما -->
+      <div class="card" style="flex-direction: row; align-items: center; padding: 14px; gap: 16px; cursor: default; animation: none;">
+        <div class="media-car" style="width: 120px; height: 90px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; position: relative;">
+          🚗
+          <span class="badge badge-car" style="top: -6px; right: -6px; font-size: 10px; padding: 2px 8px;">فعال</span>
+        </div>
+        
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+          <h4 class="card-title" style="font-size: 15px;">پژو ۲۰۷ اتوماتیک MC</h4>
+          <div class="card-sub" style="font-size: 12px;">مدل ۱۴۰۲ | کارکرد ۲۲,۰۰۰ کیلومتر</div>
+          <div class="price-val" style="font-size: 15px; margin-top: 4px;">۸۵۰,۰۰۰,۰۰۰ تومان</div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <button class="btn btn-ghost" style="padding: 6px 12px; font-size: 12px; border-color: var(--line);">✏️ ویرایش</button>
+          <button class="btn btn-ghost" style="padding: 6px 12px; font-size: 12px; border-color: rgba(239,68,68,.3); color: #f87171;">🗑️ حذف</button>
+        </div>
+      </div>
+
+      <!-- اگر آگهی نبود از این بخش استفاده کنید: -->
+      <!-- 
+      <div class="empty">
+        <div class="ico">📭</div>
+        <p>هنوز هیچ آگهی در سایت کاروان ثبت نکرده‌اید.</p>
+      </div> 
+      -->
+
+    </div>
+  </div>
+</main>
+{% endblock %}

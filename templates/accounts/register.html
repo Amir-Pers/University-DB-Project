@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="reveal reveal-1">
+  <div class="auth-wrap content-card">
+    
+    <div class="acc-top" style="justify-content: center; flex-direction: column; text-align: center; margin-bottom: 24px;">
+      <div class="avatar">✨</div>
+      <h2 style="font-size: 22px; font-weight: 800; margin-top: 12px;">عضویت در کاروان</h2>
+      <p style="color: var(--muted); font-size: 13px; margin-top: 6px;">آگهی خود را ثبت کنید و مستقیم با خریدار در ارتباط باشید</p>
+    </div>
+
+    <form method="POST" action="" style="display: flex; flex-direction: column; gap: 16px;">
+      {% csrf_token %}
+      
+      <div class="field">
+        <label for="fullname">نام و نام خانوادگی</label>
+        <input type="text" id="fullname" name="fullname" placeholder="مثال: علی رضایی" required>
+      </div>
+
+      <div class="field">
+        <label for="phone">شماره موبایل</label>
+        <input type="tel" id="phone" name="phone" placeholder="09123456789" style="text-align: left; direction: ltr;" required>
+      </div>
+
+      <div class="field">
+        <label for="password">رمز عبور</label>
+        <input type="password" id="password" name="password" placeholder="حداقل ۶ کاراکتر" required>
+      </div>
+
+      <div style="display: flex; align-items: flex-start; gap: 8px; margin-top: 4px;">
+        <input type="checkbox" id="terms" name="terms" required style="width: auto; margin-top: 4px; cursor: pointer;">
+        <label for="terms" style="font-size: 12.5px; color: var(--muted); line-height: 1.6; cursor: pointer;">
+          با ثبت نام در سایت، <a href="#" style="color: var(--amber); font-weight: 600;">قوانین و مقررات</a> کاروان را می‌پذیرم.
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-amber" style="width: 100%; padding: 12px; font-size: 15px; margin-top: 8px;">
+        ایجاد حساب کاربری
+      </button>
+    </form>
+
+    <div class="form-hint">
+      قبلاً ثبت‌نام کرده‌اید؟ <a href="{% url 'accounts:login' %}">وارد شوید</a>
+    </div>
+
+  </div>
+</main>
+{% endblock %}

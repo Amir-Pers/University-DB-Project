@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="reveal reveal-1">
+  <div class="auth-wrap content-card">
+    
+    <div class="acc-top" style="justify-content: center; flex-direction: column; text-align: center; margin-bottom: 24px;">
+      <div class="avatar">🚗</div>
+      <h2 style="font-size: 22px; font-weight: 800; margin-top: 12px;">ورود به کاروان</h2>
+      <p style="color: var(--muted); font-size: 13px; margin-top: 6px;">برای مدیریت آگهی‌ها وارد حساب خود شوید</p>
+    </div>
+
+    <form method="POST" action="" style="display: flex; flex-direction: column; gap: 16px;">
+      {% csrf_token %}
+      
+      <div class="field">
+        <label for="username">شماره موبایل یا ایمیل</label>
+        <input type="text" id="username" name="username" placeholder="مثال: 09123456789" required>
+      </div>
+
+      <div class="field">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label for="password" style="margin-bottom: 0;">رمز عبور</label>
+          <a href="#" style="font-size: 12px; color: var(--amber); font-weight: 600;">فراموشی رمز عبور؟</a>
+        </div>
+        <input type="password" id="password" name="password" placeholder="••••••••" required>
+      </div>
+
+      <button type="submit" class="btn btn-amber" style="width: 100%; padding: 12px; font-size: 15px; margin-top: 8px;">
+        ورود به حساب کاربری
+      </button>
+    </form>
+
+    <div class="form-hint">
+      حساب کاربری ندارید؟ <a href="{% url 'accounts:register' %}">ثبت‌نام کنید</a>
+    </div>
+
+  </div>
+</main>
+{% endblock %}
