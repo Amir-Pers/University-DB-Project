@@ -1,8 +1,19 @@
 from django.db import models
+from django.contrib.auth.models import User as AuthUser
 
 
 class User(models.Model):
     userid = models.AutoField(primary_key=True)
+
+    user_auth = models.OneToOneField(
+        AuthUser,
+        on_delete=models.CASCADE,
+        db_column="user_auth_id",
+        blank=True,
+        null=True,
+        related_name="profile",
+    )
+
     phone = models.CharField(max_length=20, unique=True)
     reg_status = models.BooleanField(default=False)
     account_status = models.BooleanField(default=True)
