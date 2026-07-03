@@ -62,10 +62,10 @@
         <div class="footer-col">
           <h4>دسترسی سریع</h4>
           <ul>
-            <li><a href="#" id="footLinkCar">خودروها</a></li>
-            <li><a href="#" id="footLinkMoto">موتورسیکلت‌ها</a></li>
-            <li><a href="post-ad.html">ثبت آگهی</a></li>
-            <li><a href="account.html">حساب کاربری</a></li>
+            <li><a href="{% url 'home:index' %}?fType=car">خودروها</a></li>
+            <li><a href="{% url 'home:index' %}?fType=moto">موتورسیکلت‌ها</a></li>
+            <li><a href="{% url 'advertisements:post_ad' %}">ثبت آگهی</a></li>
+            <li><a href="{% url 'accounts:profile' %}">حساب کاربری</a></li>
           </ul>
         </div>
         <div class="footer-col">

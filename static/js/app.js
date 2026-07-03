@@ -3,41 +3,6 @@
    منطق مشترک بین تمام صفحات: ذخیره‌سازی، تم، هدر/فوتر، ابزارها
    ============================================================ */
 
-/* ============ DATA ============ */
-
-// const BRANDS_CAR = ["پراید","پژو 206","پژو پارس","سمند","تیبا","دنا","کوییک","ام‌وی‌ام"];
-// const BRANDS_MOTO = ["هوندا","یاماها","باجاج","کویر موتور","اپاچی","روان"];
-
-// const seedListings = [
-//   {id:1, type:"car", brand:"پژو 206", model:"تیپ ۵", year:1399, price:720, km:65000, city:"تهران", phone:"0912xxxxxxx", desc:"بدون رنگ، فنی سالم، بیمه کامل.", owner:"seed"},
-//   {id:2, type:"moto", brand:"هوندا", model:"CB 125F", year:1401, price:145, km:8000, city:"اصفهان", phone:"0913xxxxxxx", desc:"صفر کارکرده، تک‌برگ، رنگ مشکی.", owner:"seed"},
-//   {id:3, type:"car", brand:"سمند", model:"LX", year:1397, price:480, km:120000, city:"مشهد", phone:"0915xxxxxxx", desc:"دوگانه‌سوز کارخانه، سند آزاد.", owner:"seed"},
-//   {id:4, type:"moto", brand:"یاماها", model:"R15 V3", year:1400, price:390, km:12000, city:"تهران", phone:"0919xxxxxxx", desc:"اسپرت، فقط شهر، سرویس کامل.", owner:"seed"},
-//   {id:5, type:"car", brand:"کوییک", model:"S", year:1402, price:980, km:21000, city:"کرج", phone:"0901xxxxxxx", desc:"زیر گارانتی شرکت، تصادفی نیست.", owner:"seed"},
-//   {id:6, type:"moto", brand:"باجاج", model:"200NS", year:1399, price:210, km:30000, city:"شیراز", phone:"0917xxxxxxx", desc:"لوازم اورجینال، بدون افتادگی.", owner:"seed"},
-// ];
-
-
-/* ============ STORAGE ============ */
-
-// function loadListings(){
-//   try{
-//     const raw = localStorage.getItem('karevan_listings');
-//     return raw ? JSON.parse(raw) : seedListings;
-//   }catch(e){ return seedListings; }
-// }
-// function saveListings(list){ localStorage.setItem('karevan_listings', JSON.stringify(list)); }
-
-// function loadUsers(){
-//   try{ return JSON.parse(localStorage.getItem('karevan_users')||'[]'); }catch(e){ return []; }
-// }
-// function saveUsers(u){ localStorage.setItem('karevan_users', JSON.stringify(u)); }
-
-// function loadSession(){
-//   try{ return JSON.parse(localStorage.getItem('karevan_session')||'null'); }catch(e){ return null; }
-// }
-// function saveSession(s){ s ? localStorage.setItem('karevan_session', JSON.stringify(s)) : localStorage.removeItem('karevan_session'); }
-
 /* ============ THEME ============ */
 function loadTheme(){ return localStorage.getItem('karevan_theme') || 'dark'; }
 function applyTheme(theme){

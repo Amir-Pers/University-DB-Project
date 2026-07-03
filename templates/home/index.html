@@ -148,43 +148,48 @@
 
 {% block extra_js %}
 <script src="{% static 'js/hero-road.js' %}"></script>
-<script>
-  const PAGE_SIZE = 6;
-  let visibleCount = PAGE_SIZE;
 
-  function initFooterQuickLinks() {
-    const scrollToListings = () => {
-      document.getElementById('listingGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    };
-    const carLink = document.getElementById('footLinkCar');
-    const motoLink = document.getElementById('footLinkMoto');
-    if (carLink) carLink.addEventListener('click', e => {
-      e.preventDefault();
-      document.getElementById('fType').value = 'car';
-      refreshBrandOptions();
-      renderListings();
-      scrollToListings();
-    });
-    if (motoLink) motoLink.addEventListener('click', e => {
-      e.preventDefault();
-      document.getElementById('fType').value = 'moto';
-      refreshBrandOptions();
-      renderListings();
-      scrollToListings();
-    });
-  }
-  document.addEventListener('DOMContentLoaded', function () {
-    const resetBtn = document.getElementById('btnResetFilter');
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    const resetBtn = document.getElementById("btnResetFilter");
+
     if (resetBtn) {
-      resetBtn.addEventListener('click', function (e) {
+      resetBtn.addEventListener("click", function (e) {
         e.preventDefault();
-        window.location.href = window.location.pathname;
+        window.location.href = "{% url 'home:index' %}";
       });
     }
-  });
 
-  document.addEventListener('DOMContentLoaded', () => {
-    initFooterQuickLinks();
+
+    if (carLink) {
+      carLink.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        const url = new URL(window.location.origin + "{% url 'home:index' %}");
+        url.searchParams.set("fType", "car");
+
+        window.location.href = url;
+      });
+    }
+
+    if (motoLink) {
+      motoLink.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        const url = new URL(window.location.origin + "{% url 'home:index' %}");
+        url.searchParams.set("fType", "motorcycle");
+
+        window.location.href = url;
+      });
+    }
+
+    const resultCount = document.getElementById("resultCount");
+
+    if (resultCount) {
+      resultCount.textContent = "{{ advertisements|length }} آگهی";
+    }
+
   });
 </script>
 {% endblock %}
