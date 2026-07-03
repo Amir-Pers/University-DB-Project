@@ -10,6 +10,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <style>
+    .filter-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #fPriceMin,
+    #fPriceMax {
+      min-width: 170px;
+      width: 170px;
+    }
+  </style>
 </head>
 
 <body>
@@ -51,20 +64,44 @@
     </section>
 
     <section class="filters reveal reveal-1">
-      <div class="filter-row">
-        <input id="fSearch" placeholder="جستجو برند یا مدل…" />
-        <select id="fType">
-          <option value="">نوع: همه</option>
-          <option value="car">خودرو</option>
-          <option value="moto">موتورسیکلت</option>
+      <form method="GET" action="" id="filterForm" class="filter-row">
+
+        <input id="fSearch" name="fSearch" value="{{ request.GET.fSearch|default:'' }}"
+          placeholder="جستجو برند یا مدل…" />
+
+        <select id="fType" name="fType">
+          {% for choice in type_choices %}
+          <option value="{{ choice.value }}" {% if choice.is_selected %}selected{% endif %}>
+            {{ choice.label }}
+          </option>
+          {% endfor %}
         </select>
-        <select id="fBrand">
+
+        <select id="fBrand" name="fBrand">
           <option value="">برند: همه</option>
+          {% for item in brand_list %}
+          <option value="{{ item.brand.brand_id }}" {% if item.is_selected %}selected{% endif %}>
+            {{ item.brand.name }}
+          </option>
+          {% endfor %}
         </select>
-        <input id="fPriceMin" type="number" placeholder="حداقل قیمت (میلیون)" />
-        <input id="fPriceMax" type="number" placeholder="حداکثر قیمت (میلیون)" />
-        <button class="btn btn-ghost" id="btnResetFilter">پاک کردن</button>
-      </div>
+
+        <input id="fPriceMin" name="fPriceMin" type="number" value="{{ request.GET.fPriceMin|default:'' }}"
+          placeholder="حداقل قیمت (میلیون)" />
+
+        <input id="fPriceMax" name="fPriceMax" type="number" value="{{ request.GET.fPriceMax|default:'' }}"
+          placeholder="حداکثر قیمت (میلیون)" />
+
+        <div class="filter-actions">
+          <button type="button" class="btn btn-ghost" id="btnResetFilter">
+            پاک کردن
+          </button>
+
+          <button type="submit" class="btn btn-amber">
+            جستجو
+          </button>
+        </div>
+      </form>
     </section>
 
     <div class="section-head">
@@ -203,134 +240,8 @@
   <script src="{% static 'js/bg-animation.js' %}"></script>
   <script src="{% static 'js/hero-road.js' %}"></script>
   <script>
-    // let listings = [];
-
-    // function refreshBrandOptions() {
-    //   const type = document.getElementById('fType').value;
-    //   const sel = document.getElementById('fBrand');
-    //   const brands = type === 'moto' ? BRANDS_MOTO : type === 'car' ? BRANDS_CAR : [...BRANDS_CAR, ...BRANDS_MOTO];
-    //   const current = sel.value;
-    //   sel.innerHTML = '<option value="">برند: همه</option>' + brands.map(b => `<option value="${b}">${b}</option>`).join('');
-    //   if (brands.includes(current)) sel.value = current;
-    // }
-
-    const PAGE_SIZE = 9;
+    const PAGE_SIZE = 6;
     let visibleCount = PAGE_SIZE;
-
-    // function renderListings(resetPage = true) {
-    //   const search = document.getElementById('fSearch').value.trim().toLowerCase();
-    //   const type = document.getElementById('fType').value;
-    //   const brand = document.getElementById('fBrand').value;
-    //   const min = parseFloat(document.getElementById('fPriceMin').value);
-    //   const max = parseFloat(document.getElementById('fPriceMax').value);
-
-    //   let filtered = listings.filter(l => {
-    //     if (type && l.type !== type) return false;
-    //     if (brand && l.brand !== brand) return false;
-    //     if (!isNaN(min) && l.price < min) return false;
-    //     if (!isNaN(max) && l.price > max) return false;
-    //     if (search && !(l.brand + l.model).toLowerCase().includes(search)) return false;
-    //     return true;
-    //   }).sort((a, b) => b.id - a.id);
-
-    //   if (resetPage) visibleCount = PAGE_SIZE;
-
-    //   const grid = document.getElementById('listingGrid');
-    //   const loadWrap = document.getElementById('loadMoreWrap');
-    //   document.getElementById('resultCount').textContent = filtered.length + ' آگهی';
-
-    //   if (filtered.length === 0) {
-    //     grid.innerHTML = `<div class="empty" style="grid-column:1/-1;"><div class="ico">🔍</div>چیزی با این فیلترها پیدا نشد<br>فیلترها رو تغییر بده یا پاک کن.</div>`;
-    //     loadWrap.classList.remove('show');
-    //     return;
-    //   }
-
-    //   const pageItems = filtered.slice(0, visibleCount);
-
-    //   grid.innerHTML = pageItems.map((l, i) => {
-    //     const icon = l.type === 'car' ? '🚗' : '🏍️';
-    //     const mediaClass = l.type === 'car' ? 'media-car' : 'media-moto';
-    //     const badgeClass = l.type === 'car' ? 'badge-car' : 'badge-moto';
-    //     const delay = Math.min(i, 8) * 0.05;
-    //     return `
-    // <div class="card" data-id="${l.id}" style="animation-delay:${delay}s">
-    //   <div class="card-media ${mediaClass}">
-    //     ${icon}
-    //     <span class="badge ${badgeClass}">${l.type === 'car' ? 'خودرو' : 'موتورسیکلت'}</span>
-    //   </div>
-    //   <div class="card-body">
-    //     <div class="card-title">${l.brand} ${l.model}</div>
-    //     <div class="card-sub">مدل ${fa(l.year)} · ${l.city}</div>
-    //     <div class="card-meta">
-    //       <span>📍 ${l.city}</span>
-    //       <span>⏱️ ${fa(l.km)} کیلومتر</span>
-    //     </div>
-    //     <div class="card-price">
-    //       <span style="font-size:12px;color:var(--muted);">قیمت</span>
-    //       <span class="price-val">${toman(l.price)} تومان</span>
-    //     </div>
-    //   </div>
-    // </div>`;
-    //   }).join('');
-
-    //   const hasMore = filtered.length > visibleCount;
-    //   loadWrap.classList.toggle('show', hasMore);
-    //   document.getElementById('loadMoreHint').textContent =
-    //     `${fa(pageItems.length)} از ${fa(filtered.length)} آگهی نمایش داده شده`;
-
-    //   grid.querySelectorAll('.card').forEach(c => {
-    //     c.addEventListener('click', () => { window.location.href = 'ad-details.html?id=' + c.dataset.id; });
-    //   });
-    // }
-
-    // function initLoadMore() {
-    //   document.getElementById('btnLoadMore').addEventListener('click', function () {
-    //     this.classList.add('loading');
-    //     setTimeout(() => {
-    //       visibleCount += PAGE_SIZE;
-    //       renderListings(false);
-    //       this.classList.remove('loading');
-    //     }, 350);
-    //   });
-    // }
-
-    // function animateCount(el, target) {
-    //   const start = parseInt(el.textContent.replace(/[^0-9]/g, '')) || 0;
-    //   if (start === target) { el.textContent = fa(target); return; }
-    //   const duration = 600;
-    //   const t0 = performance.now();
-    //   function tick(now) {
-    //     const p = Math.min(1, (now - t0) / duration);
-    //     const eased = 1 - Math.pow(1 - p, 3);
-    //     const val = Math.round(start + (target - start) * eased);
-    //     el.textContent = fa(val);
-    //     if (p < 1) requestAnimationFrame(tick);
-    //   }
-    //   requestAnimationFrame(tick);
-    // }
-
-    // function updateStats() {
-    //   animateCount(document.getElementById('statTotal'), listings.length);
-    //   animateCount(document.getElementById('statCar'), listings.filter(l => l.type === 'car').length);
-    //   animateCount(document.getElementById('statMoto'), listings.filter(l => l.type === 'moto').length);
-    // }
-
-    // function initFilters() {
-    //   ['fSearch', 'fType', 'fBrand', 'fPriceMin', 'fPriceMax'].forEach(id => {
-    //     document.getElementById(id).addEventListener('input', () => {
-    //       if (id === 'fType') refreshBrandOptions();
-    //       renderListings();
-    //     });
-    //   });
-    //   document.getElementById('btnResetFilter').addEventListener('click', () => {
-    //     document.getElementById('fSearch').value = '';
-    //     document.getElementById('fType').value = '';
-    //     document.getElementById('fPriceMin').value = '';
-    //     document.getElementById('fPriceMax').value = '';
-    //     refreshBrandOptions();
-    //     renderListings();
-    //   });
-    // }
 
     function initFooterQuickLinks() {
       const scrollToListings = () => {
@@ -353,21 +264,18 @@
         scrollToListings();
       });
     }
-
-    // function applyUrlTypeParam() {
-    //   const params = new URLSearchParams(window.location.search);
-    //   const type = params.get('type');
-    //   if (type === 'car' || type === 'moto') {
-    //     document.getElementById('fType').value = type;
-    //   }
-    // }
+    document.addEventListener('DOMContentLoaded', function () {
+      const resetBtn = document.getElementById('btnResetFilter');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          window.location.href = window.location.pathname;
+        });
+      }
+    });
 
     document.addEventListener('DOMContentLoaded', () => {
-      // applyUrlTypeParam();
-      // initFilters();
       initFooterQuickLinks();
-      // initLoadMore();
-      // refreshBrandOptions();
     });
   </script>
 </body>
