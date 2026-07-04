@@ -4,15 +4,52 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User as AuthUser
 from django.db import transaction
+from django.db.models import Q
 
 from .models import User
 
 @login_required
 def profile_view(request):
+
     profile = request.user.profile
+
+    if request.method == "POST":
+
+        username = request.POST.get('username', '').strip()
+        national_id = request.POST.get('national_id', "").strip()
+        
+        if len(username) < 3:
+            messages.error(request, "نام کاربری باید حداقل ۳ کاراکتر باشد.")
+            return redirect("accounts:profile")
+
+        if User.objects.filter(username=username).exclude(userid=profile.userid).exists():
+            if User.objects.filter(username=username).exclude(userid=profile.userid).exists():
+                messages.error(request, "این نام کاربری قبلاً انتخاب شده است.")
+                return redirect("accounts:profile")
+            
+        if not national_id.isdigit() or len(national_id) != 10:
+            messages.error(request, "کد ملی باید از ۱۰ رقم تشکیل شده باشد.")
+            return redirect("accounts:profile")
+        
+        if User.objects.filter(national_id=national_id).exclude(userid=profile.userid).exists():
+            messages.error(request, "این کد ملی قبلاً ثبت شده است.")
+            return redirect("accounts:profile")
+
+        profile.username = username
+        if not profile.reg_status:
+            profile.national_id = national_id
+            profile.reg_status = True
+        profile.save()
+
+        messages.success(request, "اطلاعات حساب کاربری با موفقیت ذخیره شد.")
+        return redirect("accounts:profile")
+
+
     context = {
         "profile": profile,
     }
+
+
     return render(request, "accounts/profile.html", context)
 
 

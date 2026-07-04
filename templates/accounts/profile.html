@@ -20,6 +20,7 @@
     <button class="btn btn-amber">+ ثبت آگهی جدید</button>
   </div>
 
+  <!-- بدنه اصلی داشبورد: سایدبار + محتوا -->
   <div style="display: grid; grid-template-columns: 1fr; gap: 22px; margin-top: 22px;" id="dashboard-grid">
     <style>
       @media(min-width: 768px) {
@@ -28,12 +29,14 @@
         }
       }
 
+      /* استایل برای تب‌های فعال سایدبار */
       .sidebar-tab.active {
         background: var(--amber) !important;
         color: var(--btn-text) !important;
         font-weight: 600;
       }
 
+      /* انیمیشن لود شدن محتوای تب‌ها */
       .tab-content {
         display: none;
         animation: fadeUp .4s cubic-bezier(.2, .7, .3, 1) both;
@@ -46,6 +49,7 @@
       }
     </style>
 
+    <!-- منوی سایدبار (کنترلر تب‌ها) -->
     <div class="content-card" style="margin-top: 0; padding: 16px; height: fit-content;">
       <div style="display: flex; flex-direction: column; gap: 6px;">
         <button class="btn sidebar-tab active" data-tab="my-ads"
@@ -64,9 +68,12 @@
       </div>
     </div>
 
+    <!-- بخش محتوای اصلی داشبورد -->
     <div>
 
+      <!-- ================= تب ۱: آگهی‌های من ================= -->
       <div id="my-ads" class="tab-content active">
+        <!-- گرید باکس‌های آماری شبیه باما -->
         <div class="detail-info-grid" style="margin: 0;">
           <div class="detail-box">
             <span>آگهی‌های فعال</span>
@@ -87,6 +94,7 @@
           <span style="font-size: 13px; color: var(--muted);">تعداد: ۱</span>
         </div>
 
+        <!-- کارت آگهی نمونه کاربر مبتنی بر استایل پروژه -->
         <div class="card"
           style="flex-direction: row; align-items: center; padding: 14px; gap: 16px; cursor: default; animation: none;">
           <div class="media-car"
@@ -109,12 +117,15 @@
         </div>
       </div>
 
+      <!-- ================= تب ۲: علاقه‌مندی‌ها ================= -->
       <div id="favorites" class="tab-content">
         <div class="acc-ads-header">
           <h3>آگهی‌های نشان‌شده خودرو و موتور</h3>
         </div>
 
+        <!-- گرید آگهی‌های مورد علاقه -->
         <div class="grid" style="margin-top: 10px;">
+          <!-- نمونه خودرو نشان شده -->
           <div class="card" style="animation: none;">
             <div class="media-car card-media">
               🚗
@@ -129,6 +140,7 @@
             </div>
           </div>
 
+          <!-- نمونه موتور نشان شده -->
           <div class="card" style="animation: none;">
             <div class="media-moto card-media">
               🏍️
@@ -149,7 +161,8 @@
       <div id="settings" class="tab-content">
         <div class="content-card" style="margin-top: 0; padding: 24px;">
 
-          <form method="POST" action="" style="display: flex; flex-direction: column; gap: 20px;">
+          <form method="POST" action="{% url 'accounts:profile' %}"
+            style="display: flex; flex-direction: column; gap: 20px;">
             {% csrf_token %}
 
             <!-- بخش اول: اطلاعات هویت و کاربری -->
@@ -160,32 +173,38 @@
 
                 <div class="field-grid">
                   <div class="field">
-                    <label for="display_name">نام و نام خانوادگی</label>
-                    <input type="text" id="display_name" name="display_name" value="{{ request.user.get_full_name|default:'' }}"
-                      placeholder="نام و نام خانوادگی خود را وارد کنید" required>
+                    <label for="first_name" >نام</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ user.first_name|default:'' }}">
                   </div>
                   <div class="field">
-                    <label for="username">نام کاربری (Username)</label>
-                    <input type="text" id="username" name="username" value="{{ profile.username|default:'' }}"
-                      placeholder="نام کاربری خود را وارد کنید" required style="text-align: left; direction: ltr;">
+                    <label for="last_name">نام خانوادگی</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ user.last_name|default:'' }}" >
                   </div>
                 </div>
 
                 <div class="field-grid">
                   <div class="field">
-                    <label for="national_id">کد ملی</label>
-                    <input type="text" id="national_id" name="national_id" placeholder="کد ملی ۱۰ رقمی" maxlength="10"
-                      value="{{ profile.national_id|default:'' }}" required style="text-align: left; direction: ltr; ">
+                    <label for="username">نام کاربری (Username)</label>
+                    <input type="text" id="username" name="username" value="{{ profile.username|default:'' }}"
+                      placeholder="نام کاربری خود را وارد کنید" required style="text-align: left; direction: ltr;">
                   </div>
                   <div class="field">
-                    <label>شماره همراه (غیر قابل تغییر)</label>
-                    <input type="text" disabled value=" {{ profile.phone }} "
-                      style="opacity: 0.6; cursor: not-allowed; background: var(--bg); text-align: left; direction: ltr;">
+                    <label for="national_id">کد ملی</label>
+                    <input type="text" id="national_id" name="national_id" placeholder="کد ملی ۱۰ رقمی" 
+                      maxlength="10"value="{{ profile.national_id|default:''}}" 
+                      {% if profile.reg_status %}readonly{% endif %} required style="text-align: left; direction: ltr;">
                   </div>
+                </div>
+
+                <div class="field" style="width: calc(50% - 5px);">
+                  <label>شماره همراه (غیر قابل تغییر)</label>
+                  <input type="text" value="{{ profile.phone }}" disabled
+                    style="opacity: 0.6; cursor: not-allowed; background: var(--bg); text-align: left; direction: ltr;">
                 </div>
 
               </div>
             </div>
+
             <hr style="border: 0; border-top: 1px solid var(--line); margin: 5px 0;">
 
             <!-- بخش دوم: اطلاعات سکونت (آدرس) -->
@@ -197,7 +216,7 @@
                 <div class="field-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
                   <div class="field">
                     <label for="province">استان</label>
-                    <select id="province" name="province" required>
+                    <select id="province" name="province">
                       <option value="" disabled selected>انتخاب استان...</option>
                       <option value="tehran">تهران</option>
                       <option value="isfahan">اصفهان</option>
@@ -207,7 +226,7 @@
 
                   <div class="field">
                     <label for="city">شهر</label>
-                    <select id="city" name="city" required>
+                    <select id="city" name="city" >
                       <option value="" disabled selected>انتخاب شهر...</option>
                       <option value="tehran">تهران</option>
                       <option value="rey">ری</option>
@@ -240,7 +259,7 @@
                 <div class="field-grid">
                   <div class="field">
                     <label for="new_password">رمز عبور جدید</label>
-                    <input type="password" id="new_password" name="new_password" placeholder="حداقل ۶ کاراکتر">
+                    <input type="password" id="new_password" name="new_password" placeholder="حداقل ۸ کاراکتر">
                   </div>
                   <div class="field">
                     <label for="confirm_password">تکرار رمز عبور جدید</label>
