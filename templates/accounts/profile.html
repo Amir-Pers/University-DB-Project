@@ -14,78 +14,246 @@
     <button class="btn btn-amber">+ ثبت آگهی جدید</button>
   </div>
 
-  <!-- بدنه اصلی داشبورد: سایدبار + محتوا -->
   <div style="display: grid; grid-template-columns: 1fr; gap: 22px; margin-top: 22px;" id="dashboard-grid">
     <style>
       @media(min-width: 768px) {
         #dashboard-grid { grid-template-columns: 280px 1fr !important; }
       }
+      .sidebar-tab.active {
+        background: var(--amber) !important;
+        color: var(--btn-text) !important;
+        font-weight: 600;
+      }
+      .tab-content {
+        display: none;
+        animation: fadeUp .4s cubic-bezier(.2,.7,.3,1) both;
+      }
+      .tab-content.active {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
     </style>
 
-    <!-- منوی سایدبار -->
     <div class="content-card" style="margin-top: 0; padding: 16px; height: fit-content;">
       <div style="display: flex; flex-direction: column; gap: 6px;">
-        <a href="#" class="btn btn-amber" style="text-align: right; display: block; width: 100%; padding: 12px 16px;">📝 آگهی‌های من</a>
-        <a href="#" class="btn btn-ghost" style="text-align: right; display: block; width: 100%; padding: 12px 16px; border: none;">❤️ علاقه‌مندی‌ها</a>
-        <a href="#" class="btn btn-ghost" style="text-align: right; display: block; width: 100%; padding: 12px 16px; border: none;">⚙️ تنظیمات حساب</a>
+        <button class="btn sidebar-tab active" data-tab="my-ads" style="text-align: right; display: block; width: 100%; padding: 12px 16px; background: transparent; color: var(--text);">📝 آگهی‌های من</button>
+        <button class="btn sidebar-tab" data-tab="favorites" style="text-align: right; display: block; width: 100%; padding: 12px 16px; background: transparent; color: var(--text);">❤️ علاقه‌مندی‌ها</button>
+        <button class="btn sidebar-tab" data-tab="settings" style="text-align: right; display: block; width: 100%; padding: 12px 16px; background: transparent; color: var(--text);">⚙️ تنظیمات حساب</button>
         <hr style="border: 0; border-top: 1px solid var(--line); margin: 8px 0;">
         <a href="{% url 'accounts:logout' %}" class="btn btn-ghost" style="text-align: right; display: block; width: 100%; padding: 12px 16px; border: none; color: #f87171;">🚪 خروج</a>
       </div>
     </div>
 
-    <!-- بخش مدیریت و آمار آگهی‌ها -->
-    <div style="display: flex; flex-direction: column; gap: 20px;">
+    <div>
       
-      <!-- گرید باکس‌های آماری شبیه باما -->
-      <div class="detail-info-grid" style="margin: 0;">
-        <div class="detail-box">
-          <span>آگهی‌های فعال</span>
-          <strong>۱ آگهی</strong>
+      <div id="my-ads" class="tab-content active">
+        <div class="detail-info-grid" style="margin: 0;">
+          <div class="detail-box">
+            <span>آگهی‌های فعال</span>
+            <strong>۱ آگهی</strong>
+          </div>
+          <div class="detail-box">
+            <span>در انتظار تایید</span>
+            <strong>۰</strong>
+          </div>
+          <div class="detail-box">
+            <span>نشان شده‌ها</span>
+            <strong>۲ آگهی</strong>
+          </div>
         </div>
-        <div class="detail-box">
-          <span>در انتظار تایید</span>
-          <strong>۰</strong>
+
+        <div class="acc-ads-header">
+          <h3>آگهی‌های ثبت شده شما</h3>
+          <span style="font-size: 13px; color: var(--muted);">تعداد: ۱</span>
         </div>
-        <div class="detail-box">
-          <span>نشان شده‌ها</span>
-          <strong>۴ خودرو</strong>
+
+        <div class="card" style="flex-direction: row; align-items: center; padding: 14px; gap: 16px; cursor: default; animation: none;">
+          <div class="media-car" style="width: 120px; height: 90px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; position: relative;">
+            🚗
+            <span class="badge badge-car" style="top: -6px; right: -6px; font-size: 10px; padding: 2px 8px;">فعال</span>
+          </div>
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+            <h4 class="card-title" style="font-size: 15px;">پژو ۲۰۷ اتوماتیک MC</h4>
+            <div class="card-sub" style="font-size: 12px;">مدل ۱۴۰۲ | کارکرد ۲۲,۰۰۰ کیلومتر</div>
+            <div class="price-val" style="font-size: 15px; margin-top: 4px;">۸۵۰,۰۰۰,۰۰۰ تومان</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <button class="btn btn-ghost" style="padding: 6px 12px; font-size: 12px; border-color: var(--line);">✏️ ویرایش</button>
+            <button class="btn btn-ghost" style="padding: 6px 12px; font-size: 12px; border-color: rgba(239,68,68,.3); color: #f87171;">🗑️ حذف</button>
+          </div>
         </div>
       </div>
 
-      <!-- لیست آگهی‌ها -->
-      <div class="acc-ads-header">
-        <h3>آگهی‌های ثبت شده شما</h3>
-        <span style="font-size: 13px; color: var(--muted);">تعداد: ۱</span>
-      </div>
-
-      <!-- کارت آگهی اختصاصی کاربر مبتنی بر استایل پلتفرم شما -->
-      <div class="card" style="flex-direction: row; align-items: center; padding: 14px; gap: 16px; cursor: default; animation: none;">
-        <div class="media-car" style="width: 120px; height: 90px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; position: relative;">
-          🚗
-          <span class="badge badge-car" style="top: -6px; right: -6px; font-size: 10px; padding: 2px 8px;">فعال</span>
+      <div id="favorites" class="tab-content">
+        <div class="acc-ads-header">
+          <h3>آگهی‌های نشان‌شده خودرو و موتور</h3>
         </div>
         
-        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
-          <h4 class="card-title" style="font-size: 15px;">پژو ۲۰۷ اتوماتیک MC</h4>
-          <div class="card-sub" style="font-size: 12px;">مدل ۱۴۰۲ | کارکرد ۲۲,۰۰۰ کیلومتر</div>
-          <div class="price-val" style="font-size: 15px; margin-top: 4px;">۸۵۰,۰۰۰,۰۰۰ تومان</div>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 6px;">
-          <button class="btn btn-ghost" style="padding: 6px 12px; font-size: 12px; border-color: var(--line);">✏️ ویرایش</button>
-          <button class="btn btn-ghost" style="padding: 6px 12px; font-size: 12px; border-color: rgba(239,68,68,.3); color: #f87171;">🗑️ حذف</button>
+        <div class="grid" style="margin-top: 10px;">
+          <div class="card" style="animation: none;">
+            <div class="media-car card-media">
+              🚗
+              <span class="badge badge-car">کارکرده</span>
+            </div>
+            <div class="card-body">
+              <h4 class="card-title">هیوندای سانتافه</h4>
+              <div class="card-sub">مدل ۲۰۱۶ | فول آپشن</div>
+              <div class="card-price">
+                <span class="price-val">۲,۹۰۰,۰۰۰,۰۰۰ تومان</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card" style="animation: none;">
+            <div class="media-moto card-media">
+              🏍️
+              <span class="badge badge-moto">صفر</span>
+            </div>
+            <div class="card-body">
+              <h4 class="card-title">بنلی جفت سیلندر 250</h4>
+              <div class="card-sub">مدل ۱۴۰۳ | رنگ مشکی</div>
+              <div class="card-price">
+                <span class="price-val">۳۲۰,۰۰۰,۰۰۰ تومان</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- اگر آگهی نبود از این بخش استفاده کنید: -->
-      <!-- 
-      <div class="empty">
-        <div class="ico">📭</div>
-        <p>هنوز هیچ آگهی در سایت کاروان ثبت نکرده‌اید.</p>
-      </div> 
-      -->
+      <!-- ================= تب ۳: تنظیمات حساب ================= -->
+      <div id="settings" class="tab-content">
+        <div class="content-card" style="margin-top: 0; padding: 24px;">
+          
+          <form method="POST" action="" style="display: flex; flex-direction: column; gap: 20px;">
+            {% csrf_token %}
+
+            <!-- بخش اول: اطلاعات هویت و کاربری -->
+            <div>
+              <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--amber);">اطلاعات کاربری و هویتی</h3>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                
+                <div class="field-grid">
+                  <div class="field">
+                    <label for="display_name">نام و نام خانوادگی</label>
+                    <input type="text" id="display_name" name="display_name" value="احمد رضایی" required>
+                  </div>
+                  <div class="field">
+                    <label for="username">نام کاربری (Username)</label>
+                    <input type="text" id="username" name="username" value="ahmad_rezaei" placeholder="نام کاربری خود را وارد کنید" required style="text-align: left; direction: ltr;">
+                  </div>
+                </div>
+
+                <div class="field-grid">
+                  <div class="field">
+                    <label for="national_id">کد ملی</label>
+                    <input type="text" id="national_id" name="national_id" placeholder="کد ملی ۱۰ رقمی" maxlength="10" required style="text-align: left; direction: ltr;">
+                  </div>
+                  <div class="field">
+                    <label>شماره همراه (غیر قابل تغییر)</label>
+                    <input type="text" value="09123456789" disabled style="opacity: 0.6; cursor: not-allowed; background: var(--bg); text-align: left; direction: ltr;">
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <hr style="border: 0; border-top: 1px solid var(--line); margin: 5px 0;">
+
+            <!-- بخش دوم: اطلاعات سکونت (آدرس) -->
+            <div>
+              <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--amber);">اطلاعات آدرس و سکونت</h3>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                
+                <div class="field-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                  <div class="field">
+                    <label for="province">استان</label>
+                    <select id="province" name="province" required>
+                      <option value="" disabled selected>انتخاب استان...</option>
+                      <option value="tehran">تهران</option>
+                      <option value="isfahan">اصفهان</option>
+                      <option value="razavi">خراسان رضوی</option>
+                    </select>
+                  </div>
+                  
+                  <div class="field">
+                    <label for="city">شهر</label>
+                    <select id="city" name="city" required>
+                      <option value="" disabled selected>انتخاب شهر...</option>
+                      <option value="tehran">تهران</option>
+                      <option value="rey">ری</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="neighborhood">محله <span style="color: var(--muted); font-size: 11px;">(اختیاری)</span></label>
+                    <input type="text" id="neighborhood" name="neighborhood" placeholder="مثال: سعادت‌آباد">
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--line); margin: 5px 0;">
+
+            <!-- بخش سوم: امنیت و تغییر رمز عبور -->
+            <div>
+              <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--amber);">تغییر رمز عبور</h3>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                
+                <div class="field">
+                  <label for="current_password">رمز عبور فعلی</label>
+                  <input type="password" id="current_password" name="current_password" placeholder="••••••••">
+                </div>
+                
+                <div class="field-grid">
+                  <div class="field">
+                    <label for="new_password">رمز عبور جدید</label>
+                    <input type="password" id="new_password" name="new_password" placeholder="حداقل ۶ کاراکتر">
+                  </div>
+                  <div class="field">
+                    <label for="confirm_password">تکرار رمز عبور جدید</label>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="••••••••">
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- دکمه ثبت فرم -->
+            <button type="submit" class="btn btn-amber" style="width: fit-content; align-self: flex-start; padding: 12px 28px; margin-top: 10px;">
+              ذخیره تغییرات حساب
+            </button>
+
+          </form>
+        </div>
+      </div>
 
     </div>
   </div>
 </main>
 {% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const tabs = document.querySelectorAll(".sidebar-tab");
+    const contents = document.querySelectorAll(".tab-content");
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", function () {
+        // ۱. حذف کلاس active از تمام دکمه‌های سایدبار
+        tabs.forEach(t => t.classList.remove("active"));
+        // ۲. مخفی کردن تمام بخش‌های محتوایی
+        contents.forEach(c => c.classList.remove("active"));
+
+        // ۳. فعال کردن تب فشرده شده
+        this.classList.add("active");
+        // ۴. نمایش محتوای متناظر با تب فعال شده
+        const targetTab = this.getAttribute("data-tab");
+        document.getElementById(targetTab).classList.add("active");
+      });
+    });
+  });
+</script>
+{% endblock %}
+

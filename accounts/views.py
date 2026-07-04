@@ -56,8 +56,8 @@ def register_view(request):
             messages.error(request, "رمزهای عبور یکسان نیستند.")
             return redirect("accounts:register")
 
-        if len(password1) < 6:
-            messages.error(request, "رمز عبور باید حداقل ۶ کاراکتر باشد.")
+        if len(password1) < 8:
+            messages.error(request, "رمز عبور باید حداقل ۸ کاراکتر باشد.")
             return redirect("accounts:register")
         
         if User.objects.filter(phone=phone).exists():
