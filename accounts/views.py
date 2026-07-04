@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User as AuthUser
 from django.db import transaction
 from django.db.models import Q
+from django.utils import timezone
 
 from .models import User
 
@@ -39,6 +40,7 @@ def profile_view(request):
         if not profile.reg_status:
             profile.national_id = national_id
             profile.reg_status = True
+            profile.register_date = timezone.now()
         profile.save()
 
         messages.success(request, "اطلاعات حساب کاربری با موفقیت ذخیره شد.")
