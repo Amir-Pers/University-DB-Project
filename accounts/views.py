@@ -9,10 +9,11 @@ from .models import User
 
 @login_required
 def profile_view(request):
-    # context = {
-    #     "profile": request.user.profile,
-    # }
-    return render(request, "accounts/profile.html")
+    profile = request.user.profile
+    context = {
+        "profile": profile,
+    }
+    return render(request, "accounts/profile.html", context)
 
 
 def login_view(request):

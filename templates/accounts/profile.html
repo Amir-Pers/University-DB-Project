@@ -3,13 +3,19 @@
 
 {% block content %}
 <main class="reveal reveal-1">
-  
+
   <!-- هدر داشبورد (مشخصات کاربر) -->
   <div class="content-card acc-header" style="margin-top: 24px;">
     <div class="avatar">👤</div>
     <div>
-      <div class="name">احمد رضایی</div>
-      <div class="email">شماره همراه: ۰۹۱۲۳۴۵۶۷۸۹</div>
+      <div class="name">
+        {% if profile.username %}
+        {{ profile.username }}
+        {% else %}
+        کاربر جدید
+        {% endif %}
+      </div>
+      <div class="email">شماره همراه: {{ profile.phone }}</div>
     </div>
     <button class="btn btn-amber">+ ثبت آگهی جدید</button>
   </div>
@@ -17,17 +23,22 @@
   <div style="display: grid; grid-template-columns: 1fr; gap: 22px; margin-top: 22px;" id="dashboard-grid">
     <style>
       @media(min-width: 768px) {
-        #dashboard-grid { grid-template-columns: 280px 1fr !important; }
+        #dashboard-grid {
+          grid-template-columns: 280px 1fr !important;
+        }
       }
+
       .sidebar-tab.active {
         background: var(--amber) !important;
         color: var(--btn-text) !important;
         font-weight: 600;
       }
+
       .tab-content {
         display: none;
-        animation: fadeUp .4s cubic-bezier(.2,.7,.3,1) both;
+        animation: fadeUp .4s cubic-bezier(.2, .7, .3, 1) both;
       }
+
       .tab-content.active {
         display: flex;
         flex-direction: column;
@@ -37,16 +48,24 @@
 
     <div class="content-card" style="margin-top: 0; padding: 16px; height: fit-content;">
       <div style="display: flex; flex-direction: column; gap: 6px;">
-        <button class="btn sidebar-tab active" data-tab="my-ads" style="text-align: right; display: block; width: 100%; padding: 12px 16px; background: transparent; color: var(--text);">📝 آگهی‌های من</button>
-        <button class="btn sidebar-tab" data-tab="favorites" style="text-align: right; display: block; width: 100%; padding: 12px 16px; background: transparent; color: var(--text);">❤️ علاقه‌مندی‌ها</button>
-        <button class="btn sidebar-tab" data-tab="settings" style="text-align: right; display: block; width: 100%; padding: 12px 16px; background: transparent; color: var(--text);">⚙️ تنظیمات حساب</button>
+        <button class="btn sidebar-tab active" data-tab="my-ads"
+          style="text-align: right; display: block; width: 100%; padding: 12px 16px; background: transparent; color: var(--text);">📝
+          آگهی‌های من</button>
+        <button class="btn sidebar-tab" data-tab="favorites"
+          style="text-align: right; display: block; width: 100%; padding: 12px 16px; background: transparent; color: var(--text);">❤️
+          علاقه‌مندی‌ها</button>
+        <button class="btn sidebar-tab" data-tab="settings"
+          style="text-align: right; display: block; width: 100%; padding: 12px 16px; background: transparent; color: var(--text);">⚙️
+          تنظیمات حساب</button>
         <hr style="border: 0; border-top: 1px solid var(--line); margin: 8px 0;">
-        <a href="{% url 'accounts:logout' %}" class="btn btn-ghost" style="text-align: right; display: block; width: 100%; padding: 12px 16px; border: none; color: #f87171;">🚪 خروج</a>
+        <a href="{% url 'accounts:logout' %}" class="btn btn-ghost"
+          style="text-align: right; display: block; width: 100%; padding: 12px 16px; border: none; color: #f87171;">🚪
+          خروج</a>
       </div>
     </div>
 
     <div>
-      
+
       <div id="my-ads" class="tab-content active">
         <div class="detail-info-grid" style="margin: 0;">
           <div class="detail-box">
@@ -68,8 +87,10 @@
           <span style="font-size: 13px; color: var(--muted);">تعداد: ۱</span>
         </div>
 
-        <div class="card" style="flex-direction: row; align-items: center; padding: 14px; gap: 16px; cursor: default; animation: none;">
-          <div class="media-car" style="width: 120px; height: 90px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; position: relative;">
+        <div class="card"
+          style="flex-direction: row; align-items: center; padding: 14px; gap: 16px; cursor: default; animation: none;">
+          <div class="media-car"
+            style="width: 120px; height: 90px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; position: relative;">
             🚗
             <span class="badge badge-car" style="top: -6px; right: -6px; font-size: 10px; padding: 2px 8px;">فعال</span>
           </div>
@@ -79,8 +100,11 @@
             <div class="price-val" style="font-size: 15px; margin-top: 4px;">۸۵۰,۰۰۰,۰۰۰ تومان</div>
           </div>
           <div style="display: flex; flex-direction: column; gap: 6px;">
-            <button class="btn btn-ghost" style="padding: 6px 12px; font-size: 12px; border-color: var(--line);">✏️ ویرایش</button>
-            <button class="btn btn-ghost" style="padding: 6px 12px; font-size: 12px; border-color: rgba(239,68,68,.3); color: #f87171;">🗑️ حذف</button>
+            <button class="btn btn-ghost" style="padding: 6px 12px; font-size: 12px; border-color: var(--line);">✏️
+              ویرایش</button>
+            <button class="btn btn-ghost"
+              style="padding: 6px 12px; font-size: 12px; border-color: rgba(239,68,68,.3); color: #f87171;">🗑️
+              حذف</button>
           </div>
         </div>
       </div>
@@ -89,7 +113,7 @@
         <div class="acc-ads-header">
           <h3>آگهی‌های نشان‌شده خودرو و موتور</h3>
         </div>
-        
+
         <div class="grid" style="margin-top: 10px;">
           <div class="card" style="animation: none;">
             <div class="media-car card-media">
@@ -104,7 +128,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="card" style="animation: none;">
             <div class="media-moto card-media">
               🏍️
@@ -124,34 +148,39 @@
       <!-- ================= تب ۳: تنظیمات حساب ================= -->
       <div id="settings" class="tab-content">
         <div class="content-card" style="margin-top: 0; padding: 24px;">
-          
+
           <form method="POST" action="" style="display: flex; flex-direction: column; gap: 20px;">
             {% csrf_token %}
 
             <!-- بخش اول: اطلاعات هویت و کاربری -->
             <div>
-              <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--amber);">اطلاعات کاربری و هویتی</h3>
+              <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--amber);">اطلاعات کاربری و
+                هویتی</h3>
               <div style="display: flex; flex-direction: column; gap: 12px;">
-                
+
                 <div class="field-grid">
                   <div class="field">
                     <label for="display_name">نام و نام خانوادگی</label>
-                    <input type="text" id="display_name" name="display_name" value="احمد رضایی" required>
+                    <input type="text" id="display_name" name="display_name" value="{{ request.user.get_full_name|default:'' }}"
+                      placeholder="نام و نام خانوادگی خود را وارد کنید" required>
                   </div>
                   <div class="field">
                     <label for="username">نام کاربری (Username)</label>
-                    <input type="text" id="username" name="username" value="ahmad_rezaei" placeholder="نام کاربری خود را وارد کنید" required style="text-align: left; direction: ltr;">
+                    <input type="text" id="username" name="username" value="{{ profile.username|default:'' }}"
+                      placeholder="نام کاربری خود را وارد کنید" required style="text-align: left; direction: ltr;">
                   </div>
                 </div>
 
                 <div class="field-grid">
                   <div class="field">
                     <label for="national_id">کد ملی</label>
-                    <input type="text" id="national_id" name="national_id" placeholder="کد ملی ۱۰ رقمی" maxlength="10" required style="text-align: left; direction: ltr;">
+                    <input type="text" id="national_id" name="national_id" placeholder="کد ملی ۱۰ رقمی" maxlength="10"
+                      value="{{ profile.national_id|default:'' }}" required style="text-align: left; direction: ltr; ">
                   </div>
                   <div class="field">
                     <label>شماره همراه (غیر قابل تغییر)</label>
-                    <input type="text" value="09123456789" disabled style="opacity: 0.6; cursor: not-allowed; background: var(--bg); text-align: left; direction: ltr;">
+                    <input type="text" disabled value=" {{ profile.phone }} "
+                      style="opacity: 0.6; cursor: not-allowed; background: var(--bg); text-align: left; direction: ltr;">
                   </div>
                 </div>
 
@@ -161,9 +190,10 @@
 
             <!-- بخش دوم: اطلاعات سکونت (آدرس) -->
             <div>
-              <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--amber);">اطلاعات آدرس و سکونت</h3>
+              <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--amber);">اطلاعات آدرس و
+                سکونت</h3>
               <div style="display: flex; flex-direction: column; gap: 12px;">
-                
+
                 <div class="field-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
                   <div class="field">
                     <label for="province">استان</label>
@@ -174,7 +204,7 @@
                       <option value="razavi">خراسان رضوی</option>
                     </select>
                   </div>
-                  
+
                   <div class="field">
                     <label for="city">شهر</label>
                     <select id="city" name="city" required>
@@ -185,7 +215,8 @@
                   </div>
 
                   <div class="field">
-                    <label for="neighborhood">محله <span style="color: var(--muted); font-size: 11px;">(اختیاری)</span></label>
+                    <label for="neighborhood">محله <span
+                        style="color: var(--muted); font-size: 11px;">(اختیاری)</span></label>
                     <input type="text" id="neighborhood" name="neighborhood" placeholder="مثال: سعادت‌آباد">
                   </div>
                 </div>
@@ -197,14 +228,15 @@
 
             <!-- بخش سوم: امنیت و تغییر رمز عبور -->
             <div>
-              <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--amber);">تغییر رمز عبور</h3>
+              <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--amber);">تغییر رمز عبور
+              </h3>
               <div style="display: flex; flex-direction: column; gap: 12px;">
-                
+
                 <div class="field">
                   <label for="current_password">رمز عبور فعلی</label>
                   <input type="password" id="current_password" name="current_password" placeholder="••••••••">
                 </div>
-                
+
                 <div class="field-grid">
                   <div class="field">
                     <label for="new_password">رمز عبور جدید</label>
@@ -220,7 +252,8 @@
             </div>
 
             <!-- دکمه ثبت فرم -->
-            <button type="submit" class="btn btn-amber" style="width: fit-content; align-self: flex-start; padding: 12px 28px; margin-top: 10px;">
+            <button type="submit" class="btn btn-amber"
+              style="width: fit-content; align-self: flex-start; padding: 12px 28px; margin-top: 10px;">
               ذخیره تغییرات حساب
             </button>
 
@@ -256,4 +289,3 @@
   });
 </script>
 {% endblock %}
-
