@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User as AuthUser
-
+from locations.models import Address
 
 class User(models.Model):
     userid = models.AutoField(primary_key=True)
@@ -12,6 +12,15 @@ class User(models.Model):
         blank=True,
         null=True,
         related_name="profile",
+    )
+
+    default_address = models.ForeignKey(
+    Address,
+    on_delete=models.SET_NULL,
+    db_column="address_id",
+    blank=True,
+    null=True,
+    related_name="default_users",
     )
 
     phone = models.CharField(max_length=20, unique=True)
