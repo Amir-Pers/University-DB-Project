@@ -1,11 +1,16 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
-# Create your views here.
 
+@login_required
 def profile_view(request):
-    return render(request, "accounts/profile.html")
+    context = {
+        "profile": request.user.profile,
+    }
+    return render(request, "accounts/profile.html", context)
+
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -19,16 +24,20 @@ def login_view(request):
         if user is not None:
             login(request, user)
             messages.success(request, "با موفقیت وارد شدید.")
-            next_url = request.GET.get("next")
-            
-            if next_url:
-                return redirect(next_url)
             
             return redirect("accounts:profile")
 
         messages.error(request, "شماره موبایل یا رمز عبور اشتباه است.")
     
     return render(request, "accounts/login.html")
+
+
+@login_required
+def logout_view(request):
+    logout(request)
+    messages.success(request, "با موفقیت از حساب کاربری خارج شدید.")
+    return redirect("home:index")
+
 
 def register_view(request):
     return render(request, "accounts/register.html")
