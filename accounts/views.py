@@ -2,14 +2,17 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User as AuthUser
+from django.db import transaction
 
+from .models import User
 
 @login_required
 def profile_view(request):
-    context = {
-        "profile": request.user.profile,
-    }
-    return render(request, "accounts/profile.html", context)
+    # context = {
+    #     "profile": request.user.profile,
+    # }
+    return render(request, "accounts/profile.html")
 
 
 def login_view(request):
@@ -40,4 +43,39 @@ def logout_view(request):
 
 
 def register_view(request):
+    if request.user.is_authenticated:
+        return redirect("accounts:profile")
+    
+    if request.method == 'POST':
+
+        phone = request.POST.get('phone', "").strip()
+        password1 = request.POST.get("password1")
+        password2 = request.POST.get("password2")
+
+        if password1 != password2:
+            messages.error(request, "رمزهای عبور یکسان نیستند.")
+            return redirect("accounts:register")
+
+        if len(password1) < 6:
+            messages.error(request, "رمز عبور باید حداقل ۶ کاراکتر باشد.")
+            return redirect("accounts:register")
+        
+        if User.objects.filter(phone=phone).exists():
+            messages.error(request, "این شماره موبایل قبلاً ثبت شده است.")
+            return redirect("accounts:register")
+        
+        if AuthUser.objects.filter(username=phone).exists():
+            messages.error(request, "این شماره موبایل قبلاً ثبت شده است.")
+            return redirect("accounts:register")
+        
+        
+        with transaction.atomic():
+            auth_user = AuthUser.objects.create_user(username=phone, password=password1)
+            User.objects.create(user_auth=auth_user, phone=phone, reg_status=False)
+
+        messages.success(request, "ثبت‌نام با موفقیت انجام شد. اکنون وارد حساب کاربری خود شوید.")
+
+        return redirect("accounts:login")
+    
+
     return render(request, "accounts/register.html")

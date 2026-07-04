@@ -32,4 +32,12 @@ def advertisement_detail(request, ad_id):
 )
 
 def post_ad_view(request):
+    '''
+    if not request.user.profile.reg_status:
+    messages.warning(
+        request,
+        "ابتدا اطلاعات حساب خود را تکمیل کنید."
+    )
+    return redirect("accounts:profile")
+    '''
     return render(request, "advertisements/post_ad.html")
