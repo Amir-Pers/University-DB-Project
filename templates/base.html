@@ -12,6 +12,39 @@
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <link rel="stylesheet" href="{% static 'css/index.css' %}">
   <link rel="stylesheet" href="{% static 'css/contact.css' %}">
+  <style>
+    .messages-container {
+      width: min(1100px, 95%);
+      margin: 20px auto;
+    }
+
+    .alert {
+      padding: 14px 18px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .alert-success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .alert-error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .alert-warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .alert-info {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+  </style>
 </head>
 
 <body>
@@ -33,11 +66,25 @@
           <span class="ico ico-moon">🌙</span>
           <span class="ico ico-sun">☀️</span>
         </button>
-        <button class="icon-btn" id="btnAccount" title="حساب کاربری">👤</button>
-        <button class="btn btn-amber" id="btnAddAd">+ ثبت آگهی</button>
+        <a href="#" class="icon-btn" id="btnAccount" title="حساب کاربری">👤</ش>
+        {% if request.user.is_authenticated %}
+          <a href="#" class="btn btn-amber" id="btnAddAd">+ ثبت آگهی</a>
+        {% else %}
+          <a href="{% url 'accounts:login' %}" class="btn btn-amber" id="btnAddAd">ورود</a>
+        {% endif %}
       </div>
     </div>
   </header>
+
+  {% if messages %}
+  <div class="messages-container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
 
   {% block content %}
 

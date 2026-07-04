@@ -11,12 +11,12 @@
       <p style="color: var(--muted); font-size: 13px; margin-top: 6px;">برای مدیریت آگهی‌ها وارد حساب خود شوید</p>
     </div>
 
-    <form method="POST" action="" style="display: flex; flex-direction: column; gap: 16px;">
+    <form method="POST" action="{% url 'accounts:login' %}" style="display: flex; flex-direction: column; gap: 16px;">
       {% csrf_token %}
       
       <div class="field">
-        <label for="username">شماره موبایل یا ایمیل</label>
-        <input type="text" id="username" name="username" placeholder="مثال: 09123456789" required>
+        <label for="username">شماره موبایل </label>
+        <input type="text" id="phone" name="phone" placeholder="مثال: 09123456789" required>
       </div>
 
       <div class="field">
