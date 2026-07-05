@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User as AuthUser
@@ -94,7 +94,38 @@ def profile_view(request):
 
 
         elif form_type == "password":
-            pass
+            current_password = request.POST.get('current_password')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+
+            if not current_password or not new_password or not confirm_password:
+                messages.error(request, "تمام فیلدهای تغییر رمز عبور را تکمیل کنید.")
+                return redirect("accounts:profile")
+            
+            if not request.user.check_password(current_password):
+                messages.error(request, "رمز عبور فعلی اشتباه است.")
+                return redirect("accounts:profile")
+            
+            if request.user.check_password(new_password):
+                messages.error(request,"رمز عبور جدید باید با رمز عبور فعلی متفاوت باشد.")
+                return redirect("accounts:profile")
+                
+            if new_password != confirm_password:
+                messages.error(request, "رمز عبور جدید و تکرار آن یکسان نیستند.")
+                return redirect("accounts:profile")
+            
+            if len(new_password) < 8:
+                messages.error(request, "رمز عبور باید حداقل ۸ کاراکتر باشد.")
+                return redirect("accounts:profile")
+            
+            request.user.set_password(new_password)
+            request.user.save()
+
+            update_session_auth_hash(request, request.user)
+
+            messages.success(request, "رمز عبور با موفقیت تغییر کرد.")
+            return redirect("accounts:profile")
+
         
         messages.success(request, "اطلاعات حساب کاربری با موفقیت ذخیره شد.")
         return redirect("accounts:profile")
