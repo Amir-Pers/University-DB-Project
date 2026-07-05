@@ -10,6 +10,7 @@ from django.utils import timezone
 from .models import User
 from locations.models import Address, Province, City
 
+
 @login_required
 def profile_view(request):
 
@@ -17,54 +18,64 @@ def profile_view(request):
 
     if request.method == "POST":
 
-        first_name = request.POST.get("first_name", "").strip()
-        last_name = request.POST.get("last_name", "").strip()
-        username = request.POST.get('username', '').strip()
-        national_id = request.POST.get('national_id', "").strip()
-        
-        province_id = request.POST.get("province")
-        city_id = request.POST.get("city")
-        neighborhood = request.POST.get("neighborhood", "").strip()
-        
-        if len(username) < 3:
-            messages.error(request, "نام کاربری باید حداقل ۳ کاراکتر باشد.")
-            return redirect("accounts:profile")
+        form_type = request.POST.get("form_type")
 
-        if User.objects.filter(username=username).exclude(userid=profile.userid).exists():
-            messages.error(request, "این نام کاربری قبلاً انتخاب شده است.")
-            return redirect("accounts:profile")
+        if form_type == "identity":
+
+            first_name = request.POST.get("first_name", "").strip()
+            last_name = request.POST.get("last_name", "").strip()
+            username = request.POST.get('username', '').strip()
+            national_id = request.POST.get('national_id', "").strip()
+
+            if len(username) < 3:
+                messages.error(request, "نام کاربری باید حداقل ۳ کاراکتر باشد.")
+                return redirect("accounts:profile")
+
+            if User.objects.filter(username=username).exclude(userid=profile.userid).exists():
+                messages.error(request, "این نام کاربری قبلاً انتخاب شده است.")
+                return redirect("accounts:profile")
+                
             
-        if not national_id.isdigit() or len(national_id) != 10:
-            messages.error(request, "کد ملی باید از ۱۰ رقم تشکیل شده باشد.")
-            return redirect("accounts:profile")
-        
-        if User.objects.filter(national_id=national_id).exclude(userid=profile.userid).exists():
-            messages.error(request, "این کد ملی قبلاً ثبت شده است.")
-            return redirect("accounts:profile")
-        
-        if not province_id or not city_id:
-            messages.error(request, "استان و شهر را انتخاب کنید.")
-            return redirect("accounts:profile")
+            with transaction.atomic():
 
+                request.user.first_name = first_name
+                request.user.last_name = last_name
+                request.user.save()
 
-        city = get_object_or_404(City, pk=city_id)
+                profile.username = username
 
-        if city.province_id != int(province_id):
-            messages.error(request, "شهر انتخاب شده متعلق به استان انتخاب شده نیست.")
-            return redirect("accounts:profile")
+                if not profile.reg_status:
 
-        with transaction.atomic():
+                    if not national_id.isdigit() or len(national_id) != 10:
+                        messages.error(request, "کد ملی باید از ۱۰ رقم تشکیل شده باشد.")
+                        return redirect("accounts:profile")
+                    
+                    if User.objects.filter(national_id=national_id).exclude(userid=profile.userid).exists():
+                        messages.error(request, "این کد ملی قبلاً ثبت شده است.")
+                        return redirect("accounts:profile")
 
-            request.user.first_name = first_name
-            request.user.last_name = last_name
-            request.user.save()
+                    profile.national_id = national_id
+                    profile.reg_status = True
+                    profile.register_date = timezone.now()
 
-            profile.username = username
+                profile.save()
+            
 
-            if not profile.reg_status:
-                profile.national_id = national_id
-                profile.reg_status = True
-                profile.register_date = timezone.now()
+        elif form_type == "address":
+
+            province_id = request.POST.get("province")
+            city_id = request.POST.get("city")
+            neighborhood = request.POST.get("neighborhood", "").strip()
+
+            if not province_id or not city_id:
+                messages.error(request, "استان و شهر را انتخاب کنید.")
+                return redirect("accounts:profile")
+            
+            city = get_object_or_404(City, pk=city_id)
+
+            if city.province_id != int(province_id):
+                messages.error(request, "شهر انتخاب شده متعلق به استان انتخاب شده نیست.")
+                return redirect("accounts:profile")
 
             if profile.default_address:
                 address = profile.default_address
@@ -75,13 +86,15 @@ def profile_view(request):
             else:
                 address = Address.objects.create(
                     city=city,
-                    neighborhood=neighborhood,
+                    neighborhood=neighborhood
                 )
                 profile.default_address = address
+                
+                profile.save()
 
 
-            profile.save()
-        
+        elif form_type == "password":
+            pass
         
         messages.success(request, "اطلاعات حساب کاربری با موفقیت ذخیره شد.")
         return redirect("accounts:profile")
@@ -109,7 +122,6 @@ def profile_view(request):
             else []
         ),
     }
-
 
     return render(request, "accounts/profile.html", context)
 

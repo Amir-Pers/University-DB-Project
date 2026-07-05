@@ -52,7 +52,7 @@
     <!-- منوی سایدبار (کنترلر تب‌ها) -->
     <div class="content-card" style="margin-top: 0; padding: 16px; height: fit-content;">
       <div style="display: flex; flex-direction: column; gap: 6px;">
-        <button class="btn sidebar-tab active" data-tab="my-ads"
+        <button class="btn sidebar-tab" data-tab="my-ads"
           style="text-align: right; display: block; width: 100%; padding: 12px 16px; background: transparent; color: var(--text);">📝
           آگهی‌های من</button>
         <button class="btn sidebar-tab" data-tab="favorites"
@@ -72,7 +72,7 @@
     <div>
 
       <!-- ================= تب ۱: آگهی‌های من ================= -->
-      <div id="my-ads" class="tab-content active">
+      <div id="my-ads" class="tab-content">
         <!-- گرید باکس‌های آماری شبیه باما -->
         <div class="detail-info-grid" style="margin: 0;">
           <div class="detail-box">
@@ -159,16 +159,15 @@
 
       <!-- ================= تب ۳: تنظیمات حساب ================= -->
       <div id="settings" class="tab-content">
-        <div class="content-card" style="margin-top: 0; padding: 24px;">
+        <div class="content-card" style="margin-top: 0; padding: 24px; display: flex; flex-direction: column; gap: 32px;">
 
-          <form method="POST" action="{% url 'accounts:profile' %}"
-            style="display: flex; flex-direction: column; gap: 20px;">
+          <!-- فرم اول: اطلاعات هویت و کاربری -->
+          <form method="POST" action="{% url 'accounts:profile' %}" style="display: flex; flex-direction: column; gap: 16px;">
             {% csrf_token %}
-
-            <!-- بخش اول: اطلاعات هویت و کاربری -->
+            <input type="hidden" name="form_type" value="identity">
+            
             <div>
-              <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--amber);">اطلاعات کاربری و
-                هویتی</h3>
+              <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--amber);">اطلاعات کاربری و هویتی</h3>
               <div style="display: flex; flex-direction: column; gap: 12px;">
 
                 <div class="field-grid">
@@ -185,8 +184,7 @@
                 <div class="field-grid">
                   <div class="field">
                     <label for="username">نام کاربری (Username)</label>
-                    <input type="text" id="username" name="username" value="{{ profile.username|default:'' }}"
-                      placeholder="نام کاربری خود را وارد کنید" required style="text-align: left; direction: ltr;">
+                    <input type="text" id="username" name="username" value="{{ profile.username|default:'' }}"placeholder="نام کاربری خود را وارد کنید" required style="text-align: left; direction: ltr;">
                   </div>
                   <div class="field">
                     <label for="national_id">کد ملی</label>
@@ -204,13 +202,20 @@
 
               </div>
             </div>
+            <button type="submit" class="btn btn-amber" style="width: fit-content; align-self: flex-start; padding: 10px 24px;">
+              ذخیره اطلاعات هویتی
+            </button>
+          </form>
 
-            <hr style="border: 0; border-top: 1px solid var(--line); margin: 5px 0;">
+          <hr style="border: 0; border-top: 1px solid var(--line); margin: 0;">
 
-            <!-- بخش دوم: اطلاعات سکونت (آدرس) -->
+          <!-- فرم دوم: اطلاعات سکونت (آدرس) -->
+          <form method="POST" action="{% url 'accounts:profile' %}" style="display: flex; flex-direction: column; gap: 16px;">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="address">
+
             <div>
-              <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--amber);">اطلاعات آدرس و
-                سکونت</h3>
+              <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--amber);">اطلاعات آدرس و سکونت</h3>
               <div style="display: flex; flex-direction: column; gap: 12px;">
 
                 <div class="field-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
@@ -218,8 +223,7 @@
                     <label for="province">استان</label>
                     <select id="province" name="province">
                       {% for province in provinces %}
-                      <option value="{{ province.province_id }}" {% if province.province_id == selected_province %}
-                        selected {% endif %}>
+                      <option value="{{ province.province_id }}" {% if province.province_id == selected_province %} selected {% endif %}>
                         {{ province.name }}
                       </option>
                       {% endfor %}
@@ -238,8 +242,7 @@
                   </div>
 
                   <div class="field">
-                    <label for="neighborhood">محله <span
-                        style="color: var(--muted); font-size: 11px;">(اختیاری)</span></label>
+                    <label for="neighborhood">محله <span style="color: var(--muted); font-size: 11px;">(اختیاری)</span></label>
                     <input type="text" id="neighborhood" name="neighborhood" placeholder="مثال: سعادت‌آباد"
                         value="{{ profile.default_address.neighborhood|default:'' }}">
                   </div>
@@ -247,13 +250,20 @@
 
               </div>
             </div>
+            <button type="submit" class="btn btn-amber" style="width: fit-content; align-self: flex-start; padding: 10px 24px;">
+              ذخیره اطلاعات آدرس
+            </button>
+          </form>
 
-            <hr style="border: 0; border-top: 1px solid var(--line); margin: 5px 0;">
+          <hr style="border: 0; border-top: 1px solid var(--line); margin: 0;">
 
-            <!-- بخش سوم: امنیت و تغییر رمز عبور -->
+          <!-- فرم سوم: امنیت و تغییر رمز عبور -->
+          <form method="POST" action="{% url 'accounts:profile' %}" style="display: flex; flex-direction: column; gap: 16px;">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="password">
+
             <div>
-              <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--amber);">تغییر رمز عبور
-              </h3>
+              <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--amber);">تغییر رمز عبور</h3>
               <div style="display: flex; flex-direction: column; gap: 12px;">
 
                 <div class="field">
@@ -274,14 +284,11 @@
 
               </div>
             </div>
-
-            <!-- دکمه ثبت فرم -->
-            <button type="submit" class="btn btn-amber"
-              style="width: fit-content; align-self: flex-start; padding: 12px 28px; margin-top: 10px;">
-              ذخیره تغییرات حساب
+            <button type="submit" class="btn btn-amber" style="width: fit-content; align-self: flex-start; padding: 10px 24px;">
+              تغییر رمز عبور
             </button>
-
           </form>
+
         </div>
       </div>
 
@@ -297,18 +304,31 @@
     const tabs = document.querySelectorAll(".sidebar-tab");
     const contents = document.querySelectorAll(".tab-content");
 
+    // تابع فعال‌سازی تب مورد نظر
+    function switchTab(tabId) {
+      tabs.forEach(t => t.classList.remove("active"));
+      contents.forEach(c => c.classList.remove("active"));
+
+      const activeTabButton = document.querySelector(`.sidebar-tab[data-tab="${tabId}"]`);
+      const activeContent = document.getElementById(tabId);
+
+      if (activeTabButton && activeContent) {
+        activeTabButton.classList.add("active");
+        activeContent.classList.add("active");
+        // ذخیره تب فعلی در مرورگر
+        localStorage.setItem("activeDashboardTab", tabId);
+      }
+    }
+
+    // ۱. بررسی اینکه آیا قبلاً تبی ذخیره شده است یا خیر (اگر نبود پیش‌فرض 'my-ads')
+    const savedTab = localStorage.getItem("activeDashboardTab") || "my-ads";
+    switchTab(savedTab);
+
+    // ۲. گوش دادن به رویداد کلیک روی تب‌ها
     tabs.forEach(tab => {
       tab.addEventListener("click", function () {
-        // ۱. حذف کلاس active از تمام دکمه‌های سایدبار
-        tabs.forEach(t => t.classList.remove("active"));
-        // ۲. مخفی کردن تمام بخش‌های محتوایی
-        contents.forEach(c => c.classList.remove("active"));
-
-        // ۳. فعال کردن تب فشرده شده
-        this.classList.add("active");
-        // ۴. نمایش محتوای متناظر با تب فعال شده
         const targetTab = this.getAttribute("data-tab");
-        document.getElementById(targetTab).classList.add("active");
+        switchTab(targetTab);
       });
     });
   });
