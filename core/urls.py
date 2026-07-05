@@ -25,6 +25,7 @@ urlpatterns = [
     path('accounts/', include("accounts.urls")),
     path('advertisements/', include("advertisements.urls")),
     path("locations/", include("locations.urls")),
+    path("vehicles/", include("vehicles.urls")),
 ]
 
 if settings.DEBUG:
