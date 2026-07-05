@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -22,14 +22,17 @@ def profile_view(request):
         username = request.POST.get('username', '').strip()
         national_id = request.POST.get('national_id', "").strip()
         
+        province_id = request.POST.get("province")
+        city_id = request.POST.get("city")
+        neighborhood = request.POST.get("neighborhood", "").strip()
+        
         if len(username) < 3:
             messages.error(request, "نام کاربری باید حداقل ۳ کاراکتر باشد.")
             return redirect("accounts:profile")
 
         if User.objects.filter(username=username).exclude(userid=profile.userid).exists():
-            if User.objects.filter(username=username).exclude(userid=profile.userid).exists():
-                messages.error(request, "این نام کاربری قبلاً انتخاب شده است.")
-                return redirect("accounts:profile")
+            messages.error(request, "این نام کاربری قبلاً انتخاب شده است.")
+            return redirect("accounts:profile")
             
         if not national_id.isdigit() or len(national_id) != 10:
             messages.error(request, "کد ملی باید از ۱۰ رقم تشکیل شده باشد.")
@@ -38,7 +41,17 @@ def profile_view(request):
         if User.objects.filter(national_id=national_id).exclude(userid=profile.userid).exists():
             messages.error(request, "این کد ملی قبلاً ثبت شده است.")
             return redirect("accounts:profile")
+        
+        if not province_id or not city_id:
+            messages.error(request, "استان و شهر را انتخاب کنید.")
+            return redirect("accounts:profile")
 
+
+        city = get_object_or_404(City, pk=city_id)
+
+        if city.province_id != int(province_id):
+            messages.error(request, "شهر انتخاب شده متعلق به استان انتخاب شده نیست.")
+            return redirect("accounts:profile")
 
         with transaction.atomic():
 
@@ -53,11 +66,23 @@ def profile_view(request):
                 profile.reg_status = True
                 profile.register_date = timezone.now()
 
+            if profile.default_address:
+                address = profile.default_address
+                address.city = city
+                address.neighborhood = neighborhood
+                address.save()
+
+            else:
+                address = Address.objects.create(
+                    city=city,
+                    neighborhood=neighborhood,
+                )
+                profile.default_address = address
+
 
             profile.save()
         
         
-
         messages.success(request, "اطلاعات حساب کاربری با موفقیت ذخیره شد.")
         return redirect("accounts:profile")
 

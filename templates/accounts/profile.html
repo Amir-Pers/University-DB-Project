@@ -291,6 +291,7 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="{% static 'js/location-selector.js' %}"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const tabs = document.querySelectorAll(".sidebar-tab");
