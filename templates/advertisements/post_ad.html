@@ -1,191 +1,249 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ثبت آگهی | کاروان</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
 
-<div class="bg-ambient" aria-hidden="true">
-  <div class="blob b1"></div>
-  <div class="blob b2"></div>
-  <div class="blob b3"></div>
-  <div class="grain"></div>
-</div>
-
-<header>
-  <div class="nav">
-    <a href="{% url 'home:index' %}" class="logo"><div class="mark">🚗</div>کاروان</a>
-    <div class="nav-actions">
-      <button class="theme-toggle" id="themeToggle" title="تغییر تم">
-        <span class="ico ico-moon">🌙</span>
-        <span class="ico ico-sun">☀️</span>
-      </button>
-      <button class="icon-btn" id="btnAccount" title="حساب کاربری">👤</button>
-      <button class="btn btn-amber" id="btnAddAd">+ ثبت آگهی</button>
+{% block content %}
+<main class="reveal reveal-1" style="max-width: 800px; margin: 0 auto; padding: 24px 16px;">
+  
+  <div class="content-card" style="padding: 28px;">
+    <div style="margin-bottom: 24px; text-align: center;">
+      <h2 style="font-size: 22px; font-weight: 800; color: var(--amber);">ثبت آگهی جدید خودرو</h2>
+      <p style="color: var(--muted); font-size: 13.5px; margin-top: 6px;">مشخصات خودروی خود را با دقت وارد کنید تا بهتر دیده شوید</p>
     </div>
-  </div>
-</header>
 
-<main>
-  <section class="page-hero reveal">
-    <div class="crumb"><a href="{% url 'home:index' %}">خانه</a> / <span>ثبت آگهی</span></div>
-    <h1>ثبت آگهی جدید</h1>
-    <p>مشخصات خودرو یا موتورسیکلتت رو کامل و صادقانه وارد کن تا سریع‌تر خریدار پیدا کنی.</p>
-  </section>
+    <!-- فرم اصلی ثبت آگهی با قابلیت ارسال فایل -->
+    <form method="POST" action="" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 24px;">
+      {% csrf_token %}
 
-  <!-- Shown if user is not logged in -->
-  <div id="loginRequired" class="content-card reveal reveal-1 hidden" style="text-align:center; padding:40px 24px;">
-    <div style="font-size:36px; margin-bottom:10px;">🔒</div>
-    <p style="color:var(--muted); font-size:14px; margin-bottom:18px;">برای ثبت آگهی، اول باید وارد حساب کاربری خودت بشی.</p>
-    <a href="account.html" class="btn btn-amber">ورود / ثبت‌نام</a>
-  </div>
+      <!-- ۱. اطلاعات پایه آگهی -->
+      <div>
+        <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--line);">اطلاعات اولیه</h3>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          
+          <div class="field">
+            <label for="title">عنوان آگهی</label>
+            <input type="text" id="title" name="title" placeholder="مثال: پژو ۲۰۷ اتوماتیک MC مدل ۱۴۰۲" required>
+          </div>
 
-  <!-- Shown if logged in -->
-  <div id="addAdSection" class="content-card reveal reveal-1 hidden">
-    <div class="form-err" id="addErr"></div>
-    <form id="addForm">
-      <div class="field">
-        <label>نوع آگهی</label>
-        <div class="type-toggle">
-          <button type="button" data-val="car" class="ad-type active">🚗 خودرو</button>
-          <button type="button" data-val="moto" class="ad-type">🏍️ موتورسیکلت</button>
+          <div class="field-grid">
+            <div class="field">
+              <label for="sell_type">نوع فروش</label>
+              <select id="sell_type" name="sell_type" required>
+                <option value="نقدی">نقدی</option>
+                <option value="اقساطی">اقساطی</option>
+                <option value="حواله">حواله</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="price">قیمت (تومان)</label>
+              <input type="number" id="price" name="price" placeholder="قیمت کل به تومان">
+            </div>
+          </div>
+
         </div>
       </div>
-      <div class="field-grid">
-        <div class="field"><label>برند</label><input id="adBrand" placeholder="مثلا پژو 206" required></div>
-        <div class="field"><label>مدل</label><input id="adModel" placeholder="مثلا تیپ ۵" required></div>
+
+      <!-- ۲. مشخصات فنی و وضعیت خودرو (بر اساس مدل دیتابیس) -->
+      <div>
+        <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--line);">مشخصات فنی و وضعیت بدنه</h3>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          
+          <div class="field-grid">
+            <div class="field">
+              <label for="km_age">کارکرد (کیلومتر)</label>
+              <input type="number" id="km_age" name="km_age" placeholder="مثال: ۲۲۰۰۰ (برای صفر عدد ۰ وارد کنید)" required>
+            </div>
+            <div class="field">
+              <label for="car_condition">وضعیت خودرو</label>
+              <select id="car_condition" name="car_condition">
+                <option value="کارکرده">کارکرده</option>
+                <option value="صفر">صفر</option>
+                <option value="حواله">حواله</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="body_status">وضعیت رنگ و بدنه</label>
+              <select id="body_status" name="body_status">
+                <option value="بدون رنگ">بدون رنگ</option>
+                <option value="صافکاری بی‌رنگ">صافکاری بی‌رنگ</option>
+                <option value="یک لکه رنگ">یک لکه رنگ</option>
+                <option value="چند لکه رنگ">چند لکه رنگ</option>
+                <option value="دوررنگ">دوررنگ</option>
+                <option value="کامل رنگ">کامل رنگ</option>
+                <option value="تصادفی">تصادفی</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="ad_type">نوع آگهی</label>
+              <select id="ad_type" name="ad_type">
+                <option value="شخصی">شخصی</option>
+                <option value="نمایشگاه">نمایشگاه</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-grid" style="grid-template-columns: 1fr 1fr; align-items: center; margin-top: 6px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <input type="checkbox" id="free_zone" name="free_zone" style="width: auto; cursor: pointer;">
+              <label for="free_zone" style="margin-bottom: 0; cursor: pointer;">خودرو منطقه آزاد است</label>
+            </div>
+          </div>
+
+        </div>
       </div>
-      <div class="field-grid">
-        <div class="field"><label>سال ساخت</label><input id="adYear" type="number" placeholder="1401" required></div>
-        <div class="field"><label>کارکرد (کیلومتر)</label><input id="adKm" type="number" placeholder="50000" required></div>
+
+      <!-- ۳. آپلود تصاویر خودرو (Multi-image Upload) -->
+      <div>
+        <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--line);">تصاویر خودرو</h3>
+        <div class="field">
+          <label>انتخاب تصاویر (امکان انتخاب همزمان چند عکس وجود دارد)</label>
+          <div style="border: 2px dashed var(--line); border-radius: 12px; padding: 24px; text-align: center; background: var(--bg2); position: relative; cursor: pointer;" id="dropzone">
+            <span style="font-size: 32px; display: block; margin-bottom: 8px;">📸</span>
+            <span style="font-size: 13px; color: var(--text); font-weight: 600;">تصاویر خود را اینجا رها کنید یا کلیک کنید</span>
+            <span style="display: block; font-size: 11px; color: var(--muted); margin-top: 4px;">فرمت‌های مجاز: JPG, PNG</span>
+            <input type="file" id="images" name="images" accept="image/*" multiple style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;">
+          </div>
+          <div id="image-preview-container" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px;">
+            <!-- پیش‌نمایش عکس‌ها با جاوااسکریپت اینجا ساخته می‌شود -->
+          </div>
+        </div>
       </div>
-      <div class="field-grid">
-        <div class="field"><label>قیمت (میلیون تومان)</label><input id="adPrice" type="number" placeholder="350" required></div>
-        <div class="field"><label>شهر</label><input id="adCity" placeholder="تهران" required></div>
+
+      <!-- ۴. سیستم آدرس هوشمند (آدرس پیش‌فرض کاربری یا آدرس جدید) -->
+      <div>
+        <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--line);">موقعیت و آدرس آگهی</h3>
+        
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <!-- رادیو باتن‌های انتخاب نوع آدرس -->
+          <div style="display: flex; gap: 24px; background: var(--bg2); padding: 14px; border-radius: 10px; border: 1px solid var(--line);">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <input type="radio" id="addr_type_default" name="address_mode" value="default" checked style="width: auto; cursor: pointer;">
+              <label for="addr_type_default" style="margin-bottom: 0; cursor: pointer; font-weight: 600;">استفاده از آدرس پیش‌فرض حساب</label>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <input type="radio" id="addr_type_new" name="address_mode" value="new" style="width: auto; cursor: pointer;">
+              <label for="addr_type_new" style="margin-bottom: 0; cursor: pointer; font-weight: 600;">ثبت آدرس جدید برای این آگهی</label>
+            </div>
+          </div>
+
+          <!-- باکس آدرس پیش‌فرض (در صورت وجود نشان داده می‌شود) -->
+          <div id="default-address-box" style="padding: 12px 16px; background: rgba(var(--amber), 0.05); border: 1px solid var(--line); border-radius: 8px; font-size: 13.5px; color: var(--text);">
+            📍 <strong>آدرس فعلی شما:</strong> 
+            {% if profile.default_address %}
+              {{ profile.default_address.province.name }}، {{ profile.default_address.city.name }} {% if profile.default_address.neighborhood %}، محله {{ profile.default_address.neighborhood }}{% endif %}
+            {% else %}
+              <span style="color: #f87171;">شما آدرس پیش‌فرضی ثبت نکرده‌اید. لطفاً گزینه «آدرس جدید» را انتخاب کنید.</span>
+            {% endif %}
+          </div>
+
+          <!-- فیلدهای آدرس جدید (به صورت پیش‌فرض مخفی است) -->
+          <div id="new-address-box" style="display: none; flex-direction: column; gap: 14px; animation: fadeUp .3s ease;">
+            <div class="field-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+              <div class="field">
+                <label for="province">استان</label>
+                <select id="province" name="province">
+                  <option value="" disabled selected>انتخاب استان...</option>
+                  {% for province in provinces %}
+                  <option value="{{ province.province_id }}">{{ province.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="city">شهر</label>
+                <select id="city" name="city">
+                  <option value="" disabled selected>انتخاب شهر...</option>
+                  {% for city in cities %}
+                  <option value="{{ city.city_id }}">{{ city.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="neighborhood">محله <span style="color: var(--muted); font-size: 11px;">(اختیاری)</span></label>
+                <input type="text" id="neighborhood" name="neighborhood" placeholder="مثال: سعادت‌آباد">
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
-      <div class="field"><label>شماره تماس</label><input id="adPhone" placeholder="09xxxxxxxxx" required></div>
-      <div class="field"><label>توضیحات</label><textarea id="adDesc" rows="3" placeholder="توضیح کوتاهی درباره وضعیت خودرو یا موتور…"></textarea></div>
-      <button type="submit" class="btn btn-amber" style="width:100%; margin-top:6px;">ثبت آگهی</button>
+
+      <!-- ۵. توضیحات آگهی -->
+      <div>
+        <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--line);">توضیحات تکمیلی</h3>
+        <div class="field">
+          <label for="descriptions">توضیحات آگهی</label>
+          <textarea id="descriptions" name="descriptions" rows="5" placeholder="جزئیات بیشتر مانند وضعیت بیمه، خط و خش، شرایط فروش و زمان پاسخگویی را بنویسید..."></textarea>
+        </div>
+      </div>
+
+      <!-- دکمه ارسال نهایی -->
+      <button type="submit" class="btn btn-amber" style="width: 100%; padding: 14px; font-size: 16px; font-weight: 700; margin-top: 10px;">
+        🚀 انتشار و ثبت نهایی آگهی
+      </button>
+
     </form>
   </div>
 </main>
+{% endblock %}
 
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div>
-        <div class="footer-brand"><div class="mark">🚗</div>کاروان</div>
-        <p class="footer-desc">پلتفرم رایگان خرید و فروش خودرو و موتورسیکلت. آگهی‌تو در چند ثانیه ثبت کن و مستقیم با خریدار یا فروشنده در ارتباط باش، بدون واسطه و بدون کارمزد.</p>
-        <div class="footer-social">
-          <a href="#" title="اینستاگرام">📷</a>
-          <a href="#" title="تلگرام">✈️</a>
-          <a href="#" title="واتساپ">💬</a>
-        </div>
-      </div>
-      <div class="footer-col">
-        <h4>دسترسی سریع</h4>
-        <ul>
-          <li><a href="index.html?type=car">خودروها</a></li>
-          <li><a href="index.html?type=moto">موتورسیکلت‌ها</a></li>
-          <li><a href="post-ad.html">ثبت آگهی</a></li>
-          <li><a href="account.html">حساب کاربری</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>پشتیبانی</h4>
-        <ul>
-          <li><a href="faq.html">سوالات متداول</a></li>
-          <li><a href="terms.html">قوانین و مقررات</a></li>
-          <li><a href="privacy.html">حریم خصوصی</a></li>
-          <li><a href="#">تماس با ما</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© <span id="footYear"></span> کاروان · تمامی حقوق محفوظ است</span>
-      <span>ساخته شده با <span class="heart">♥</span> · نسخه نمایشی، داده‌ها فقط روی همین مرورگر ذخیره می‌شن</span>
-    </div>
-  </div>
-</footer>
-
-<div class="toast" id="toast"></div>
-
-<script src="{% static 'js/app.js' %}"></script>
-<script src="{% static 'js/bg-animation.js' %}"></script>
+{% block extra_js %}
+<script src="{% static 'js/location-selector.js' %}"></script>
 <script>
-let adType = 'car';
+  document.addEventListener("DOMContentLoaded", function () {
+    // منطق سوئیچ کردن بین آدرس پیش‌فرض و آدرس جدید
+    const addressRadios = document.querySelectorAll('input[name="address_mode"]');
+    const defaultBox = document.getElementById('default-address-box');
+    const newBox = document.getElementById('new-address-box');
+    const provinceSelect = document.getElementById('province');
+    const citySelect = document.getElementById('city');
 
-function guardAccess(){
-  const session = loadSession();
-  const loginBox = document.getElementById('loginRequired');
-  const formBox = document.getElementById('addAdSection');
-  if(session){
-    loginBox.classList.add('hidden');
-    formBox.classList.remove('hidden');
-  } else {
-    loginBox.classList.remove('hidden');
-    formBox.classList.add('hidden');
-    showToast('برای ثبت آگهی اول وارد حساب شو');
-  }
-  return session;
-}
+    addressRadios.forEach(radio => {
+      radio.addEventListener('change', function () {
+        if (this.value === 'default') {
+          defaultBox.style.display = 'block';
+          newBox.style.display = 'none';
+          provinceSelect.removeAttribute('required');
+          citySelect.removeAttribute('required');
+        } else {
+          defaultBox.style.display = 'none';
+          newBox.style.display = 'flex';
+          provinceSelect.setAttribute('required', 'required');
+          citySelect.setAttribute('required', 'required');
+        }
+      });
+    });
 
-function initAddAdFlow(){
-  document.querySelectorAll('.ad-type').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      document.querySelectorAll('.ad-type').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      adType = b.dataset.val;
+    // سیستم پیش‌نمایش تصاویر آپلود شده
+    const imageInput = document.getElementById('images');
+    const previewContainer = document.getElementById('image-preview-container');
+
+    imageInput.addEventListener('change', function () {
+      previewContainer.innerHTML = ''; // پاک کردن پیش‌نمایش‌های قبلی
+      
+      if (this.files) {
+        Array.from(this.files).forEach(file => {
+          if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              const imgWrapper = document.createElement('div');
+              imgWrapper.style.cssText = 'position: relative; width: 80px; height: 80px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line);';
+              
+              const img = document.createElement('img');
+              img.src = e.target.result;
+              img.style.cssText = 'width: 100%; height: 100%; object-fit: cover;';
+              
+              imgWrapper.appendChild(img);
+              previewContainer.appendChild(imgWrapper);
+            }
+            reader.readAsDataURL(file);
+          }
+        });
+      }
     });
   });
-
-  document.getElementById('addForm').addEventListener('submit', e=>{
-    e.preventDefault();
-    const session = loadSession();
-    if(!session){ guardAccess(); return; }
-
-    const errBox = document.getElementById('addErr');
-    errBox.style.display = 'none';
-
-    const brand = document.getElementById('adBrand').value.trim();
-    const model = document.getElementById('adModel').value.trim();
-    const year = parseInt(document.getElementById('adYear').value);
-    const km = parseInt(document.getElementById('adKm').value);
-    const price = parseFloat(document.getElementById('adPrice').value);
-    const city = document.getElementById('adCity').value.trim();
-    const phone = document.getElementById('adPhone').value.trim();
-    const desc = document.getElementById('adDesc').value.trim();
-
-    if(!brand || !model || !year || !km || !price || !city || !phone){
-      errBox.textContent = 'لطفا همه فیلدهای ضروری رو پر کن.';
-      errBox.style.display = 'block';
-      return;
-    }
-
-    const listings = loadListings();
-    const newAd = {
-      id: Date.now(),
-      type: adType, brand, model, year, km, price, city, phone, desc,
-      owner: session.email
-    };
-    listings.push(newAd);
-    saveListings(listings);
-    document.getElementById('addForm').reset();
-    showToast('آگهی با موفقیت ثبت شد ✅');
-    setTimeout(()=>{ window.location.href = 'account.html'; }, 900);
-  });
-}
-
-document.addEventListener('DOMContentLoaded', ()=>{
-  guardAccess();
-  initAddAdFlow();
-});
 </script>
-</body>
-</html>
+{% endblock %}

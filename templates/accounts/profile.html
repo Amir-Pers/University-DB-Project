@@ -17,7 +17,7 @@
       </div>
       <div class="email">شماره همراه: {{ profile.phone }}</div>
     </div>
-    <button class="btn btn-amber">+ ثبت آگهی جدید</button>
+    <a href="{% url 'advertisements:post_ad' %}" class="btn btn-amber">+ ثبت آگهی جدید</a>
   </div>
 
   <!-- بدنه اصلی داشبورد: سایدبار + محتوا -->

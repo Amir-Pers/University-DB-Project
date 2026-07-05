@@ -68,7 +68,7 @@
         </button>
         <a href="{% url 'accounts:profile' %}" class="icon-btn" id="btnAccount" title="حساب کاربری">👤</ش>
         {% if request.user.is_authenticated %}
-          <a href="#" class="btn btn-amber" id="btnAddAd">+ ثبت آگهی</a>
+          <a href="{% url 'advertisements:post_ad' %}" class="btn btn-amber" id="btnAddAd">+ ثبت آگهی</a>
         {% else %}
           <a href="{% url 'accounts:login' %}" class="btn btn-amber" id="btnAddAd">ورود</a>
         {% endif %}
