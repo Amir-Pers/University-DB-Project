@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from .models import User
+from locations.models import Address, Province, City
 
 @login_required
 def profile_view(request):
@@ -16,6 +17,8 @@ def profile_view(request):
 
     if request.method == "POST":
 
+        first_name = request.POST.get("first_name", "").strip()
+        last_name = request.POST.get("last_name", "").strip()
         username = request.POST.get('username', '').strip()
         national_id = request.POST.get('national_id', "").strip()
         
@@ -36,12 +39,24 @@ def profile_view(request):
             messages.error(request, "این کد ملی قبلاً ثبت شده است.")
             return redirect("accounts:profile")
 
-        profile.username = username
-        if not profile.reg_status:
-            profile.national_id = national_id
-            profile.reg_status = True
-            profile.register_date = timezone.now()
-        profile.save()
+
+        with transaction.atomic():
+
+            request.user.first_name = first_name
+            request.user.last_name = last_name
+            request.user.save()
+
+            profile.username = username
+
+            if not profile.reg_status:
+                profile.national_id = national_id
+                profile.reg_status = True
+                profile.register_date = timezone.now()
+
+
+            profile.save()
+        
+        
 
         messages.success(request, "اطلاعات حساب کاربری با موفقیت ذخیره شد.")
         return redirect("accounts:profile")
@@ -49,6 +64,25 @@ def profile_view(request):
 
     context = {
         "profile": profile,
+        'provinces' : Province.objects.prefetch_related("cities").all(),
+
+        "selected_province": (
+            profile.default_address.city.province.province_id
+            if profile.default_address
+            else None
+        ),
+
+        "selected_city": (
+            profile.default_address.city.city_id
+            if profile.default_address
+            else None
+        ),
+
+        "cities": (
+            profile.default_address.city.province.cities.all()
+            if profile.default_address
+            else []
+        ),
     }
 
 

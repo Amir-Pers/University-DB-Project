@@ -173,12 +173,12 @@
 
                 <div class="field-grid">
                   <div class="field">
-                    <label for="first_name" >نام</label>
+                    <label for="first_name">نام</label>
                     <input type="text" id="first_name" name="first_name" value="{{ user.first_name|default:'' }}">
                   </div>
                   <div class="field">
                     <label for="last_name">نام خانوادگی</label>
-                    <input type="text" id="last_name" name="last_name" value="{{ user.last_name|default:'' }}" >
+                    <input type="text" id="last_name" name="last_name" value="{{ user.last_name|default:'' }}">
                   </div>
                 </div>
 
@@ -190,9 +190,9 @@
                   </div>
                   <div class="field">
                     <label for="national_id">کد ملی</label>
-                    <input type="text" id="national_id" name="national_id" placeholder="کد ملی ۱۰ رقمی" 
-                      maxlength="10"value="{{ profile.national_id|default:''}}" 
-                      {% if profile.reg_status %}readonly{% endif %} required style="text-align: left; direction: ltr;">
+                    <input type="text" id="national_id" name="national_id" placeholder="کد ملی ۱۰ رقمی" maxlength="10"
+                      value="{{ profile.national_id|default:''}}" {% if profile.reg_status %}readonly{% endif %}
+                      required style="text-align: left; direction: ltr;">
                   </div>
                 </div>
 
@@ -217,26 +217,31 @@
                   <div class="field">
                     <label for="province">استان</label>
                     <select id="province" name="province">
-                      <option value="" disabled selected>انتخاب استان...</option>
-                      <option value="tehran">تهران</option>
-                      <option value="isfahan">اصفهان</option>
-                      <option value="razavi">خراسان رضوی</option>
+                      {% for province in provinces %}
+                      <option value="{{ province.province_id }}" {% if province.province_id == selected_province %}
+                        selected {% endif %}>
+                        {{ province.name }}
+                      </option>
+                      {% endfor %}
                     </select>
                   </div>
 
                   <div class="field">
                     <label for="city">شهر</label>
-                    <select id="city" name="city" >
-                      <option value="" disabled selected>انتخاب شهر...</option>
-                      <option value="tehran">تهران</option>
-                      <option value="rey">ری</option>
+                    <select id="city" name="city">
+                      {% for city in cities %}
+                      <option value="{{ city.city_id }}" {% if city.city_id == selected_city %} selected {% endif %}>
+                        {{ city.name }}
+                      </option>
+                      {% endfor %}
                     </select>
                   </div>
 
                   <div class="field">
                     <label for="neighborhood">محله <span
                         style="color: var(--muted); font-size: 11px;">(اختیاری)</span></label>
-                    <input type="text" id="neighborhood" name="neighborhood" placeholder="مثال: سعادت‌آباد">
+                    <input type="text" id="neighborhood" name="neighborhood" placeholder="مثال: سعادت‌آباد"
+                        value="{{ profile.default_address.neighborhood|default:'' }}">
                   </div>
                 </div>
 
