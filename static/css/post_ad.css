@@ -1,0 +1,27 @@
+/* اصلاح دکمه نهایی سابمیت برای درخشش و زیبایی بیشتر */
+#btn-submit-final {
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+  border: none;
+  color: #000000 !important;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#btn-submit-final:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
+  opacity: 1 !important;
+}
+
+/* افکت‌های هاور تمیز برای دکمه مرحله قبل */
+#btn-prev {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--text);
+  transition: all 0.2s ease;
+}
+
+#btn-prev:hover {
+  background: var(--bg1);
+  border-color: var(--amber);
+  color: var(--amber);
+}

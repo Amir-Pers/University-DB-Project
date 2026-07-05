@@ -2,55 +2,192 @@
 {% load static %}
 
 {% block content %}
-<main class="reveal reveal-1" style="max-width: 800px; margin: 0 auto; padding: 24px 16px;">
+<main class="reveal reveal-1" style="max-width: 850px; margin: 0 auto; padding: 24px 16px;">
   
-  <div class="content-card" style="padding: 28px;">
-    <div style="margin-bottom: 24px; text-align: center;">
-      <h2 style="font-size: 22px; font-weight: 800; color: var(--amber);">ثبت آگهی جدید خودرو</h2>
-      <p style="color: var(--muted); font-size: 13.5px; margin-top: 6px;">مشخصات خودروی خود را با دقت وارد کنید تا بهتر دیده شوید</p>
+  <div style="margin-bottom: 32px; text-align: center;">
+    <h2 style="font-size: 24px; font-weight: 800; color: var(--amber); margin-bottom: 8px;">ثبت آگهی جدید وسایل نقلیه</h2>
+    <p style="color: var(--muted); font-size: 14px;">مراحل زیر را به ترتیب تکمیل کنید تا آگهی شما ثبت شود</p>
+  </div>
+
+  <div class="stepper-container" style="display: flex; justify-content: space-between; align-items: center; position: relative; margin-bottom: 40px; direction: rtl; padding: 0 10px;">
+    <div style="position: absolute; top: 20px; left: 0; right: 0; height: 2px; background: var(--line); z-index: 1;"></div>
+    
+    <div class="step-item active" data-step="1" style="z-index: 2; text-align: center; flex: 1;">
+      <div class="step-circle" style="width: 40px; height: 40px; border-radius: 50%; background: var(--amber); color: var(--btn-text); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: 700; border: 2px solid var(--amber); transition: all 0.3s;">۱</div>
+      <div class="step-label" style="font-size: 12px; font-weight: 700; color: var(--amber);">اطلاعات فروش</div>
     </div>
+    <div class="step-item" data-step="2" style="z-index: 2; text-align: center; flex: 1;">
+      <div class="step-circle" style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg2); color: var(--muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: 700; border: 2px solid var(--line); transition: all 0.3s;">۲</div>
+      <div class="step-label" style="font-size: 12px; font-weight: 500; color: var(--muted);">انتخاب وسیله</div>
+    </div>
+    <div class="step-item" data-step="3" style="z-index: 2; text-align: center; flex: 1;">
+      <div class="step-circle" style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg2); color: var(--muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: 700; border: 2px solid var(--line); transition: all 0.3s;">۳</div>
+      <div class="step-label" style="font-size: 12px; font-weight: 500; color: var(--muted);">مشخصات فنی</div>
+    </div>
+    <div class="step-item" data-step="4" style="z-index: 2; text-align: center; flex: 1;">
+      <div class="step-circle" style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg2); color: var(--muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: 700; border: 2px solid var(--line); transition: all 0.3s;">۴</div>
+      <div class="step-label" style="font-size: 12px; font-weight: 500; color: var(--muted);">تصاویر</div>
+    </div>
+    <div class="step-item" data-step="5" style="z-index: 2; text-align: center; flex: 1;">
+      <div class="step-circle" style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg2); color: var(--muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: 700; border: 2px solid var(--line); transition: all 0.3s;">۵</div>
+      <div class="step-label" style="font-size: 12px; font-weight: 500; color: var(--muted);">آدرس</div>
+    </div>
+    <div class="step-item" data-step="6" style="z-index: 2; text-align: center; flex: 1;">
+      <div class="step-circle" style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg2); color: var(--muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: 700; border: 2px solid var(--line); transition: all 0.3s;">۶</div>
+      <div class="step-label" style="font-size: 12px; font-weight: 500; color: var(--muted);">توضیحات</div>
+    </div>
+    <div class="step-item" data-step="7" style="z-index: 2; text-align: center; flex: 1;">
+      <div class="step-circle" style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg2); color: var(--muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: 700; border: 2px solid var(--line); transition: all 0.3s;">۷</div>
+      <div class="step-label" style="font-size: 12px; font-weight: 500; color: var(--muted);">پیش‌نمایش</div>
+    </div>
+  </div>
 
-    <!-- فرم اصلی ثبت آگهی با قابلیت ارسال فایل -->
-    <form method="POST" action="" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 24px;">
-      {% csrf_token %}
+  <form id="multi-step-form" class="wizard-form-container" method="POST" action="" enctype="multipart/form-data">
+    {% csrf_token %}
 
-      <!-- ۱. اطلاعات پایه آگهی -->
-      <div>
-        <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--line);">اطلاعات اولیه</h3>
-        <div style="display: flex; flex-direction: column; gap: 14px;">
-          
+    <div style="display: flex; flex-direction: column; gap: 24px; margin-bottom: 24px;">
+
+      <!-- مرحله ۱: اطلاعات فروش -->
+      <div class="wizard-step-card" data-step="1">
+        <div class="step-header">
+          <div>
+            <h3 style="font-size: 16px; font-weight: 700; color: var(--amber); margin: 0;">مرحله ۱: اطلاعات فروش</h3>
+            <p style="font-size: 12px; color: var(--muted); margin: 4px 0 0 0;">نوع فروش و مبالغ مربوطه را مشخص کنید</p>
+          </div>
+          <span style="font-size: 18px; color: var(--amber);">⏳</span>
+        </div>
+        <div class="step-body">
           <div class="field">
-            <label for="title">عنوان آگهی</label>
-            <input type="text" id="title" name="title" placeholder="مثال: پژو ۲۰۷ اتوماتیک MC مدل ۱۴۰۲" required>
+            <label for="sell_type">نوع فروش <span style="color: #f87171;">*</span></label>
+            <select id="sell_type" name="sell_type" required>
+              <option value="نقدی" selected>نقدی</option>
+              <option value="اقساطی">اقساطی</option>
+              <option value="حواله">حواله</option>
+              <option value="توافقی">توافقی</option>
+            </select>
           </div>
 
-          <div class="field-grid">
+          <div id="sell-fields-cash" class="sell-type-group">
             <div class="field">
-              <label for="sell_type">نوع فروش</label>
-              <select id="sell_type" name="sell_type" required>
-                <option value="نقدی">نقدی</option>
-                <option value="اقساطی">اقساطی</option>
-                <option value="حواله">حواله</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="price">قیمت (تومان)</label>
-              <input type="number" id="price" name="price" placeholder="قیمت کل به تومان">
+              <label for="price">قیمت کل (تومان) <span style="color: #f87171;">*</span></label>
+              <input type="number" id="price" name="price" placeholder="مثال: ۵۵۰,۰۰۰,۰۰۰">
             </div>
           </div>
 
+          <div id="sell-fields-installment" class="sell-type-group" style="display: none;">
+            <div class="field-grid">
+              <div class="field">
+                <label for="pre_payment">مبلغ پیش‌پرداخت (تومان) <span style="color: #f87171;">*</span></label>
+                <input type="number" id="pre_payment" name="pre_payment" placeholder="مثال: ۲۰۰,۰۰۰,۰۰۰">
+              </div>
+              <div class="field">
+                <label for="installment_amount">مبلغ هر قسط (تومان) <span style="color: #f87171;">*</span></label>
+                <input type="number" id="installment_amount" name="installment_amount" placeholder="مثال: ۱۵,۰۰۰,۰۰۰">
+              </div>
+            </div>
+            <div class="field-grid" style="margin-top: 16px;">
+              <div class="field">
+                <label for="payment_period">دوره پرداخت <span style="color: #f87171;">*</span></label>
+                <select id="payment_period" name="payment_period">
+                  <option value="ماهانه">ماهانه</option>
+                  <option value="دو ماهه">دو ماهه</option>
+                  <option value="سه ماهه (فصلی)">سه ماهه (فصلی)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="installment_count">تعداد اقساط <span style="color: #f87171;">*</span></label>
+                <input type="number" id="installment_count" name="installment_count" placeholder="مثال: ۱۲">
+              </div>
+            </div>
+            <div class="field" style="margin-top: 16px;">
+              <label for="delivery_time_inst">زمان تحویل <span style="color: #f87171;">*</span></label>
+              <input type="text" id="delivery_time_inst" name="delivery_time_inst" placeholder="مثال: فوری، ۳۰ روزه">
+            </div>
+          </div>
+
+          <div id="sell-fields-draft" class="sell-type-group" style="display: none;">
+            <div class="field-grid">
+              <div class="field">
+                <label for="deposit_amount">مبلغ واریزی تا کنون (تومان) <span style="color: #f87171;">*</span></label>
+                <input type="number" id="deposit_amount" name="deposit_amount" placeholder="مثال: ۱۰۰,۰۰۰,۰۰۰">
+              </div>
+              <div class="field">
+                <label for="final_price">مبلغ نهایی تقریبی (تومان) <span style="color: #f87171;">*</span></label>
+                <input type="number" id="final_price" name="final_price" placeholder="قیمت تمام شده برای خریدار">
+              </div>
+            </div>
+            <div class="field" style="margin-top: 16px;">
+              <label for="delivery_time_draft">زمان تحویل حواله <span style="color: #f87171;">*</span></label>
+              <input type="text" id="delivery_time_draft" name="delivery_time_draft" placeholder="مثال: بهمن ۱۴۰۵">
+            </div>
+          </div>
+
+          <div id="sell-fields-agreement" class="sell-type-group" style="display: none; padding: 12px; background: var(--amber-soft); border-radius: 8px; text-align: center; color: var(--text); font-size: 13px;">
+            🤝 قیمت پس از تماس یا بر اساس توافق تعیین خواهد شد.
+          </div>
         </div>
       </div>
 
-      <!-- ۲. مشخصات فنی و وضعیت خودرو (بر اساس مدل دیتابیس) -->
-      <div>
-        <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--line);">مشخصات فنی و وضعیت بدنه</h3>
-        <div style="display: flex; flex-direction: column; gap: 14px;">
-          
+      <!-- مرحله ۲: انتخاب وسیله -->
+      <div class="wizard-step-card collapsed" data-step="2">
+        <div class="step-header">
+          <div>
+            <h3 style="font-size: 15px; font-weight: 700; margin: 0;">مرحله ۲: انتخاب وسیله</h3>
+            <p style="font-size: 12px; color: var(--muted); margin: 4px 0 0 0;">نوع وسیله، برند و مدل را انتخاب کنید</p>
+          </div>
+          <span style="font-size: 16px; color: var(--muted);">🔽</span>
+        </div>
+        <div class="step-body" style="display: none;">
+          <div class="field">
+            <label for="vehicle_type">نوع وسیله نقلیه <span style="color: #f87171;">*</span></label>
+            <select id="vehicle_type" name="vehicle_type">
+              <option value="خودرو" selected>خودرو</option>
+              <option value="موتورسیکلت">موتورسیکلت</option>
+            </select>
+          </div>
+          <div class="field-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+            <div class="field">
+              <label for="car_brand">برند <span style="color: #f87171;">*</span></label>
+              <select id="car_brand" name="car_brand">
+                <option value="" disabled selected>انتخاب برند...</option>
+                <option value="irankhodro">ایران خودرو</option>
+                <option value="saipa">سایپا</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="car_model">مدل <span style="color: #f87171;">*</span></label>
+              <select id="car_model" name="car_model">
+                <option value="" disabled selected>انتخاب مدل...</option>
+                <option value="207">پژو ۲۰۷</option>
+                <option value="shahin">شاهین</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="car_tip">تیپ</label>
+              <select id="car_tip" name="car_tip">
+                <option value="" disabled selected>انتخاب تیپ (اختیاری)...</option>
+                <option value="tu5">TU5</option>
+                <option value="mc">MC اتوماتیک</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- مرحله ۳: مشخصات فنی -->
+      <div class="wizard-step-card collapsed" data-step="3">
+        <div class="step-header">
+          <div>
+            <h3 style="font-size: 15px; font-weight: 700; margin: 0;">مرحله ۳: مشخصات فنی و ظاهری</h3>
+            <p style="font-size: 12px; color: var(--muted); margin: 4px 0 0 0;">جزئیات بدنه، رنگ و جعبه‌دنده را مشخص کنید</p>
+          </div>
+          <span style="font-size: 16px; color: var(--muted);">🔽</span>
+        </div>
+        <div class="step-body" style="display: none;">
           <div class="field-grid">
             <div class="field">
-              <label for="km_age">کارکرد (کیلومتر)</label>
-              <input type="number" id="km_age" name="km_age" placeholder="مثال: ۲۲۰۰۰ (برای صفر عدد ۰ وارد کنید)" required>
+              <label for="km_age">کارکرد (کیلومتر) <span style="color: #f87171;">*</span></label>
+              <input type="number" id="km_age" name="km_age" placeholder="برای صفر عدد ۰ وارد کنید">
             </div>
             <div class="field">
               <label for="car_condition">وضعیت خودرو</label>
@@ -61,7 +198,6 @@
               </select>
             </div>
           </div>
-
           <div class="field-grid">
             <div class="field">
               <label for="body_status">وضعیت رنگ و بدنه</label>
@@ -69,10 +205,7 @@
                 <option value="بدون رنگ">بدون رنگ</option>
                 <option value="صافکاری بی‌رنگ">صافکاری بی‌رنگ</option>
                 <option value="یک لکه رنگ">یک لکه رنگ</option>
-                <option value="چند لکه رنگ">چند لکه رنگ</option>
                 <option value="دوررنگ">دوررنگ</option>
-                <option value="کامل رنگ">کامل رنگ</option>
-                <option value="تصادفی">تصادفی</option>
               </select>
             </div>
             <div class="field">
@@ -83,167 +216,273 @@
               </select>
             </div>
           </div>
-
-          <div class="field-grid" style="grid-template-columns: 1fr 1fr; align-items: center; margin-top: 6px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <input type="checkbox" id="free_zone" name="free_zone" style="width: auto; cursor: pointer;">
-              <label for="free_zone" style="margin-bottom: 0; cursor: pointer;">خودرو منطقه آزاد است</label>
+          <div class="field-grid">
+            <div class="field">
+              <label for="body_color">رنگ بدنه <span style="color: #f87171;">*</span></label>
+              <input type="text" id="body_color" name="body_color" placeholder="مثال: سفید، مشکی متالیک">
+            </div>
+            <div class="field">
+              <label for="cabin_color">رنگ کابین <span style="color: var(--muted); font-size: 11px;">(اختیاری)</span></label>
+              <input type="text" id="cabin_color" name="cabin_color" placeholder="مثال: مارون، مشکی">
             </div>
           </div>
-
+          <div class="field-grid">
+            <div class="field">
+              <label for="gearbox">نوع گیربکس <span style="color: #f87171;">*</span></label>
+              <select id="gearbox" name="gearbox">
+                <option value="" disabled selected>انتخاب کنید...</option>
+                <option value="دنده‌ای">دنده‌ای</option>
+                <option value="اتوماتیک">اتوماتیک</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="fuel_type">نوع سوخت <span style="color: #f87171;">*</span></label>
+              <select id="fuel_type" name="fuel_type">
+                <option value="" disabled selected>انتخاب کنید...</option>
+                <option value="بنزینی">بنزینی</option>
+                <option value="دوگانه سوز">دوگانه سوز</option>
+                <option value="هیبرید">هیبرید</option>
+                <option value="برقی">برقی</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- ۳. آپلود تصاویر خودرو (Multi-image Upload) -->
-      <div>
-        <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--line);">تصاویر خودرو</h3>
-        <div class="field">
-          <label>انتخاب تصاویر (امکان انتخاب همزمان چند عکس وجود دارد)</label>
-          <div style="border: 2px dashed var(--line); border-radius: 12px; padding: 24px; text-align: center; background: var(--bg2); position: relative; cursor: pointer;" id="dropzone">
-            <span style="font-size: 32px; display: block; margin-bottom: 8px;">📸</span>
-            <span style="font-size: 13px; color: var(--text); font-weight: 600;">تصاویر خود را اینجا رها کنید یا کلیک کنید</span>
-            <span style="display: block; font-size: 11px; color: var(--muted); margin-top: 4px;">فرمت‌های مجاز: JPG, PNG</span>
-            <input type="file" id="images" name="images" accept="image/*" multiple style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;">
+      <!-- مرحله ۴: تصاویر آگهی -->
+      <div class="wizard-step-card collapsed" data-step="4">
+        <div class="step-header">
+          <div>
+            <h3 style="font-size: 15px; font-weight: 700; margin: 0;">مرحله ۴: تصاویر آگهی</h3>
+            <p style="font-size: 12px; color: var(--muted); margin: 4px 0 0 0;">حداکثر تا ۱۰ تصویر بارگذاری کنید</p>
           </div>
-          <div id="image-preview-container" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px;">
-            <!-- پیش‌نمایش عکس‌ها با جاوااسکریپت اینجا ساخته می‌شود -->
+          <span style="font-size: 16px; color: var(--muted);">🔽</span>
+        </div>
+        <div class="step-body" style="display: none;">
+          <div class="field">
+            <div style="border: 2px dashed var(--line); border-radius: 12px; padding: 24px; text-align: center; background: var(--bg); position: relative;">
+              <span style="font-size: 32px; display: block; margin-bottom: 8px;">📸</span>
+              <span style="font-size: 13px; font-weight: 600; color: var(--text);">تصاویر خود را انتخاب یا اینجا رها کنید</span>
+              <span style="display:block; font-size:11px; color: var(--muted); margin-top:4px;">حداکثر ظرفیت: ۱۰ عکس</span>
+              <input type="file" id="images" name="images" accept="image/*" multiple style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;">
+            </div>
+            <div id="image-preview-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 12px; margin-top: 16px;"></div>
           </div>
         </div>
       </div>
 
-      <!-- ۴. سیستم آدرس هوشمند (آدرس پیش‌فرض کاربری یا آدرس جدید) -->
-      <div>
-        <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--line);">موقعیت و آدرس آگهی</h3>
-        
-        <div style="display: flex; flex-direction: column; gap: 14px;">
-          <!-- رادیو باتن‌های انتخاب نوع آدرس -->
-          <div style="display: flex; gap: 24px; background: var(--bg2); padding: 14px; border-radius: 10px; border: 1px solid var(--line);">
+      <!-- مرحله ۵: موقعیت و آدرس -->
+      <div class="wizard-step-card collapsed" data-step="5">
+        <div class="step-header">
+          <div>
+            <h3 style="font-size: 15px; font-weight: 700; margin: 0;">مرحله ۵: موقعیت و آدرس</h3>
+            <p style="font-size: 12px; color: var(--muted); margin: 4px 0 0 0;">محل بازدید وسیله نقلیه</p>
+          </div>
+          <span style="font-size: 16px; color: var(--muted);">🔽</span>
+        </div>
+        <div class="step-body" style="display: none;">
+          <div style="display: flex; gap: 24px; background: var(--bg); padding: 14px; border-radius: 12px; border: 1px solid var(--line);">
             <div style="display: flex; align-items: center; gap: 8px;">
-              <input type="radio" id="addr_type_default" name="address_mode" value="default" checked style="width: auto; cursor: pointer;">
-              <label for="addr_type_default" style="margin-bottom: 0; cursor: pointer; font-weight: 600;">استفاده از آدرس پیش‌فرض حساب</label>
+              <input type="radio" id="addr_type_default" name="address_mode" value="default" checked style="width: auto;">
+              <label for="addr_type_default" style="margin-bottom:0; cursor:pointer;">آدرس پیش‌فرض حساب کاربری</label>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <input type="radio" id="addr_type_new" name="address_mode" value="new" style="width: auto; cursor: pointer;">
-              <label for="addr_type_new" style="margin-bottom: 0; cursor: pointer; font-weight: 600;">ثبت آدرس جدید برای این آگهی</label>
+              <input type="radio" id="addr_type_new" name="address_mode" value="new" style="width: auto;">
+              <label for="addr_type_new" style="margin-bottom:0; cursor:pointer;">ثبت آدرس جدید</label>
             </div>
           </div>
 
-          <!-- باکس آدرس پیش‌فرض (در صورت وجود نشان داده می‌شود) -->
-          <div id="default-address-box" style="padding: 12px 16px; background: rgba(var(--amber), 0.05); border: 1px solid var(--line); border-radius: 8px; font-size: 13.5px; color: var(--text);">
-            📍 <strong>آدرس فعلی شما:</strong> 
-            {% if profile.default_address %}
-              {{ profile.default_address.province.name }}، {{ profile.default_address.city.name }} {% if profile.default_address.neighborhood %}، محله {{ profile.default_address.neighborhood }}{% endif %}
-            {% else %}
-              <span style="color: #f87171;">شما آدرس پیش‌فرضی ثبت نکرده‌اید. لطفاً گزینه «آدرس جدید» را انتخاب کنید.</span>
-            {% endif %}
+          <!-- باکس آدرس پیش‌فرض -->
+          <div id="default-address-box" style="padding: 14px; background: var(--amber-soft); border-radius: 12px; font-size: 13.5px; border: 1px dashed var(--amber); color: var(--text);">
+            📍 آگهی شما با موقعیت جغرافیایی ثبت‌شده در پروفایلتان منتشر خواهد شد.
           </div>
 
-          <!-- فیلدهای آدرس جدید (به صورت پیش‌فرض مخفی است) -->
-          <div id="new-address-box" style="display: none; flex-direction: column; gap: 14px; animation: fadeUp .3s ease;">
-            <div class="field-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+          <!-- باکس آدرس جدید -->
+          <div id="new-address-box" style="display: none; flex-direction: column; gap: 16px;">
+            <div class="field-grid">
               <div class="field">
-                <label for="province">استان</label>
-                <select id="province" name="province">
+                <label for="state">استان <span style="color: #f87171;">*</span></label>
+                <select id="state" name="state">
                   <option value="" disabled selected>انتخاب استان...</option>
-                  {% for province in provinces %}
-                  <option value="{{ province.province_id }}">{{ province.name }}</option>
-                  {% endfor %}
+                  <option value="تهران">تهران</option>
+                  <option value="خراسان رضوی">خراسان رضوی</option>
+                  <option value="اصفهان">اصفهان</option>
+                  <option value="فارس">فارس</option>
                 </select>
               </div>
-
               <div class="field">
-                <label for="city">شهر</label>
+                <label for="city">شهر <span style="color: #f87171;">*</span></label>
                 <select id="city" name="city">
                   <option value="" disabled selected>انتخاب شهر...</option>
-                  {% for city in cities %}
-                  <option value="{{ city.city_id }}">{{ city.name }}</option>
-                  {% endfor %}
+                  <option value="تهران">تهران</option>
+                  <option value="مشهد">مشهد</option>
+                  <option value="اصفهان">اصفهان</option>
+                  <option value="شیراز">شیراز</option>
                 </select>
               </div>
-
-              <div class="field">
-                <label for="neighborhood">محله <span style="color: var(--muted); font-size: 11px;">(اختیاری)</span></label>
-                <input type="text" id="neighborhood" name="neighborhood" placeholder="مثال: سعادت‌آباد">
-              </div>
+            </div>
+            <div class="field">
+              <label for="neighborhood">محله <span style="color: var(--muted); font-size: 11px;">(اختیاری)</span></label>
+              <input type="text" id="neighborhood" name="neighborhood" placeholder="مثال: نیاوران، احمدآباد">
             </div>
           </div>
-
         </div>
       </div>
 
-      <!-- ۵. توضیحات آگهی -->
-      <div>
-        <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--line);">توضیحات تکمیلی</h3>
-        <div class="field">
-          <label for="descriptions">توضیحات آگهی</label>
-          <textarea id="descriptions" name="descriptions" rows="5" placeholder="جزئیات بیشتر مانند وضعیت بیمه، خط و خش، شرایط فروش و زمان پاسخگویی را بنویسید..."></textarea>
+      <!-- مرحله ۶: توضیحات تکمیلی -->
+      <div class="wizard-step-card collapsed" data-step="6">
+        <div class="step-header">
+          <div>
+            <h3 style="font-size: 15px; font-weight: 700; margin: 0;">مرحله ۶: توضیحات تکمیلی</h3>
+            <p style="font-size: 12px; color: var(--muted); margin: 4px 0 0 0;">نکات اضافی آگهی</p>
+          </div>
+          <span style="font-size: 16px; color: var(--muted);">🔽</span>
+        </div>
+        <div class="step-body" style="display: none;">
+          <div class="field">
+            <textarea id="descriptions" name="descriptions" rows="5" placeholder="مثال: وضعیت بیمه، تخفیف پای معامله و..."></textarea>
+          </div>
         </div>
       </div>
 
-      <!-- دکمه ارسال نهایی -->
-      <button type="submit" class="btn btn-amber" style="width: 100%; padding: 14px; font-size: 16px; font-weight: 700; margin-top: 10px;">
-        🚀 انتشار و ثبت نهایی آگهی
-      </button>
+      <!-- مرحله ۷: پیش‌نمایش -->
+      <div class="wizard-step-card collapsed" data-step="7">
+        <div class="step-header">
+          <div>
+            <h3 style="font-size: 15px; font-weight: 700; margin: 0;">مرحله ۷: پیش‌نمایش نهایی</h3>
+            <p style="font-size: 12px; color: var(--muted); margin: 4px 0 00;">بررسی اطلاعات قبل از انتشار آگهی</p>
+          </div>
+          <span style="font-size: 16px; color: var(--muted);">🔽</span>
+        </div>
+        <div class="step-body" style="display: none;">
+          <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 20px;">
+            <div id="summary-container" style="display: flex; flex-direction: column; gap: 10px; font-size: 13.5px; color: var(--text);"></div>
+          </div>
+        </div>
+      </div>
 
-    </form>
-  </div>
+    </div>
+
+    <!-- دکمه‌های ناوبری هوشمند پایینی -->
+    <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg2); padding: 16px 20px; border-radius: 14px; border: 1px solid var(--line); direction: rtl; min-height: 70px; margin-top: 20px;">
+      <div id="prev-btn-wrapper" style="flex: 1; text-align: right;">
+        <button type="button" id="btn-prev" class="btn btn-ghost btn-nav" style="display: none;">مرحله قبل</button>
+      </div>
+      
+      <div id="next-btn-wrapper" style="flex: 1; text-align: left;">
+        <button type="button" id="btn-next" class="btn btn-amber btn-nav">مرحله بعد</button>
+        <button type="submit" id="btn-submit-final" class="btn btn-amber btn-nav" style="display: none; font-weight: 800;">🚀 انتشار و ثبت نهایی آگهی</button>
+      </div>
+    </div>
+
+  </form>
 </main>
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/location-selector.js' %}"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // منطق سوئیچ کردن بین آدرس پیش‌فرض و آدرس جدید
-    const addressRadios = document.querySelectorAll('input[name="address_mode"]');
-    const defaultBox = document.getElementById('default-address-box');
-    const newBox = document.getElementById('new-address-box');
-    const provinceSelect = document.getElementById('province');
-    const citySelect = document.getElementById('city');
 
-    addressRadios.forEach(radio => {
-      radio.addEventListener('change', function () {
-        if (this.value === 'default') {
-          defaultBox.style.display = 'block';
-          newBox.style.display = 'none';
-          provinceSelect.removeAttribute('required');
-          citySelect.removeAttribute('required');
-        } else {
-          defaultBox.style.display = 'none';
-          newBox.style.display = 'flex';
-          provinceSelect.setAttribute('required', 'required');
-          citySelect.setAttribute('required', 'required');
-        }
-      });
-    });
+<script src="{% static 'js/post_ad.js' %}"></script>
+<style>
+  .wizard-form-container {
+    background-color: var(--card) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 20px !important;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  }
 
-    // سیستم پیش‌نمایش تصاویر آپلود شده
-    const imageInput = document.getElementById('images');
-    const previewContainer = document.getElementById('image-preview-container');
+  .wizard-step-card {
+    border: 1px solid var(--line) !important; 
+    border-radius: 14px !important; 
+    background-color: var(--bg2) !important;
+    overflow: hidden;
+    color: var(--text) !important;
+    transition: all 0.3s ease;
+  }
 
-    imageInput.addEventListener('change', function () {
-      previewContainer.innerHTML = ''; // پاک کردن پیش‌نمایش‌های قبلی
-      
-      if (this.files) {
-        Array.from(this.files).forEach(file => {
-          if (file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-              const imgWrapper = document.createElement('div');
-              imgWrapper.style.cssText = 'position: relative; width: 80px; height: 80px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line);';
-              
-              const img = document.createElement('img');
-              img.src = e.target.result;
-              img.style.cssText = 'width: 100%; height: 100%; object-fit: cover;';
-              
-              imgWrapper.appendChild(img);
-              previewContainer.appendChild(imgWrapper);
-            }
-            reader.readAsDataURL(file);
-          }
-        });
-      }
-    });
-  });
-</script>
+  .step-header {
+    padding: 16px 20px; 
+    background-color: var(--card) !important;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    border-bottom: 1px solid var(--line);
+  }
+
+  .step-body {
+    padding: 24px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 16px;
+    background-color: var(--bg2) !important;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: right;
+    direction: rtl;
+  }
+
+  .field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    opacity: 0.9;
+  }
+
+  /* همسان‌سازی سراسری فیلدهای داخل بخش کارت‌ها */
+  .field input, .field select, .field textarea {
+    padding: 11px 14px;
+    background-color: var(--bg) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 12px !important;
+    color: var(--text) !important;
+    font-size: 14px;
+    outline: none;
+    text-align: right;
+    width: 100%;
+    transition: border-color .2s, box-shadow .2s;
+  }
+
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--amber) !important;
+    box-shadow: 0 0 0 3px var(--amber-soft) !important;
+  }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    direction: rtl;
+  }
+
+  @media(min-width: 600px) {
+    .field-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  .step-circle {
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    margin: 0 auto 8px; 
+    font-weight: 700; 
+    transition: all 0.3s;
+  }
+
+  .remove-img-btn:hover {
+    background: #f87171 !important;
+    transform: scale(1.1);
+  }
+
+  .btn-nav {
+    border-radius: 12px !important;
+    font-size: 14px;
+    padding: 12px 24px;
+  }
+</style>
 {% endblock %}
