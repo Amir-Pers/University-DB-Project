@@ -19,6 +19,7 @@ class VehicleModel(models.Model):
     model_id = models.AutoField(primary_key=True)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="models")
     name = models.CharField(max_length=100)
+    category = models.CharField(max_length=20)
 
     class Meta:
         managed = False
