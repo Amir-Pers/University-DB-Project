@@ -184,23 +184,41 @@
           </div>
         </div>
       </div>
-
-      <!-- مرحله ۳: مشخصات فنی -->
       <div class="wizard-step-card collapsed" data-step="3">
         <div class="step-header">
           <div>
-            <h3 style="font-size: 15px; font-weight: 700; margin: 0;">مرحله ۳: مشخصات فنی و ظاهری</h3>
-            <p style="font-size: 12px; color: var(--muted); margin: 4px 0 0 0;">جزئیات بدنه، رنگ و جعبه‌دنده را مشخص
-              کنید</p>
+            <h3 style="font-size: 15px; font-weight: 700; margin: 0;">
+              مرحله ۳: مشخصات فنی و ظاهری
+            </h3>
+            <p style="font-size: 12px; color: var(--muted); margin: 4px 0 0 0;">
+              جزئیات بدنه، رنگ و جعبه‌دنده را مشخص کنید
+            </p>
           </div>
           <span style="font-size: 16px; color: var(--muted);">🔽</span>
         </div>
+
         <div class="step-body" style="display: none;">
+
+          <!-- سال تولید و کارکرد -->
           <div class="field-grid">
             <div class="field">
-              <label for="km_age">کارکرد (کیلومتر) <span style="color: #f87171;">*</span></label>
+              <label for="production_year">
+                سال تولید <span style="color:#f87171;">*</span>
+              </label>
+              <input type="number" id="production_year" name="production_year" min="1300" max="1500"
+                placeholder="مثلاً ۱۴۰۲">
+            </div>
+
+            <div class="field">
+              <label for="km_age">
+                کارکرد (کیلومتر)
+                <span style="color:#f87171;">*</span>
+              </label>
               <input type="number" id="km_age" name="km_age" placeholder="برای صفر عدد ۰ وارد کنید">
             </div>
+          </div>
+
+          <div class="field-grid">
             <div class="field">
               <label for="car_condition">وضعیت خودرو</label>
               <select id="car_condition" name="car_condition">
@@ -208,8 +226,7 @@
                 <option value="صفر">صفر</option>
               </select>
             </div>
-          </div>
-          <div class="field-grid">
+
             <div class="field">
               <label for="body_status">وضعیت رنگ و بدنه</label>
               <select id="body_status" name="body_status">
@@ -219,6 +236,9 @@
                 <option value="دوررنگ">دوررنگ</option>
               </select>
             </div>
+          </div>
+
+          <div class="field-grid">
             <div class="field">
               <label for="ad_type">نوع آگهی</label>
               <select id="ad_type" name="ad_type">
@@ -226,10 +246,11 @@
                 <option value="نمایشگاه">نمایشگاه</option>
               </select>
             </div>
-          </div>
-          <div class="field-grid">
+
             <div class="field">
-              <label for="body_color">رنگ بدنه <span style="color: #f87171;">*</span></label>
+              <label for="body_color">
+                رنگ بدنه <span style="color:#f87171;">*</span>
+              </label>
               <select id="body_color" name="body_color">
                 <option value="" disabled selected>انتخاب کنید</option>
                 <option value="سفید">سفید</option>
@@ -242,9 +263,14 @@
                 <option value="سبز">سبز</option>
               </select>
             </div>
+          </div>
+
+          <div class="field-grid">
             <div class="field">
-              <label for="cabin_color">رنگ کابین <span
-                  style="color: var(--muted); font-size: 11px;">(اختیاری)</span></label>
+              <label for="cabin_color">
+                رنگ کابین
+                <span style="color: var(--muted); font-size:11px;">(اختیاری)</span>
+              </label>
               <select id="cabin_color" name="cabin_color">
                 <option value="" disabled selected>انتخاب کنید</option>
                 <option value="سفید">سفید</option>
@@ -257,18 +283,25 @@
                 <option value="سبز">سبز</option>
               </select>
             </div>
-          </div>
-          <div class="field-grid">
             <div class="field">
-              <label for="gearbox">نوع گیربکس <span style="color: #f87171;">*</span></label>
+              <label for="gearbox">
+                نوع گیربکس <span style="color:#f87171;">*</span>
+              </label>
               <select id="gearbox" name="gearbox">
                 <option value="" disabled selected>انتخاب کنید...</option>
                 <option value="دنده‌ای">دنده‌ای</option>
                 <option value="اتوماتیک">اتوماتیک</option>
               </select>
             </div>
+          </div>
+
+
+          <!-- نوع سوخت -->
+          <div class="field-grid">
             <div class="field">
-              <label for="fuel_type">نوع سوخت <span style="color: #f87171;">*</span></label>
+              <label for="fuel_type">
+                نوع سوخت <span style="color:#f87171;">*</span>
+              </label>
               <select id="fuel_type" name="fuel_type">
                 <option value="" disabled selected>انتخاب کنید...</option>
                 <option value="بنزینی">بنزینی</option>
@@ -277,7 +310,10 @@
                 <option value="برقی">برقی</option>
               </select>
             </div>
+
+            <div></div>
           </div>
+
         </div>
       </div>
 
@@ -353,7 +389,7 @@
               <div class="field">
                 <label for="city">شهر <span style="color: #f87171;">*</span></label>
                 <select id="city" name="city">
-                  <option value="" >انتخاب شهر...</option>
+                  <option value="">انتخاب شهر...</option>
                 </select>
               </div>
             </div>
