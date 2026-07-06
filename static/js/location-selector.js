@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const provinceSelect = document.getElementById("province");
+    const provinceSelect =
+        document.getElementById("province") ||
+        document.getElementById("state");
     const citySelect = document.getElementById("city");
 
     if (!provinceSelect || !citySelect)

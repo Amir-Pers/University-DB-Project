@@ -345,20 +345,15 @@
                 <label for="state">استان <span style="color: #f87171;">*</span></label>
                 <select id="state" name="state">
                   <option value="" disabled selected>انتخاب استان...</option>
-                  <option value="تهران">تهران</option>
-                  <option value="خراسان رضوی">خراسان رضوی</option>
-                  <option value="اصفهان">اصفهان</option>
-                  <option value="فارس">فارس</option>
+                  {% for province in provinces %}
+                  <option value="{{ province.province_id }}">{{ province.name }}</option>
+                  {% endfor %}
                 </select>
               </div>
               <div class="field">
                 <label for="city">شهر <span style="color: #f87171;">*</span></label>
                 <select id="city" name="city">
-                  <option value="" disabled selected>انتخاب شهر...</option>
-                  <option value="تهران">تهران</option>
-                  <option value="مشهد">مشهد</option>
-                  <option value="اصفهان">اصفهان</option>
-                  <option value="شیراز">شیراز</option>
+                  <option value="" >انتخاب شهر...</option>
                 </select>
               </div>
             </div>
@@ -429,6 +424,7 @@
 
 <script src="{% static 'js/post_ad.js' %}"></script>
 <script src="{% static 'js/vehicle-selector.js' %}"></script>
+<script src="{% static 'js/location-selector.js' %}"></script>
 <style>
   .wizard-form-container {
     background-color: var(--card) !important;
