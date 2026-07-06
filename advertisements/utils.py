@@ -166,8 +166,40 @@ def validate_post_ad(data, profile):
 
     data["vehicle"] = vehicle
 
+
+    images = data["images"]
+
+    if not images:
+        return "حداقل یک تصویر برای آگهی انتخاب کنید."
+
+    if len(images) > 6:
+        return "حداکثر 6 تصویر قابل بارگذاری است."
+
+    allowed_types = {
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+    }
+
+    max_size = 1 * 1024 * 1024  # 1 MB
+
+    for image in images:
+        if image.content_type not in allowed_types:
+            return "فرمت تصاویر باید JPG، PNG یا WEBP باشد."
+
+        if image.size > max_size:
+            return "حجم هر تصویر نباید بیشتر از 1 مگابایت باشد."
+
     return None
 
+
+def create_images(advertisement, images):
+    for image in images:
+        Image.objects.create(
+            ad=advertisement,
+            image=image,
+            upload_date=timezone.now(),
+        )
 
 
 def create_advertisement(profile, data):
@@ -228,5 +260,7 @@ def create_advertisement(profile, data):
 
         active_status=True,
     )
+
+    create_images(advertisement, data["images"])
 
     return advertisement
