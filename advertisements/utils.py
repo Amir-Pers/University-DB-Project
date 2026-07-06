@@ -1,5 +1,8 @@
 from locations.models import City
-
+from vehicles.models import Vehicle, VehicleModel, Brand, Motorcycle, Car
+from advertisements.models import Advertisement, Image, Instalment
+from locations.models import Address, Province, City
+from django.utils import timezone
 
 def get_post_ad_data(request):
     sell_type = request.POST.get("sell_type")
@@ -20,6 +23,7 @@ def get_post_ad_data(request):
         "brand_id": request.POST.get("car_brand"),
         "model_id": request.POST.get("car_model"),
         "tip": request.POST.get("car_tip"),
+        "production_year": request.POST.get("production_year"),
 
         "km_age": request.POST.get("km_age"),
         "car_condition": request.POST.get("car_condition"),
@@ -51,6 +55,7 @@ def validate_post_ad(data, profile):
         data["vehicle_type"],
         data["brand_id"],
         data["model_id"],
+        data["production_year"],
         data["km_age"],
         data["car_condition"],
         data["body_status"],
@@ -74,31 +79,18 @@ def validate_post_ad(data, profile):
     if data["vehicle_type"] not in valid_vehicle_types:
         return "نوع وسیله نقلیه معتبر نیست."
 
-    valid_gearboxes = {"دنده‌ای", "اتوماتیک"}
 
-    if data["gearbox"] not in valid_gearboxes:
-        return "نوع گیربکس معتبر نیست."
-
-    valid_fuel_types = {
-        "بنزینی",
-        "دوگانه سوز",
-        "هیبرید",
-        "برقی",
-    }
-
-    if data["fuel_type"] not in valid_fuel_types:
-        return "نوع سوخت معتبر نیست."
-    
     try:
         km_age = int(data["km_age"])
     except (TypeError, ValueError):
         return "کارکرد خودرو معتبر نیست."
-    
+
+
     if km_age < 0:
         return "کارکرد خودرو نمی‌تواند منفی باشد."
-    
+
     if data["car_condition"] == "صفر" and km_age != 0:
-        return "برای خودروی صفر، کارکرد باید صفر کیلومتر باشد."
+        return "برای خودروی صفر، کارکرد باید صفر باشد."
 
     if data["car_condition"] == "کارکرده" and km_age == 0:
         return "برای خودروی کارکرده، کارکرد باید بیشتر از صفر باشد."
@@ -108,7 +100,6 @@ def validate_post_ad(data, profile):
 
         if not data["price"]:
             return "قیمت فروش را وارد کنید."
-
 
     elif data["sell_type"] == "اقساطی":
 
@@ -122,7 +113,6 @@ def validate_post_ad(data, profile):
 
         if any(not value for value in required_fields):
             return "اطلاعات فروش اقساطی کامل نیست."
-
 
     elif data["sell_type"] == "حواله":
 
@@ -162,4 +152,81 @@ def validate_post_ad(data, profile):
     else:
         return "نوع آدرس معتبر نیست."
 
+    vehicle = Vehicle.objects.filter(
+    model_id=data["model_id"],
+    production_year=data["production_year"],
+    color_out=data["body_color"],
+    color_in=data["cabin_color"] or None,
+    transmission_type=data["gearbox"],
+    fuel_type=data["fuel_type"],
+    ).first()
+
+    if vehicle is None:
+        return "خودروی انتخاب شده در سیستم وجود ندارد."
+
+    data["vehicle"] = vehicle
+
     return None
+
+
+
+def create_advertisement(profile, data):
+
+    if data["address_mode"] == "default":
+
+        default_address = profile.default_address
+
+        address = Address.objects.create(
+            city=default_address.city,
+            neighborhood=default_address.neighborhood,
+        )
+
+    else:
+
+        city = City.objects.get(pk=data["city_id"])
+
+        address = Address.objects.create(
+            city=city,
+            neighborhood=data["neighborhood"],
+        )
+
+
+    vehicle = data["vehicle"]
+
+    title = f"{vehicle.model.brand.name} {vehicle.model.name}"
+
+    if data["tip"]:
+        title += f" {data['tip']}"
+
+
+    advertisement = Advertisement.objects.create(
+        vehicle=vehicle,
+        userid=profile,
+        address=address,
+
+        title=title,
+
+        sell_type=data["sell_type"],
+        price=data["price"] if data["sell_type"] == "نقدی" else None,
+
+        descriptions=data["descriptions"],
+
+        published=False,
+        created_date=timezone.now(),
+        updated_date=timezone.now(),
+
+        ad_type=data["ad_type"],
+        car_condition=data["car_condition"],
+        body_status=data["body_status"],
+        km_age=data["km_age"],
+
+        remittance_time=(
+            data["delivery_time_draft"]
+            if data["sell_type"] == "حواله"
+            else None
+        ),
+
+        active_status=True,
+    )
+
+    return advertisement

@@ -2,11 +2,12 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Prefetch
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db import transaction
 
 from .models import Advertisement, Image
 from vehicles.models import Brand
 from locations.models import Province
-from .utils import get_post_ad_data, validate_post_ad
+from .utils import get_post_ad_data, validate_post_ad, create_advertisement
 
 def advertisement_detail(request, ad_id):
 
@@ -56,8 +57,11 @@ def post_ad_view(request):
             messages.error(request, error)
             return redirect("advertisements:post_ad")
         
+        with transaction.atomic():
+            ad = create_advertisement(profile, data)
+        
         messages.success(request, "اعتبارسنجی فرم با موفقیت انجام شد.")
-        return redirect("advertisements:post_ad")
+        return redirect("accounts:profile")
     
     context = {
         "profile" : profile,
