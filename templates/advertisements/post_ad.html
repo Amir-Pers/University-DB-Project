@@ -159,34 +159,27 @@
           <div class="field">
             <label for="vehicle_type">نوع وسیله نقلیه <span style="color: #f87171;">*</span></label>
             <select id="vehicle_type" name="vehicle_type">
-              <option value="خودرو" selected>خودرو</option>
-              <option value="موتورسیکلت">موتورسیکلت</option>
+              <option value="car" selected>خودرو</option>
+              <option value="motorcycle">موتورسیکلت</option>
+              <!-- <option value="heavy_vehicle">ماشین سنگین</option> -->
             </select>
           </div>
           <div class="field-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
             <div class="field">
               <label for="car_brand">برند <span style="color: #f87171;">*</span></label>
               <select id="car_brand" name="car_brand">
-                <option value="" disabled selected>انتخاب برند...</option>
-                <option value="irankhodro">ایران خودرو</option>
-                <option value="saipa">سایپا</option>
+                <option value="">ابتدا نوع وسیله را انتخاب کنید...</option>
               </select>
             </div>
             <div class="field">
               <label for="car_model">مدل <span style="color: #f87171;">*</span></label>
               <select id="car_model" name="car_model">
-                <option value="" disabled selected>انتخاب مدل...</option>
-                <option value="207">پژو ۲۰۷</option>
-                <option value="shahin">شاهین</option>
+                <option value="">ابتدا برند را انتخاب کنید...</option>
               </select>
             </div>
             <div class="field">
               <label for="car_tip">تیپ</label>
-              <select id="car_tip" name="car_tip">
-                <option value="" disabled selected>انتخاب تیپ (اختیاری)...</option>
-                <option value="tu5">TU5</option>
-                <option value="mc">MC اتوماتیک</option>
-              </select>
+              <input type="text" id="car_tip" name="car_tip" placeholder="مثلاً TU5، پانوراما، GLX ...">
             </div>
           </div>
         </div>
@@ -435,6 +428,7 @@
 {% block extra_js %}
 
 <script src="{% static 'js/post_ad.js' %}"></script>
+<script src="{% static 'js/vehicle-selector.js' %}"></script>
 <style>
   .wizard-form-container {
     background-color: var(--card) !important;
