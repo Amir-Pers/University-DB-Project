@@ -6,7 +6,7 @@ from django.contrib import messages
 from .models import Advertisement, Image
 from vehicles.models import Brand
 from locations.models import Province
-
+from .utils import get_post_ad_data, validate_post_ad
 
 def advertisement_detail(request, ad_id):
 
@@ -39,16 +39,25 @@ def advertisement_detail(request, ad_id):
 @login_required
 def post_ad_view(request):
 
-    # if request.method == "POST":
-    #     print("request.POST:", request.POST.dict())
-
-    # provinces = Province.objects.order_by("name")
-
     profile = request.user.profile
     
     if not profile.reg_status:
         messages.warning(request,"ابتدا اطلاعات حساب خود را تکمیل کنید.")
         return redirect("accounts:profile")
+    
+
+    if request.method == "POST":
+
+        data = get_post_ad_data(request)
+
+        error = validate_post_ad(data=data, profile=profile)
+
+        if error:
+            messages.error(request, error)
+            return redirect("advertisements:post_ad")
+        
+        messages.success(request, "اعتبارسنجی فرم با موفقیت انجام شد.")
+        return redirect("advertisements:post_ad")
     
     context = {
         "profile" : profile,
