@@ -39,6 +39,9 @@ def advertisement_detail(request, ad_id):
 @login_required
 def post_ad_view(request):
 
+    # if request.method == "POST":
+    #     print("request.POST:", request.POST.dict())
+
     profile = request.user.profile
     
     if not profile.reg_status:
@@ -61,3 +64,4 @@ def post_ad_view(request):
 
     
     return render(request, "advertisements/post_ad.html", context)
+
