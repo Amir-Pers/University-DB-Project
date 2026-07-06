@@ -74,7 +74,7 @@ class Instalment(models.Model):
     payment_per_instalment = models.DecimalField(max_digits=18, decimal_places=0)
     payment_count = models.IntegerField()
     payment_period = models.CharField(max_length=50)
-    delivery_date = models.DateField(blank=True, null=True)
+    delivery_date = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         managed = False
