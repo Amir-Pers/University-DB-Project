@@ -10,9 +10,9 @@
     <div>
       <div class="name">
         {% if profile.username %}
-        {{ profile.username }}
+          {{ profile.username }}
         {% else %}
-        کاربر جدید
+          کاربر جدید
         {% endif %}
       </div>
       <div class="email">شماره همراه: {{ profile.phone }}</div>
@@ -22,6 +22,7 @@
 
   <!-- بدنه اصلی داشبورد: سایدبار + محتوا -->
   <div style="display: grid; grid-template-columns: 1fr; gap: 22px; margin-top: 22px;" id="dashboard-grid">
+
     <style>
       @media(min-width: 768px) {
         #dashboard-grid {
@@ -47,74 +48,256 @@
         flex-direction: column;
         gap: 20px;
       }
+
+      /* سوئیچ توگل فوق‌العاده لوکس */
+      .luxury-toggle {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 24px;
+      }
+      .luxury-toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .luxury-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.08);
+        transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 30px;
+        border: 1px solid var(--line);
+      }
+      .luxury-slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 3px;
+        bottom: 3px;
+        background-color: #fff;
+        transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 50%;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      }
+      .luxury-toggle input:checked + .luxury-slider {
+        background-color: #10b981;
+        border-color: #059669;
+      }
+      .luxury-toggle input:checked + .luxury-slider:before {
+        transform: translateX(20px);
+      }
+
+      /* بازطراحی کارت آگهی با ساختار VIP */
+      .premium-ad-card {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px;
+        background: var(--card);
+        border: 1px solid rgba(0,0,0,0.05);
+        border-top: 4px solid var(--line);
+        border-radius: 20px;
+        align-items: center;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+        transition: all 0.3s ease;
+        overflow: hidden;
+      }
+      .premium-ad-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.06);
+        border-color: rgba(245, 158, 11, 0.2);
+      }
+
+      /* رنگ نوار بالای کارت بر اساس وضعیت آگهی */
+      .premium-ad-card.status-pending  { border-top-color: #f59e0b; }
+      .premium-ad-card.status-approved { border-top-color: #10b981; }
+      .premium-ad-card.status-rejected { border-top-color: #ef4444; }
+
+      /* بج وضعیت آگهی */
+      .status-badge {
+        font-size: 11px;
+        padding: 4px 10px 4px 8px;
+        border-radius: 8px;
+        font-weight: 800;
+        border: 1px solid;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
+      }
+      .status-badge.status-pending {
+        background: rgba(245,158,11,0.1);
+        color: #f59e0b;
+        border-color: rgba(245,158,11,0.25);
+      }
+      .status-badge.status-approved {
+        background: rgba(16,185,129,0.1);
+        color: #10b981;
+        border-color: rgba(16,185,129,0.25);
+      }
+      .status-badge.status-rejected {
+        background: rgba(239,68,68,0.1);
+        color: #ef4444;
+        border-color: rgba(239,68,68,0.25);
+      }
+
+      .action-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        border-top: 1px solid var(--line);
+        padding-top: 16px;
+      }
+
+      .btn-view-premium {
+        background: linear-gradient(135deg, var(--amber) 0%, #f59e0b 100%);
+        color: #white;
+        font-weight: 700;
+        border: none;
+        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+        transition: transform 0.2s;
+      }
+      .btn-view-premium:hover {
+        transform: scale(1.02);
+      }
+
+      @media(min-width: 640px) {
+        .premium-ad-card {
+          grid-template-columns: 160px 1fr;
+        }
+        .action-layout {
+          grid-column: span 2;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+        }
+      }
+
+      @media(min-width: 900px) {
+        .premium-ad-card {
+          grid-template-columns: 160px 1fr 200px;
+        }
+        .action-layout {
+          grid-column: auto;
+          flex-direction: column;
+          justify-content: center;
+          height: 100%;
+        }
+      }
     </style>
 
-    <!-- منوی سایدبار (کنترلر تب‌ها) -->
-    <div class="content-card" style="margin-top: 0; padding: 16px; height: fit-content;">
-      <div style="display: flex; flex-direction: column; gap: 6px;">
-        <button class="btn sidebar-tab" data-tab="my-ads"
-          style="text-align: right; display: block; width: 100%; padding: 12px 16px; background: transparent; color: var(--text);">📝
-          آگهی‌های من</button>
-        <button class="btn sidebar-tab" data-tab="favorites"
-          style="text-align: right; display: block; width: 100%; padding: 12px 16px; background: transparent; color: var(--text);">❤️
-          علاقه‌مندی‌ها</button>
-        <button class="btn sidebar-tab" data-tab="settings"
-          style="text-align: right; display: block; width: 100%; padding: 12px 16px; background: transparent; color: var(--text);">⚙️
-          تنظیمات حساب</button>
-        <hr style="border: 0; border-top: 1px solid var(--line); margin: 8px 0;">
-        <a href="{% url 'accounts:logout' %}" class="btn btn-ghost"
-          style="text-align: right; display: block; width: 100%; padding: 12px 16px; border: none; color: #f87171;">🚪
-          خروج</a>
-      </div>
-    </div>
+    <!-- ================= سایدبار (تب‌ها) ================= -->
+    <aside style="display: flex; flex-direction: column; gap: 8px;">
+      <button class="btn sidebar-tab active" data-tab="my-ads" style="justify-content: flex-start; padding: 14px 18px; border-radius: 14px; background: var(--bg2); border: 1px solid var(--line); font-size: 15px; font-weight: 600; transition: 0.2s; width: 100%; text-align: right;">
+        📋 آگهی‌های من
+      </button>
+      <button class="btn sidebar-tab" data-tab="favorites" style="justify-content: flex-start; padding: 14px 18px; border-radius: 14px; background: var(--bg2); border: 1px solid var(--line); font-size: 15px; font-weight: 600; transition: 0.2s; width: 100%; text-align: right;">
+        ❤️ علاقه‌مندی‌ها
+      </button>
+      <button class="btn sidebar-tab" data-tab="settings" style="justify-content: flex-start; padding: 14px 18px; border-radius: 14px; background: var(--bg2); border: 1px solid var(--line); font-size: 15px; font-weight: 600; transition: 0.2s; width: 100%; text-align: right;">
+        ⚙️ تنظیمات حساب
+      </button>
+    </aside>
 
-    <!-- بخش محتوای اصلی داشبورد -->
-    <div>
+    <!-- ================= محتوای تب‌ها ================= -->
+    <div style="display: flex; flex-direction: column; gap: 22px;">
 
       <!-- ================= تب ۱: آگهی‌های من ================= -->
-      <div id="my-ads" class="tab-content">
-        <!-- گرید باکس‌های آماری شبیه باما -->
-        <div class="detail-info-grid" style="margin: 0;">
-          <div class="detail-box">
-            <span>آگهی‌های فعال</span>
-            <strong>۱ آگهی</strong>
-          </div>
-          <div class="detail-box">
-            <span>در انتظار تایید</span>
-            <strong>۰</strong>
-          </div>
-          <div class="detail-box">
-            <span>نشان شده‌ها</span>
-            <strong>۲ آگهی</strong>
-          </div>
-        </div>
-
+      <div id="my-ads" class="tab-content active">
         <div class="acc-ads-header">
-          <h3>آگهی‌های ثبت شده شما</h3>
-          <span style="font-size: 13px; color: var(--muted);">تعداد: ۱</span>
+          <h3>آگهی‌های فعال و غیرفعال من</h3>
+          <span style="font-size: 14px; color: var(--muted);">{{ ads_count|default:0 }} آگهی</span>
         </div>
 
-        <!-- کارت آگهی نمونه کاربر مبتنی بر استایل پروژه -->
-        <div class="card"
-          style="flex-direction: row; align-items: center; padding: 14px; gap: 16px; cursor: default; animation: none;">
-          <div class="media-car"
-            style="width: 120px; height: 90px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; position: relative;">
-            🚗
-            <span class="badge badge-car" style="top: -6px; right: -6px; font-size: 10px; padding: 2px 8px;">فعال</span>
+        <!--
+          نکته برای آینده: این کارت نمونه است. وقتی از بک‌اند لیست آگهی‌ها میاد،
+          این بلاک باید داخل {% for ad in user_ads %} ... {% endfor %} قرار بگیره
+          و مقدار ad.status باید یکی از سه مقدار زیر باشه:
+          pending  -> در انتظار تایید
+          approved -> تایید شده
+          rejected -> رد شده
+        -->
+
+        <!-- کارت نمونه آگهی (پژو ۲۰۷) -->
+        <div class="premium-ad-card status-{{ ad.status|default:'approved' }}">
+          <!-- بخش ۱: تصویر یا آیکون -->
+          <div style="background: var(--bg2); border-radius: 16px; display: flex; justify-content: center; align-items: center; min-height: 110px; font-size: 42px; border: 2px dashed var(--line);">
+            🚘
           </div>
-          <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
-            <h4 class="card-title" style="font-size: 15px;">پژو ۲۰۷ اتوماتیک MC</h4>
-            <div class="card-sub" style="font-size: 12px;">مدل ۱۴۰۲ | کارکرد ۲۲,۰۰۰ کیلومتر</div>
-            <div class="price-val" style="font-size: 15px; margin-top: 4px;">۸۵۰,۰۰۰,۰۰۰ تومان</div>
+
+          <!-- بخش ۲: اطلاعات آگهی -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <h4 class="card-title" style="font-size: 18px; margin: 0; font-weight: 800; color: var(--text); letter-spacing: -0.3px;">پژو ۲۰۷ اتوماتیک MC</h4>
+              <span style="font-size: 11px; padding: 3px 10px; background: rgba(245,158,11,0.1); color: var(--amber); border-radius: 8px; font-weight: 800; border: 1px solid rgba(245,158,11,0.2);">فروش نقدی</span>
+
+              <!-- بج وضعیت آگهی (در انتظار تایید / تایید شده / رد شده) -->
+              <span class="status-badge status-{{ ad.status|default:'approved' }}">
+                {% if ad.status == 'pending' %}
+                  ⏳ در انتظار تایید
+                {% elif ad.status == 'rejected' %}
+                  ⛔ رد شده
+                {% else %}
+                  ✅ تایید شده
+                {% endif %}
+              </span>
+            </div>
+
+            <!-- لاین مشخصات فنی همراه با زمان ثبت -->
+            <div style="font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <span style="background: var(--bg2); padding: 2px 8px; border-radius: 6px;">مدل ۱۴۰۲</span>
+              <span style="color: var(--line);">|</span>
+              <span style="background: var(--bg2); padding: 2px 8px; border-radius: 6px;">کارکرد ۲۲,۰۰۰ کیلومتر</span>
+              <span style="color: var(--line);">|</span>
+              <span style="display: flex; align-items: center; gap: 4px; color: #6b7280; font-weight: 500;">📅 ۳ روز پیش</span>
+            </div>
+
+            <!-- قیمت تفکیک شده و تعداد بازدید -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px; flex-wrap: wrap; gap: 12px;">
+              <div class="price-val" style="font-size: 19px; font-weight: 900; color: var(--text);">
+                ۸۵۰,۰۰۰,۰۰۰ <span style="font-size: 13px; font-weight: 500; color: var(--muted);">تومان</span>
+              </div>
+              <div style="font-size: 12px; color: #6b7280; display: flex; align-items: center; gap: 5px; background: rgba(0,0,0,0.03); padding: 4px 10px; border-radius: 8px; font-weight: 500;">
+                👁️ <span>۱۴۲ بازدید</span>
+              </div>
+            </div>
           </div>
-          <div style="display: flex; flex-direction: column; gap: 6px;">
-            <button class="btn btn-ghost" style="padding: 6px 12px; font-size: 12px; border-color: var(--line);">✏️
-              ویرایش</button>
-            <button class="btn btn-ghost"
-              style="padding: 6px 12px; font-size: 12px; border-color: rgba(239,68,68,.3); color: #f87171;">🗑️
-              حذف</button>
+
+          <!-- بخش ۳: ستون اکشن‌ها و مدیریت وضعیت نمایش -->
+          <div class="action-layout">
+
+            <!-- توگل سوئیچ فعال/غیرفعال آگهی -->
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; background: var(--bg2); padding: 8px 12px; border-radius: 12px; border: 1px solid var(--line);">
+              <span style="font-size: 12px; font-weight: 700; color: var(--text);">نمایش عمومی آگهی</span>
+              <label class="luxury-toggle">
+                <input type="checkbox" checked id="toggle-ad-status">
+                <span class="luxury-slider"></span>
+              </label>
+            </div>
+
+            <!-- ساختار دکمه‌های ۳‌گانه عمودی متمایز -->
+            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+              <!-- دکمه مشاهده با دیزاین شاخص به عنوان هدف اصلی -->
+              <button class="btn btn-view-premium" style="padding: 10px 16px; font-size: 13px; width: 100%; border-radius: 12px; justify-content: center; display: flex; align-items: center; gap: 6px;">👁️ مشاهده آگهی</button>
+
+              <!-- ردیف دکمه‌های فرعی برای تعادل بصری بی‌نظیر -->
+              <div style="display: flex; gap: 8px; width: 100%;">
+                <button class="btn btn-ghost" style="padding: 8px 12px; font-size: 12px; border-color: var(--line); color: var(--text); flex: 1; border-radius: 10px; justify-content: center; font-weight: 600;">✏️ ویرایش</button>
+                <button class="btn btn-ghost" style="padding: 8px 12px; font-size: 12px; border-color: transparent; color: #ef4444; flex: 1; border-radius: 10px; justify-content: center; background: rgba(239,68,68,0.06); font-weight: 600;">🗑️ حذف</button>
+              </div>
+            </div>
+
           </div>
         </div>
+        <!-- پایان کارت نمونه -->
       </div>
 
       <!-- ================= تب ۲: علاقه‌مندی‌ها ================= -->
@@ -165,7 +348,7 @@
           <form method="POST" action="{% url 'accounts:profile' %}" style="display: flex; flex-direction: column; gap: 16px;">
             {% csrf_token %}
             <input type="hidden" name="form_type" value="identity">
-            
+
             <div>
               <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px; color: var(--amber);">اطلاعات کاربری و هویتی</h3>
               <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -184,20 +367,17 @@
                 <div class="field-grid">
                   <div class="field">
                     <label for="username">نام کاربری (Username)</label>
-                    <input type="text" id="username" name="username" value="{{ profile.username|default:'' }}"placeholder="نام کاربری خود را وارد کنید" required style="text-align: left; direction: ltr;">
+                    <input type="text" id="username" name="username" value="{{ profile.username|default:'' }}" placeholder="نام کاربری خود را وارد کنید" required style="text-align: left; direction: ltr;">
                   </div>
                   <div class="field">
                     <label for="national_id">کد ملی</label>
-                    <input type="text" id="national_id" name="national_id" placeholder="کد ملی ۱۰ رقمی" maxlength="10"
-                      value="{{ profile.national_id|default:''}}" {% if profile.reg_status %}readonly{% endif %}
-                      required style="text-align: left; direction: ltr;">
+                    <input type="text" id="national_id" name="national_id" placeholder="کد ملی ۱۰ رقمی" maxlength="10" value="{{ profile.national_id|default:'' }}" {% if profile.reg_status %}readonly{% endif %} required style="text-align: left; direction: ltr;">
                   </div>
                 </div>
 
                 <div class="field" style="width: calc(50% - 5px);">
                   <label>شماره همراه (غیر قابل تغییر)</label>
-                  <input type="text" value="{{ profile.phone }}" disabled
-                    style="opacity: 0.6; cursor: not-allowed; background: var(--bg); text-align: left; direction: ltr;">
+                  <input type="text" value="{{ profile.phone }}" disabled style="opacity: 0.6; cursor: not-allowed; background: var(--bg); text-align: left; direction: ltr;">
                 </div>
 
               </div>
@@ -223,9 +403,9 @@
                     <label for="province">استان</label>
                     <select id="province" name="province">
                       {% for province in provinces %}
-                      <option value="{{ province.province_id }}" {% if province.province_id == selected_province %} selected {% endif %}>
-                        {{ province.name }}
-                      </option>
+                        <option value="{{ province.province_id }}" {% if province.province_id == selected_province %} selected {% endif %}>
+                          {{ province.name }}
+                        </option>
                       {% endfor %}
                     </select>
                   </div>
@@ -234,17 +414,16 @@
                     <label for="city">شهر</label>
                     <select id="city" name="city">
                       {% for city in cities %}
-                      <option value="{{ city.city_id }}" {% if city.city_id == selected_city %} selected {% endif %}>
-                        {{ city.name }}
-                      </option>
+                        <option value="{{ city.city_id }}" {% if city.city_id == selected_city %} selected {% endif %}>
+                          {{ city.name }}
+                        </option>
                       {% endfor %}
                     </select>
                   </div>
 
                   <div class="field">
                     <label for="neighborhood">محله <span style="color: var(--muted); font-size: 11px;">(اختیاری)</span></label>
-                    <input type="text" id="neighborhood" name="neighborhood" placeholder="مثال: سعادت‌آباد"
-                        value="{{ profile.default_address.neighborhood|default:'' }}">
+                    <input type="text" id="neighborhood" name="neighborhood" placeholder="مثال: سعادت‌آباد" value="{{ profile.default_address.neighborhood|default:'' }}">
                   </div>
                 </div>
 
@@ -292,8 +471,8 @@
         </div>
       </div>
 
-    </div>
-  </div>
+    </div> <!-- پایان محتوای تب‌ها -->
+  </div> <!-- پایان grid اصلی -->
 </main>
 {% endblock %}
 
@@ -304,7 +483,6 @@
     const tabs = document.querySelectorAll(".sidebar-tab");
     const contents = document.querySelectorAll(".tab-content");
 
-    // تابع فعال‌سازی تب مورد نظر
     function switchTab(tabId) {
       tabs.forEach(t => t.classList.remove("active"));
       contents.forEach(c => c.classList.remove("active"));
@@ -315,22 +493,31 @@
       if (activeTabButton && activeContent) {
         activeTabButton.classList.add("active");
         activeContent.classList.add("active");
-        // ذخیره تب فعلی در مرورگر
         localStorage.setItem("activeDashboardTab", tabId);
       }
     }
 
-    // ۱. بررسی اینکه آیا قبلاً تبی ذخیره شده است یا خیر (اگر نبود پیش‌فرض 'my-ads')
     const savedTab = localStorage.getItem("activeDashboardTab") || "my-ads";
     switchTab(savedTab);
 
-    // ۲. گوش دادن به رویداد کلیک روی تب‌ها
     tabs.forEach(tab => {
       tab.addEventListener("click", function () {
         const targetTab = this.getAttribute("data-tab");
         switchTab(targetTab);
       });
     });
+
+    // مدیریت تغییر وضعیت فعال/غیرفعال آگهی در فرانت‌اند
+    const toggleAd = document.getElementById('toggle-ad-status');
+    if (toggleAd) {
+      toggleAd.addEventListener('change', function() {
+        if(this.checked) {
+          console.log("درخواست تغییر وضعیت: آگهی به حالت نمایش عمومی درآمد.");
+        } else {
+          console.log("درخواست تغییر وضعیت: آگهی موقتاً مخفی شد.");
+        }
+      });
+    }
   });
 </script>
 {% endblock %}
