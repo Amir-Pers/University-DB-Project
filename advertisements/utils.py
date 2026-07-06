@@ -202,6 +202,23 @@ def create_images(advertisement, images):
         )
 
 
+
+def create_instalment(advertisement, data):
+
+    if data["sell_type"] != "اقساطی":
+        return
+
+    Instalment.objects.create(
+        ad=advertisement,
+        first_payment=data["pre_payment"],
+        second_payment=None,
+        payment_per_instalment=data["installment_amount"],
+        payment_count=data["installment_count"],
+        payment_period=data["payment_period"],
+        delivery_date=data["delivery_time_inst"],
+    )
+
+
 def create_advertisement(profile, data):
 
     if data["address_mode"] == "default":
@@ -262,5 +279,6 @@ def create_advertisement(profile, data):
     )
 
     create_images(advertisement, data["images"])
+    create_instalment(advertisement, data)
 
     return advertisement
