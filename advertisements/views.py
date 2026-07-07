@@ -3,6 +3,7 @@ from django.db.models import Prefetch
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import transaction
+from django.views.decorators.http import require_POST
 
 from .models import Advertisement, Image
 from vehicles.models import Brand
@@ -80,3 +81,28 @@ def post_ad_view(request):
     
     return render(request, "advertisements/post_ad.html", context)
 
+
+@login_required
+@require_POST
+def delete_ad_view(request, ad_id):
+
+    ad = get_object_or_404(
+        Advertisement,
+        ad_id=ad_id,
+        userid=request.user.profile,
+    )
+
+    address = ad.address
+
+    with transaction.atomic():
+
+        for image in ad.images.all():
+            if image.image:
+                image.image.delete(save=False)
+
+        ad.delete()
+
+        address.delete()
+
+    messages.success(request, "آگهی با موفقیت حذف شد.")
+    return redirect("accounts:profile")
