@@ -30,11 +30,47 @@
         }
       }
 
+      /* باکس سایدبار */
+      .sidebar-box {
+        background: var(--bg2);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        height: fit-content;
+      }
+
       /* استایل برای تب‌های فعال سایدبار */
       .sidebar-tab.active {
         background: var(--amber) !important;
         color: var(--btn-text) !important;
         font-weight: 600;
+      }
+
+      .sidebar-divider {
+        border-top: 1px solid var(--line);
+        margin: 6px 0;
+      }
+
+      .sidebar-logout {
+        justify-content: flex-start;
+        padding: 14px 18px;
+        border-radius: 14px;
+        background: rgba(239,68,68,0.06);
+        border: 1px solid transparent;
+        font-size: 15px;
+        font-weight: 600;
+        transition: 0.2s;
+        width: 100%;
+        text-align: right;
+        color: #ef4444;
+      }
+
+      .sidebar-logout:hover {
+        background: rgba(239,68,68,0.12);
+        border-color: rgba(239,68,68,0.2);
       }
 
       /* انیمیشن لود شدن محتوای تب‌ها */
@@ -228,7 +264,7 @@
     </style>
 
     <!-- ================= سایدبار (تب‌ها) ================= -->
-    <aside style="display: flex; flex-direction: column; gap: 8px;">
+    <aside class="sidebar-box">
       <button class="btn sidebar-tab active" data-tab="my-ads" style="justify-content: flex-start; padding: 14px 18px; border-radius: 14px; background: var(--bg2); border: 1px solid var(--line); font-size: 15px; font-weight: 600; transition: 0.2s; width: 100%; text-align: right;">
         📋 آگهی‌های من
       </button>
@@ -238,6 +274,15 @@
       <button class="btn sidebar-tab" data-tab="settings" style="justify-content: flex-start; padding: 14px 18px; border-radius: 14px; background: var(--bg2); border: 1px solid var(--line); font-size: 15px; font-weight: 600; transition: 0.2s; width: 100%; text-align: right;">
         ⚙️ تنظیمات حساب
       </button>
+
+      <div class="sidebar-divider"></div>
+
+      <form method="POST" action="{% url 'accounts:logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn sidebar-logout">
+          🚪 خروج از حساب
+        </button>
+      </form>
     </aside>
 
     <!-- ================= محتوای تب‌ها ================= -->
@@ -250,17 +295,8 @@
           <span style="font-size: 14px; color: var(--muted);">{{ ads_count|default:0 }} آگهی</span>
         </div>
 
-        <!--
-          نکته برای آینده: این کارت نمونه است. وقتی از بک‌اند لیست آگهی‌ها میاد،
-          این بلاک باید داخل {% for ad in user_ads %} ... {% endfor %} قرار بگیره
-          و مقدار ad.status باید یکی از سه مقدار زیر باشه:
-          pending  -> در انتظار تایید
-          approved -> تایید شده
-          rejected -> رد شده
-        -->
-
-        <!-- کارت نمونه آگهی (پژو ۲۰۷) -->
-        <div class="premium-ad-card status-{{ ad.status|default:'approved' }}">
+        {% for ad in ads %}
+        <div class="premium-ad-card">
           <!-- بخش ۱: تصویر یا آیکون -->
           <div class="ad-image">
             {% if ad.images.first %}
@@ -273,37 +309,41 @@
           <!-- بخش ۲: اطلاعات آگهی -->
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-              <h4 class="card-title" style="font-size: 18px; margin: 0; font-weight: 800; color: var(--text); letter-spacing: -0.3px;">پژو ۲۰۷ اتوماتیک MC</h4>
-              <span style="font-size: 11px; padding: 3px 10px; background: rgba(245,158,11,0.1); color: var(--amber); border-radius: 8px; font-weight: 800; border: 1px solid rgba(245,158,11,0.2);">فروش نقدی</span>
+              <h4 class="card-title" style="font-size: 18px; margin: 0; font-weight: 800; color: var(--text); letter-spacing: -0.3px;"> {{ ad.title }}</h4>
+              <span style="font-size: 11px; padding: 3px 10px; background: rgba(245,158,11,0.1); color: var(--amber); border-radius: 8px; font-weight: 800; border: 1px solid rgba(245,158,11,0.2);"> {{ ad.sell_type }} </span>
 
               <!-- بج وضعیت آگهی (در انتظار تایید / تایید شده / رد شده) -->
-              <span class="status-badge status-{{ ad.status|default:'approved' }}">
-                {% if ad.status == 'pending' %}
-                  ⏳ در انتظار تایید
-                {% elif ad.status == 'rejected' %}
-                  ⛔ رد شده
-                {% else %}
-                  ✅ تایید شده
-                {% endif %}
-              </span>
+              {% if ad.published %}
+                <span class="status-badge status-approved">
+                    ✅ منتشر شده
+                </span>
+              {% else %}
+                <span class="status-badge status-pending">
+                    ⏳ پیش نویس
+                </span>
+              {% endif %}
             </div>
 
-            <!-- لاین مشخصات فنی همراه با زمان ثبت -->
+            <!-- لاین مشخصات فنی همراه با زمان ثبت و بازدید -->
             <div style="font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-              <span style="background: var(--bg2); padding: 2px 8px; border-radius: 6px;">مدل ۱۴۰۲</span>
+              <span style="background: var(--bg2); padding: 2px 8px; border-radius: 6px;">{{ ad.vehicle.production_year }}</span>
               <span style="color: var(--line);">|</span>
-              <span style="background: var(--bg2); padding: 2px 8px; border-radius: 6px;">کارکرد ۲۲,۰۰۰ کیلومتر</span>
+              <span style="background: var(--bg2); padding: 2px 8px; border-radius: 6px;">کارکرد {{ ad.km_age }} کیلومتر</span>
               <span style="color: var(--line);">|</span>
-              <span style="display: flex; align-items: center; gap: 4px; color: #6b7280; font-weight: 500;">📅 ۳ روز پیش</span>
+              <span style="display: flex; align-items: center; gap: 4px; color: #6b7280; font-weight: 500;">📅 {{ ad.created_date|date:"Y/m/d" }}</span>
+              <span style="color: var(--line);">|</span>
+              <span style="display: flex; align-items: center; gap: 4px; color: #6b7280; font-weight: 500;">👁️ 0 بازدید</span>
             </div>
 
-            <!-- قیمت تفکیک شده و تعداد بازدید -->
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px; flex-wrap: wrap; gap: 12px;">
+            <!-- قیمت -->
+            <div style="margin-top: 6px;">
               <div class="price-val" style="font-size: 19px; font-weight: 900; color: var(--text);">
-                ۸۵۰,۰۰۰,۰۰۰ <span style="font-size: 13px; font-weight: 500; color: var(--muted);">تومان</span>
-              </div>
-              <div style="font-size: 12px; color: #6b7280; display: flex; align-items: center; gap: 5px; background: rgba(0,0,0,0.03); padding: 4px 10px; border-radius: 8px; font-weight: 500;">
-                👁️ <span>۱۴۲ بازدید</span>
+                {% if ad.price %}
+                  {{ ad.price }}
+                {% else %}
+                  ---
+                {% endif %}
+                <span style="font-size: 13px; font-weight: 500; color: var(--muted);">تومان</span>
               </div>
             </div>
           </div>
@@ -315,7 +355,10 @@
             <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; background: var(--bg2); padding: 8px 12px; border-radius: 12px; border: 1px solid var(--line);">
               <span style="font-size: 12px; font-weight: 700; color: var(--text);">نمایش عمومی آگهی</span>
               <label class="luxury-toggle">
-                <input type="checkbox" checked id="toggle-ad-status">
+                <input
+                  type="checkbox"
+                  {% if ad.active_status %}checked{% endif %}
+                >
                 <span class="luxury-slider"></span>
               </label>
             </div>
@@ -334,8 +377,14 @@
 
           </div>
         </div>
-        <!-- پایان کارت نمونه -->
+        {% empty %}
+
+        <p style="padding:40px;text-align:center;">
+            هنوز هیچ آگهی ثبت نکرده‌اید.
+        </p>
+        {% endfor %}
       </div>
+      <!-- پایان تب ۱ -->
 
       <!-- ================= تب ۲: علاقه‌مندی‌ها ================= -->
       <div id="favorites" class="tab-content">
