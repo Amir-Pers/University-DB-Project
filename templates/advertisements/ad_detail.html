@@ -1,403 +1,772 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>جزئیات آگهی | کاروان</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <style>
-    /* باکس عنوان + عکس + فروشنده */
-    .ad-seller-box {
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 24px 24px 18px 24px;
-      background: var(--bg2);
-      margin-bottom: 30px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-      transition: background .3s;
+{% block content %}
+<style>
+  .ad-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-weight: 800;
+    border: 1px solid;
+    margin-bottom: 14px;
+  }
+
+  .ad-status-badge.status-pending {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border-color: rgba(245, 158, 11, 0.25);
+  }
+
+  .ad-status-badge.status-approved {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border-color: rgba(16, 185, 129, 0.25);
+  }
+
+  .ad-status-badge.status-rejected {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.25);
+  }
+
+  .ad-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .ad-sidebar {
+    order: -1;
+  }
+
+  .ad-main-box {
+    order: 2;
+  }
+
+  @media(min-width: 900px) {
+    .ad-layout {
+      grid-template-columns: 1fr 320px;
+      gap: 24px;
     }
+    .ad-sidebar {
+      position: sticky;
+      top: 20px;
+      order: 2;
+    }
+    .ad-main-box {
+      order: 1;
+    }
+  }
 
-    .ad-seller-box h2 {
-      margin-top: 0;
-      margin-bottom: 18px;
+  .ad-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .ad-title-row h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  .vehicle-plate {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card);
+    border: 2px solid var(--amber);
+    border-radius: 10px;
+    padding: 6px 14px;
+    font-weight: 800;
+    font-size: 13px;
+    color: var(--text);
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+  }
+
+  .vehicle-plate .plate-sep {
+    width: 1px;
+    height: 16px;
+    background: var(--line);
+  }
+
+  .vehicle-plate .plate-brand {
+    color: var(--amber);
+  }
+
+  .ad-main-box {
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 24px;
+    background: var(--bg2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .detail-gallery {
+    display: block;
+    width: 100%;
+    position: relative;
+  }
+
+  .detail-main-image {
+    width: 100%;
+    height: 440px;
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    background: var(--card);
+  }
+
+  .detail-main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .detail-main-image .no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60px;
+    border: 2px dashed var(--line);
+    color: var(--muted);
+  }
+
+  .image-counter {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 8px;
+  }
+
+  .thumbnail-gallery {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .thumbnail-gallery::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .thumbnail-gallery::-webkit-scrollbar-thumb {
+    background: var(--amber);
+    border-radius: 20px;
+  }
+
+  .thumb {
+    width: 90px;
+    height: 66px;
+    object-fit: cover;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: .25s;
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+
+  .thumb:hover {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+
+  .thumb.active {
+    border-color: var(--amber);
+    opacity: 1;
+  }
+
+  .ad-section-divider {
+    border-top: 1px solid var(--line);
+    margin: 26px 0 20px 0;
+  }
+
+  .section-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 16px 0;
+  }
+
+  .section-eyebrow .eyebrow-bar {
+    width: 4px;
+    height: 18px;
+    background: var(--amber);
+    border-radius: 2px;
+  }
+
+  .section-eyebrow span {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .detail-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 12px;
+  }
+
+  .detail-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--card);
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+  }
+
+  .detail-box .box-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: var(--amber-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+  }
+
+  .detail-box .box-text span {
+    display: block;
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 2px;
+  }
+
+  .detail-box .box-text strong {
+    font-size: 15px;
+    color: var(--text);
+  }
+
+  .ad-sidebar-card {
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-section+.sidebar-section {
+    border-top: 1px solid var(--line);
+    margin-top: 18px;
+    padding-top: 18px;
+  }
+
+  .sell-type-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--amber);
+    background: var(--amber-soft);
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  .price-label {
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 4px;
+  }
+
+  .main-price {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .main-price .price-unit {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text2);
+  }
+
+  .price-sub-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .price-sub-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+
+  .price-sub-item span {
+    color: var(--text2);
+  }
+
+  .price-sub-item strong {
+    color: var(--text);
+  }
+
+  .sidebar-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .contact-btn {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 14px;
+    background: var(--amber);
+    color: #111;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .25s;
+  }
+
+  .contact-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .phone-box {
+    margin-top: 10px;
+    text-align: center;
+    padding: 12px;
+    border-radius: 14px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .sidebar-location-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .location-mini-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 9px 12px;
+  }
+
+  .location-mini-box .box-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--amber-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .location-mini-box .box-text span {
+    display: block;
+    font-size: 11px;
+    color: var(--text2);
+  }
+
+  .location-mini-box .box-text strong {
+    font-size: 13.5px;
+    color: var(--text);
+  }
+
+  .sidebar-description-body {
+    position: relative;
+    padding-right: 16px;
+    border-right: 3px solid var(--amber);
+  }
+
+  .sidebar-description-body p {
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--text2);
+    white-space: pre-wrap;
+    margin: 0;
+    text-align: justify;
+    max-height: 220px;
+    overflow-y: auto;
+    padding-left: 4px;
+  }
+
+  .sidebar-description-body p::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .sidebar-description-body p::-webkit-scrollbar-thumb {
+    background: var(--line);
+    border-radius: 10px;
+  }
+
+  @media(max-width: 768px) {
+    .detail-main-image {
+      height: 260px;
+    }
+    .ad-main-box,
+    .ad-sidebar-card {
+      padding: 16px;
+    }
+    .ad-title-row h2 {
+      font-size: 19px;
+    }
+    .main-price {
       font-size: 24px;
     }
+  }
 
-    /* گالری بدون بند انگشتی سمت راست */
-    .ad-seller-box .detail-gallery {
-      display: block;
-      width: 100%;
+  @media(max-width: 480px) {
+    .detail-main-image {
+      height: 210px;
     }
-
-    .ad-seller-box .detail-main-image {
-      width: 100%;
-      height: 480px;
-    }
-
-    .ad-seller-box .detail-main-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 18px;
-      display: block;
-    }
-
-    /* گالری افقی پایین (بند انگشتی) */
-    .ad-seller-box .thumbnail-gallery {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-      overflow-x: auto;
-      padding-bottom: 5px;
-    }
-
-    .ad-seller-box .thumbnail-gallery::-webkit-scrollbar {
-      height: 6px;
-    }
-
-    .ad-seller-box .thumbnail-gallery::-webkit-scrollbar-thumb {
-      background: var(--amber);
-      border-radius: 20px;
-    }
-
-    .ad-seller-box .thumb {
-      width: 95px;
-      height: 70px;
-      object-fit: cover;
-      border-radius: 10px;
-      cursor: pointer;
-      border: 3px solid transparent;
-      transition: .25s;
-      flex-shrink: 0;
-    }
-
-    .ad-seller-box .thumb:hover {
-      transform: scale(1.05);
-    }
-
-    .ad-seller-box .thumb.active {
-      border-color: var(--amber);
-    }
-
-    /* فروشنده داخل باکس */
-    .ad-seller-box .seller-contact {
-      margin-top: 20px;
-      padding: 18px 0 0 0;
-      border-top: 1px solid var(--line);
-    }
-
-    .ad-seller-box .seller-contact h3 {
-      margin-bottom: 14px;
-      font-size: 18px;
-    }
-
-    .ad-seller-box .contact-btn {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 14px;
-      background: var(--amber);
-      color: #111;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: .25s;
-    }
-
-    .ad-seller-box .contact-btn:hover {
-      transform: translateY(-2px);
-    }
-
-    .ad-seller-box .phone-box {
-      margin-top: 14px;
-      text-align: center;
-      padding: 14px;
-      border-radius: 14px;
-      background: var(--card);
-      border: 1px solid var(--line);
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
-
-    /* ===== بهبود استایل توضیحات فروشنده ===== */
-    .detail-description {
-      margin-top: 30px;
-      padding: 20px 24px;
-      /* اضافه شدن padding افقی */
-      border-top: 1px solid var(--line);
-      background: var(--bg2);
-      /* برای هماهنگی بیشتر */
-      border-radius: 18px;
-      /* گرد شدن گوشه‌ها */
-    }
-
-    .detail-description h3 {
-      margin-bottom: 12px;
-      font-size: 18px;
-    }
-
-    .detail-description p {
-      line-height: 1.9;
-      white-space: pre-wrap;
-      margin: 0;
-      /* حذف margin پیش‌فرض */
-      text-align: justify;
-      /* تراز مناسب برای متن راست‌چین */
-      padding-left: 4px;
-      /* کمی فاصله از لبه چپ برای زیبایی */
-    }
-
-    /* ریسپانسیو */
-    @media(max-width:768px) {
-      .ad-seller-box .detail-main-image {
-        height: 320px;
-      }
-
-      .detail-description {
-        padding: 16px 18px;
-        /* کاهش padding در موبایل */
-      }
-    }
-
-    /* بقیه استایل‌های قبلی */
-    .detail-right {
-      margin-top: 10px;
-    }
-
     .detail-info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
     }
-
     .detail-box {
-      background: var(--card);
-      padding: 16px 18px;
-      border-radius: 14px;
-      border: 1px solid var(--line);
+      padding: 10px 12px;
     }
-
-    .detail-box span {
-      display: block;
+    .detail-box .box-icon {
+      width: 30px;
+      height: 30px;
       font-size: 14px;
-      color: var(--text2);
-      margin-bottom: 4px;
     }
-
-    .detail-box strong {
-      font-size: 18px;
+    .detail-box .box-text strong {
+      font-size: 13px;
     }
+    .thumb {
+      width: 72px;
+      height: 54px;
+    }
+    .ad-title-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .vehicle-plate {
+      font-size: 12px;
+      padding: 5px 10px;
+    }
+  }
+</style>
 
-    /* دیگر استایل‌ها بدون تغییر */
-  </style>
-</head>
-
-<body>
-
-  <div class="bg-ambient" aria-hidden="true">
-    <div class="blob b1"></div>
-    <div class="blob b2"></div>
-    <div class="blob b3"></div>
-    <div class="grain"></div>
+<section class="page-hero reveal">
+  <div class="crumb">
+    <a href="{% url 'home:index' %}">خانه</a> / <span id="crumbTitle">جزئیات آگهی</span>
   </div>
+  <h1 id="pageTitle">جزئیات آگهی</h1>
+</section>
 
-  <header>
-    <div class="nav">
-      <a href="{% url 'home:index' %}" class="logo">
-        <div class="mark">🚗</div>کاروان
-      </a>
-      <div class="nav-actions">
-        <button class="theme-toggle" id="themeToggle" title="تغییر تم">
-          <span class="ico ico-moon">🌙</span>
-          <span class="ico ico-sun">☀️</span>
-        </button>
-        <button class="icon-btn" id="btnAccount" title="حساب کاربری">👤</button>
-        <button class="btn btn-amber" id="btnAddAd">+ ثبت آگهی</button>
-      </div>
-    </div>
-  </header>
+<div class="reveal reveal-1" style="margin-top: 20px;">
+  <div class="ad-layout">
 
-  <main>
-    <section class="page-hero reveal">
-      <div class="crumb"><a href="{% url 'home:index' %}">خانه</a> / <span id="crumbTitle">جزئیات آگهی</span></div>
-      <h1 id="pageTitle">جزئیات آگهی</h1>
-    </section>
+    <!-- ================= ستون اصلی ================= -->
+    <div class="ad-main-box">
 
-    <div class="detail-page-card reveal reveal-1">
+      {% if ad.status %}
+        <span class="ad-status-badge status-{{ ad.status }}">
+          {% if ad.status == 'pending' %}
+            ⏳ در انتظار تایید
+          {% elif ad.status == 'rejected' %}
+            ⛔ رد شده
+          {% else %}
+            ✅ تایید شده
+          {% endif %}
+        </span>
+      {% endif %}
 
-      <!-- ===== باکس عنوان + تصویر اصلی + گالری پایین + فروشنده ===== -->
-      <div class="ad-seller-box">
-
+      <div class="ad-title-row">
         <h2>{{ ad.title }}</h2>
-
-        {% if ad.images.all %}
-        <!-- تصویر اصلی (بدون بند انگشتی سمت راست) -->
-        <div class="detail-gallery">
-          <div class="detail-main-image">
-            {% with first_image=ad.images.first %}
-            {% if first_image %}
-            <img src="{{ first_image.image.url }}" id="mainImage" alt="{{ ad.title }}">
-            {% endif %}
-            {% endwith %}
-          </div>
+        <div class="vehicle-plate">
+          <span class="plate-brand">{{ ad.vehicle.model.brand.name }}</span>
+          <span class="plate-sep"></span>
+          <span>{{ ad.vehicle.model.name }}</span>
         </div>
+      </div>
 
-        <!-- گالری افقی پایین (بند انگشتی) -->
-        {% if ad.images.count > 1 %}
+      <!-- گالری تصاویر -->
+      <div class="detail-gallery">
+        <div class="detail-main-image">
+          {% with first_image=ad.images.first %}
+            {% if first_image %}
+              <img src="{{ first_image.image.url }}" id="mainImage" alt="{{ ad.title }}">
+              {% if ad.images.count > 1 %}
+                <span class="image-counter" id="imageCounter">۱ از {{ ad.images.count }}</span>
+              {% endif %}
+            {% else %}
+              <div class="no-image">🚘</div>
+            {% endif %}
+          {% endwith %}
+        </div>
+      </div>
+
+      {% if ad.images.count > 1 %}
         <div class="thumbnail-gallery">
           {% for image in ad.images.all %}
-          <img src="{{ image.image.url }}" class="thumb {% if forloop.first %}active{% endif %}"
-            onclick="changeImage(this)" alt="">
+            <img src="{{ image.image.url }}"
+                 class="thumb {% if forloop.first %}active{% endif %}"
+                 onclick="changeImage(this, {{ forloop.counter }})"
+                 alt="">
           {% endfor %}
         </div>
-        {% endif %}
-        {% endif %}
+      {% endif %}
 
-        <!-- اطلاعات فروشنده -->
-        <div class="seller-contact">
-          <h3>تماس با فروشنده</h3>
-          <button class="contact-btn" id="showPhoneBtn">
-            📞 نمایش شماره تماس
-          </button>
-          <div class="phone-box" id="phoneBox">
-            {{ ad.userid.phone }}
-          </div>
-        </div>
+      <div class="ad-section-divider"></div>
 
+      <!-- اطلاعات وسیله نقلیه -->
+      <div class="section-eyebrow">
+        <span class="eyebrow-bar"></span>
+        <span>🚘 اطلاعات وسیله نقلیه</span>
       </div>
-      <!-- ===== پایان باکس ===== -->
-
-      <!-- مشخصات خودرو (خارج از باکس) -->
-      <div class="detail-right">
-        <div class="detail-info-grid">
+      <div class="detail-info-grid">
+        <div class="detail-box">
+          <div class="box-icon">🏷</div>
+          <div class="box-text"><span>برند</span><strong>{{ ad.vehicle.model.brand.name }}</strong></div>
+        </div>
+        <div class="detail-box">
+          <div class="box-icon">🚗</div>
+          <div class="box-text"><span>مدل</span><strong>{{ ad.vehicle.model.name }}</strong></div>
+        </div>
+        {% if ad.car_tip %}
           <div class="detail-box">
-            <span>💰 قیمت</span>
-            <strong>
+            <div class="box-icon">🔖</div>
+            <div class="box-text"><span>تیپ</span><strong>{{ ad.car_tip }}</strong></div>
+          </div>
+        {% endif %}
+        <div class="detail-box">
+          <div class="box-icon">📅</div>
+          <div class="box-text"><span>سال ساخت</span><strong>{{ ad.vehicle.production_year }}</strong></div>
+        </div>
+        <div class="detail-box">
+          <div class="box-icon">🛣</div>
+          <div class="box-text"><span>کارکرد</span><strong>{{ ad.km_age }} کیلومتر</strong></div>
+        </div>
+        <div class="detail-box">
+          <div class="box-icon">♻️</div>
+          <div class="box-text"><span>وضعیت خودرو</span><strong>{{ ad.car_condition|default:"—" }}</strong></div>
+        </div>
+      </div>
+
+      <div class="ad-section-divider"></div>
+
+      <!-- ظاهر و بدنه -->
+      <div class="section-eyebrow">
+        <span class="eyebrow-bar"></span>
+        <span>🎨 ظاهر و بدنه</span>
+      </div>
+      <div class="detail-info-grid">
+        <div class="detail-box">
+          <div class="box-icon">🎨</div>
+          <div class="box-text"><span>رنگ بدنه</span><strong>{{ ad.body_color|default:"—" }}</strong></div>
+        </div>
+        {% if ad.cabin_color %}
+          <div class="detail-box">
+            <div class="box-icon">🪑</div>
+            <div class="box-text"><span>رنگ کابین</span><strong>{{ ad.cabin_color }}</strong></div>
+          </div>
+        {% endif %}
+        <div class="detail-box">
+          <div class="box-icon">🖌</div>
+          <div class="box-text"><span>وضعیت رنگ و بدنه</span><strong>{{ ad.body_status|default:"—" }}</strong></div>
+        </div>
+        <div class="detail-box">
+          <div class="box-icon">⚙️</div>
+          <div class="box-text"><span>نوع گیربکس</span><strong>{{ ad.gearbox|default:"—" }}</strong></div>
+        </div>
+        <div class="detail-box">
+          <div class="box-icon">⛽</div>
+          <div class="box-text"><span>نوع سوخت</span><strong>{{ ad.fuel_type|default:"—" }}</strong></div>
+        </div>
+        <div class="detail-box">
+          <div class="box-icon">📋</div>
+          <div class="box-text"><span>نوع آگهی</span><strong>{{ ad.ad_type|default:"—" }}</strong></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= ستون کناری ================= -->
+    <div class="ad-sidebar">
+      <div class="ad-sidebar-card">
+
+        <!-- بخش قیمت و نوع فروش -->
+        <div class="sidebar-section">
+          <span class="sell-type-pill">
+            {% if ad.sell_type == 'اقساطی' %}
+              💳 فروش اقساطی
+            {% elif ad.sell_type == 'حواله' %}
+              📄 فروش به‌صورت حواله
+            {% elif ad.sell_type == 'توافقی' %}
+              🤝 قیمت توافقی
+            {% else %}
+              💵 فروش نقدی
+            {% endif %}
+          </span>
+
+          {% if ad.sell_type == 'اقساطی' %}
+            <div class="price-label">پیش‌پرداخت</div>
+            <div class="main-price">
+              {{ ad.pre_payment|default:"—" }} <span class="price-unit">تومان</span>
+            </div>
+            <div class="price-sub-list">
+              <div class="price-sub-item"><span>مبلغ هر قسط</span><strong>{{ ad.installment_amount|default:"—" }} تومان</strong></div>
+              <div class="price-sub-item"><span>دوره پرداخت</span><strong>{{ ad.payment_period|default:"—" }}</strong></div>
+              <div class="price-sub-item"><span>تعداد اقساط</span><strong>{{ ad.installment_count|default:"—" }}</strong></div>
+              <div class="price-sub-item"><span>زمان تحویل</span><strong>{{ ad.delivery_time|default:"—" }}</strong></div>
+            </div>
+
+          {% elif ad.sell_type == 'حواله' %}
+            <div class="price-label">مبلغ نهایی تقریبی</div>
+            <div class="main-price">
+              {{ ad.final_price|default:"—" }} <span class="price-unit">تومان</span>
+            </div>
+            <div class="price-sub-list">
+              <div class="price-sub-item"><span>مبلغ واریزی تاکنون</span><strong>{{ ad.deposit_amount|default:"—" }} تومان</strong></div>
+              <div class="price-sub-item"><span>زمان تحویل حواله</span><strong>{{ ad.delivery_time|default:"—" }}</strong></div>
+            </div>
+
+          {% elif ad.sell_type == 'توافقی' %}
+            <div style="font-size: 14px; font-weight: 600; color: var(--text); margin-top: 4px;">
+              قیمت پس از تماس یا بر اساس توافق تعیین خواهد شد.
+            </div>
+
+          {% else %}
+            <div class="price-label">قیمت کل</div>
+            <div class="main-price">
               {% if ad.price %}
-              {{ ad.price }} تومان
+                {{ ad.price }} <span class="price-unit">تومان</span>
               {% else %}
-              توافقی
+                توافقی
               {% endif %}
-            </strong>
-          </div>
-          <div class="detail-box">
-            <span>🏷 برند</span>
-            <strong>{{ ad.vehicle.model.brand.name }}</strong>
-          </div>
-          <div class="detail-box">
-            <span>🚗 مدل</span>
-            <strong>{{ ad.vehicle.model.name }}</strong>
-          </div>
-          <div class="detail-box">
-            <span>📅 سال ساخت</span>
-            <strong>{{ ad.vehicle.production_year }}</strong>
-          </div>
-          <div class="detail-box">
-            <span>🛣 کارکرد</span>
-            <strong>{{ ad.km_age }} کیلومتر</strong>
-          </div>
-          <div class="detail-box">
-            <span>📍 شهر</span>
-            <strong>{{ ad.address.city.name }}</strong>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- تماس با فروشنده -->
+        <div class="sidebar-section">
+          <button class="contact-btn" id="showPhoneBtn">📞 نمایش شماره تماس</button>
+          <div class="phone-box" id="phoneBox">{{ ad.userid.phone }}</div>
+        </div>
+
+        <!-- موقعیت مکانی -->
+        <div class="sidebar-section">
+          <div class="sidebar-title">📍 موقعیت مکانی</div>
+          <div class="sidebar-location-list">
+            <div class="location-mini-box">
+              <div class="box-icon">🗺</div>
+              <div class="box-text"><span>استان</span><strong>{{ ad.address.city.province.name|default:"—" }}</strong></div>
+            </div>
+            <div class="location-mini-box">
+              <div class="box-icon">🏙</div>
+              <div class="box-text"><span>شهر</span><strong>{{ ad.address.city.name|default:"—" }}</strong></div>
+            </div>
+            {% if ad.address.neighborhood %}
+              <div class="location-mini-box">
+                <div class="box-icon">📌</div>
+                <div class="box-text"><span>محله</span><strong>{{ ad.address.neighborhood }}</strong></div>
+              </div>
+            {% endif %}
           </div>
         </div>
-      </div>
 
-      <!-- ===== توضیحات فروشنده با استایل جدید ===== -->
-      <div class="detail-description">
-        <h3>توضیحات فروشنده</h3>
-        <p>{{ ad.descriptions }}</p>
-      </div>
-
-    </div> <!-- detail-page-card -->
-
-  </main>
-
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div class="footer-top">
-        <div>
-          <div class="footer-brand">
-            <div class="mark">🚗</div>کاروان
+        <!-- توضیحات -->
+        {% if ad.descriptions %}
+          <div class="sidebar-section">
+            <div class="sidebar-title">📝 توضیحات فروشنده</div>
+            <div class="sidebar-description-body">
+              <p>{{ ad.descriptions }}</p>
+            </div>
           </div>
-          <p class="footer-desc">پلتفرم رایگان خرید و فروش خودرو و موتورسیکلت. آگهی‌تو در چند ثانیه ثبت کن و مستقیم با
-            خریدار یا فروشنده در ارتباط باش، بدون واسطه و بدون کارمزد.</p>
-          <div class="footer-social">
-            <a href="#" title="اینستاگرام">📷</a>
-            <a href="#" title="تلگرام">✈️</a>
-            <a href="#" title="واتساپ">💬</a>
-          </div>
-        </div>
-        <div class="footer-col">
-          <h4>دسترسی سریع</h4>
-          <ul>
-            <li><a href="index.html?type=car">خودروها</a></li>
-            <li><a href="index.html?type=moto">موتورسیکلت‌ها</a></li>
-            <li><a href="post-ad.html">ثبت آگهی</a></li>
-            <li><a href="account.html">حساب کاربری</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>پشتیبانی</h4>
-          <ul>
-            <li><a href="faq.html">سوالات متداول</a></li>
-            <li><a href="terms.html">قوانین و مقررات</a></li>
-            <li><a href="privacy.html">حریم خصوصی</a></li>
-            <li><a href="contact.html">تماس با ما</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span>© <span id="footYear"></span> کاروان · تمامی حقوق محفوظ است</span>
-        <span>ساخته شده با <span class="heart">♥</span> · نسخه نمایشی، داده‌ها فقط روی همین مرورگر ذخیره می‌شن</span>
+        {% endif %}
+
       </div>
     </div>
-  </footer>
 
-  <div class="toast" id="toast"></div>
+  </div>
+</div>
+{% endblock %}
 
-  <script src="{% static 'js/app.js' %}"></script>
-  <script src="{% static 'js/bg-animation.js' %}"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
+{% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
 
-      const btn = document.getElementById("showPhoneBtn");
-      const phone = document.getElementById("phoneBox");
+    const btn = document.getElementById("showPhoneBtn");
+    const phone = document.getElementById("phoneBox");
 
+    if (btn && phone) {
       phone.style.display = "none";
 
-      btn.addEventListener("click", function () {
-
+      btn.addEventListener("click", function() {
         if (phone.style.display === "none") {
-
           phone.style.display = "block";
           btn.textContent = "🙈 پنهان کردن شماره تماس";
-
         } else {
-
           phone.style.display = "none";
           btn.textContent = "📞 نمایش شماره تماس";
-
         }
-
       });
-
-    });
-
-    function changeImage(el) {
-      document.getElementById("mainImage").src = el.src;
-      document.querySelectorAll(".thumb").forEach(img => {
-        img.classList.remove("active");
-      });
-      el.classList.add("active");
     }
-  </script>
-</body>
 
-</html>
+  });
+
+  function changeImage(el, index) {
+    document.getElementById("mainImage").src = el.src;
+    document.querySelectorAll(".thumb").forEach(function(img) {
+      img.classList.remove("active");
+    });
+    el.classList.add("active");
+
+    var counter = document.getElementById("imageCounter");
+    if (counter) {
+      var total = document.querySelectorAll(".thumb").length;
+      counter.textContent = toPersianDigits(index) + " از " + toPersianDigits(total);
+    }
+  }
+
+  function toPersianDigits(num) {
+    var persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+    return String(num).replace(/[0-9]/g, function(d) {
+      return persian[d];
+    });
+  }
+</script>
+{% endblock %}

@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from .models import User
 from locations.models import Address, Province, City
+from advertisements.models import Advertisement
 
 
 def handle_identity_form(request, profile):
@@ -120,11 +121,24 @@ def handle_password_form(request):
     messages.success(request, "رمز عبور با موفقیت تغییر کرد.")
     return redirect("accounts:profile")
 
-
 def get_profile_context(profile):
+
+    ads = (
+        Advertisement.objects
+        .filter(userid=profile)
+        .select_related(
+            "vehicle__model__brand",
+            "address__city",
+        )
+        .prefetch_related("images")
+        .order_by("-created_date")
+    )
 
     return {
         "profile": profile,
+        "ads": ads,
+        "ads_count": ads.count(),
+        
         "provinces": Province.objects.prefetch_related("cities").all(),
 
         "selected_province": (
