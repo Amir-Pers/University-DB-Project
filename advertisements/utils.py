@@ -3,6 +3,8 @@ from vehicles.models import Vehicle, VehicleModel, Brand, Motorcycle, Car
 from advertisements.models import Advertisement, Image, Instalment
 from locations.models import Address, Province, City
 from django.utils import timezone
+from .models import Remittance
+
 
 def get_post_ad_data(request):
     sell_type = request.POST.get("sell_type")
@@ -219,6 +221,20 @@ def create_instalment(advertisement, data):
     )
 
 
+
+def create_remittance(advertisement, data):
+
+    if data["sell_type"] != "حواله":
+        return
+
+    Remittance.objects.create(
+        advertisement=advertisement,
+        deposit_amount=data["deposit_amount"],
+        final_price=data["final_price"],
+        delivery_time=data["delivery_time_draft"],
+    )
+
+
 def create_advertisement(profile, data):
 
     if data["address_mode"] == "default":
@@ -269,16 +285,11 @@ def create_advertisement(profile, data):
         body_status=data["body_status"],
         km_age=data["km_age"],
 
-        remittance_time=(
-            data["delivery_time_draft"]
-            if data["sell_type"] == "حواله"
-            else None
-        ),
-
         active_status=True,
     )
 
     create_images(advertisement, data["images"])
     create_instalment(advertisement, data)
-
+    create_remittance(advertisement, data)
+    
     return advertisement

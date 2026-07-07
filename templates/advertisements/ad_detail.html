@@ -657,11 +657,11 @@
           {% elif ad.sell_type == 'حواله' %}
             <div class="price-label">مبلغ نهایی تقریبی</div>
             <div class="main-price">
-              {{ ad.final_price|default:"—" }} <span class="price-unit">تومان</span>
+              {{ ad.remittance.final_price|default:"—" }} <span class="price-unit">تومان</span>
             </div>
             <div class="price-sub-list">
-              <div class="price-sub-item"><span>مبلغ واریزی تاکنون</span><strong>{{ ad.deposit_amount|default:"—" }} تومان</strong></div>
-              <div class="price-sub-item"><span>زمان تحویل حواله</span><strong>{{ ad.delivery_time|default:"—" }}</strong></div>
+              <div class="price-sub-item"><span>مبلغ واریزی تاکنون</span><strong>{{ ad.remittance.deposit_amount|default:"—" }} تومان</strong></div>
+              <div class="price-sub-item"><span>زمان تحویل حواله</span><strong>{{ ad.remittance.delivery_time|default:"—" }}</strong></div>
             </div>
 
           {% elif ad.sell_type == 'توافقی' %}
