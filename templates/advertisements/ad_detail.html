@@ -566,12 +566,12 @@
           <div class="box-icon">🚗</div>
           <div class="box-text"><span>مدل</span><strong>{{ ad.vehicle.model.name }}</strong></div>
         </div>
-        {% if ad.car_tip %}
+        <!-- {% if ad.car_tip %}
           <div class="detail-box">
             <div class="box-icon">🔖</div>
             <div class="box-text"><span>تیپ</span><strong>{{ ad.car_tip }}</strong></div>
           </div>
-        {% endif %}
+        {% endif %} -->
         <div class="detail-box">
           <div class="box-icon">📅</div>
           <div class="box-text"><span>سال ساخت</span><strong>{{ ad.vehicle.production_year }}</strong></div>
@@ -596,12 +596,12 @@
       <div class="detail-info-grid">
         <div class="detail-box">
           <div class="box-icon">🎨</div>
-          <div class="box-text"><span>رنگ بدنه</span><strong>{{ ad.body_color|default:"—" }}</strong></div>
+          <div class="box-text"><span>رنگ بدنه</span><strong>{{ ad.vehicle.color_out|default:"—" }}</strong></div>
         </div>
         {% if ad.cabin_color %}
           <div class="detail-box">
             <div class="box-icon">🪑</div>
-            <div class="box-text"><span>رنگ کابین</span><strong>{{ ad.cabin_color }}</strong></div>
+            <div class="box-text"><span>رنگ کابین</span><strong>{{ ad.vehicle.color_in }}</strong></div>
           </div>
         {% endif %}
         <div class="detail-box">
@@ -610,11 +610,11 @@
         </div>
         <div class="detail-box">
           <div class="box-icon">⚙️</div>
-          <div class="box-text"><span>نوع گیربکس</span><strong>{{ ad.gearbox|default:"—" }}</strong></div>
+          <div class="box-text"><span>نوع گیربکس</span><strong>{{ ad.vehicle.transmission_type|default:"—" }}</strong></div>
         </div>
         <div class="detail-box">
           <div class="box-icon">⛽</div>
-          <div class="box-text"><span>نوع سوخت</span><strong>{{ ad.fuel_type|default:"—" }}</strong></div>
+          <div class="box-text"><span>نوع سوخت</span><strong>{{ ad.vehicle.fuel_type|default:"—" }}</strong></div>
         </div>
         <div class="detail-box">
           <div class="box-icon">📋</div>
@@ -645,13 +645,13 @@
           {% if ad.sell_type == 'اقساطی' %}
             <div class="price-label">پیش‌پرداخت</div>
             <div class="main-price">
-              {{ ad.pre_payment|default:"—" }} <span class="price-unit">تومان</span>
+              {{ ad.instalment.first_payment }} <span class="price-unit">تومان</span>
             </div>
             <div class="price-sub-list">
-              <div class="price-sub-item"><span>مبلغ هر قسط</span><strong>{{ ad.installment_amount|default:"—" }} تومان</strong></div>
-              <div class="price-sub-item"><span>دوره پرداخت</span><strong>{{ ad.payment_period|default:"—" }}</strong></div>
-              <div class="price-sub-item"><span>تعداد اقساط</span><strong>{{ ad.installment_count|default:"—" }}</strong></div>
-              <div class="price-sub-item"><span>زمان تحویل</span><strong>{{ ad.delivery_time|default:"—" }}</strong></div>
+              <div class="price-sub-item"><span>مبلغ هر قسط</span><strong>{{ ad.instalment.payment_per_instalment|default:"—" }} تومان</strong></div>
+              <div class="price-sub-item"><span>دوره پرداخت</span><strong>{{ ad.instalment.payment_period|default:"—" }}</strong></div>
+              <div class="price-sub-item"><span>تعداد اقساط</span><strong>{{ ad.instalment.payment_count|default:"—" }}</strong></div>
+              <div class="price-sub-item"><span>زمان تحویل</span><strong>{{ ad.instalment.delivery_date|default:"—" }}</strong></div>
             </div>
 
           {% elif ad.sell_type == 'حواله' %}

@@ -366,7 +366,11 @@
             <!-- ساختار دکمه‌های ۳‌گانه عمودی متمایز -->
             <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
               <!-- دکمه مشاهده با دیزاین شاخص به عنوان هدف اصلی -->
-              <button class="btn btn-view-premium" style="padding: 10px 16px; font-size: 13px; width: 100%; border-radius: 12px; justify-content: center; display: flex; align-items: center; gap: 6px;">👁️ مشاهده آگهی</button>
+              <a  href="{% url 'advertisements:detail' ad.ad_id %}"  
+                class="btn btn-view-premium" 
+                style="padding: 10px 16px; font-size: 13px; width: 100%; border-radius: 12px; justify-content: center; display: flex; align-items: center; gap: 6px;">
+                👁️ مشاهده آگهی
+              </a>
 
               <!-- ردیف دکمه‌های فرعی برای تعادل بصری بی‌نظیر -->
               <div style="display: flex; gap: 8px; width: 100%;">
