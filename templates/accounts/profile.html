@@ -374,7 +374,13 @@
 
               <!-- ردیف دکمه‌های فرعی برای تعادل بصری بی‌نظیر -->
               <div style="display: flex; gap: 8px; width: 100%;">
-                <button class="btn btn-ghost" style="padding: 8px 12px; font-size: 12px; border-color: var(--line); color: var(--text); flex: 1; border-radius: 10px; justify-content: center; font-weight: 600;">✏️ ویرایش</button>
+                <a href="{% url 'advertisements:edit_ad' ad.ad_id %}" 
+                  class="btn btn-ghost" style="padding: 8px 12px; 
+                  font-size: 12px; border-color: var(--line); 
+                  color: var(--text); flex: 1; border-radius: 10px; 
+                  justify-content: center; font-weight: 600;">
+                  ✏️ ویرایش
+                </a>
                 <form action="{% url 'advertisements:delete_ad' ad.ad_id %}"
                   method="post" onsubmit="return confirm('آیا از حذف این آگهی مطمئن هستید؟');">
                    {% csrf_token %}
