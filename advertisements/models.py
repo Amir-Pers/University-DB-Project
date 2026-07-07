@@ -19,7 +19,6 @@ class Advertisement(models.Model):
     updated_date = models.DateTimeField(blank=True, null=True)
     ad_type = models.CharField(max_length=50, blank=True, null=True)
     car_condition = models.CharField(max_length=50, blank=True, null=True)
-    remittance_time = models.CharField(max_length=50, blank=True, null=True)
     km_age = models.IntegerField(blank=True, null=True)
     body_status = models.CharField(max_length=50, blank=True, null=True)
     free_zone = models.BooleanField(default=False)
@@ -82,3 +81,23 @@ class Instalment(models.Model):
 
     def __str__(self):
         return f"Instalment - {self.ad.title}"
+    
+
+class Remittance(models.Model):
+    remittance_id = models.AutoField(primary_key=True)
+    advertisement = models.OneToOneField(
+        Advertisement,
+        on_delete=models.CASCADE,
+        db_column="ad_id",
+        related_name="remittance",
+    )
+    deposit_amount = models.DecimalField(max_digits=18, decimal_places=0)
+    final_price = models.DecimalField(max_digits=18, decimal_places=0)
+    delivery_time = models.CharField(max_length=50)
+
+    class Meta:
+        managed = False
+        db_table = "Remittance"
+
+    def __str__(self):
+        return f"Remittance #{self.remittance_id}"
