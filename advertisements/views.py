@@ -138,7 +138,7 @@ def edit_ad_view(request, ad_id):
             return redirect("advertisements:edit_ad", ad_id=ad.ad_id)
 
         with transaction.atomic():
-            update_advertisement(ad, profile, data)
+            update_advertisement(ad, data)
 
         messages.success(
             request,

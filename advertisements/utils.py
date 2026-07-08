@@ -296,11 +296,101 @@ def create_advertisement(profile, data):
 
 
 
-def update_advertisement(advertisement, profile, data):
+def update_advertisement(advertisement, data):
+
+    vehicle = data["vehicle"]
+
+    title = f"{vehicle.model.brand.name} {vehicle.model.name}"
+
+    if data["tip"]:
+        title += f" {data['tip']}"
+
+    advertisement.vehicle = vehicle
+
+    advertisement.title = title
+
+    advertisement.sell_type = data["sell_type"]
+
+    advertisement.price = (
+        data["price"]
+        if data["sell_type"] == "نقدی"
+        else None
+    )
+
+    advertisement.descriptions = data["descriptions"]
+
+    advertisement.ad_type = data["ad_type"]
+    advertisement.car_condition = data["car_condition"]
+    advertisement.body_status = data["body_status"]
+    advertisement.km_age = data["km_age"]
 
     advertisement.updated_date = timezone.now()
+
     advertisement.published = False
 
-    advertisement.save()
 
-    return advertisement
+    if data["address_mode"] == "default":
+
+        default_address = advertisement.userid.default_address
+
+        advertisement.address.city = default_address.city
+        advertisement.address.neighborhood = default_address.neighborhood
+
+    else:
+
+        city = City.objects.get(pk=data["city_id"])
+
+        advertisement.address.city = city
+        advertisement.address.neighborhood = data["neighborhood"]
+
+    
+    if data["sell_type"] == "اقساطی":
+
+        Instalment.objects.update_or_create(
+            ad=advertisement,
+            defaults={
+                "first_payment": data["pre_payment"],
+                "second_payment": None,
+                "payment_per_instalment": data["installment_amount"],
+                "payment_count": data["installment_count"],
+                "payment_period": data["payment_period"],
+                "delivery_date": data["delivery_time_inst"],
+            },
+        )
+
+        Remittance.objects.filter(
+            advertisement=advertisement
+        ).delete() 
+
+
+
+    elif data["sell_type"] == "حواله":
+
+        Remittance.objects.update_or_create(
+            advertisement=advertisement,
+            defaults={
+                "deposit_amount": data["deposit_amount"],
+                "final_price": data["final_price"],
+                "delivery_time": data["delivery_time_draft"],
+            },
+        )
+
+        Instalment.objects.filter(
+            ad=advertisement
+        ).delete()
+
+    else:
+
+        Instalment.objects.filter(
+            ad=advertisement
+        ).delete()
+
+        Remittance.objects.filter(
+            advertisement=advertisement
+        ).delete()
+
+
+
+    advertisement.address.save()
+
+    advertisement.save()
