@@ -51,7 +51,7 @@ def get_post_ad_data(request):
 
 
 
-def validate_post_ad(data, profile, has_images=False):
+def validate_post_ad(data, profile, existing_images=0):
 
     required_fields = [
         data["sell_type"],
@@ -172,10 +172,28 @@ def validate_post_ad(data, profile, has_images=False):
 
     images = data["images"]
 
-    if not images and not has_images:
+    deleted_images = data["deleted_images"]
+
+    deleted_count = 0
+
+    if deleted_images:
+        
+        deleted_count = len([
+        image_id
+        for image_id in deleted_images.split(",")
+        if image_id.strip()
+        ])
+
+    remaining_images = (
+        existing_images
+        - deleted_count
+        + len(images)
+    )
+
+    if remaining_images < 1:
         return "حداقل یک تصویر برای آگهی انتخاب کنید."
 
-    if len(images) > 6:
+    if remaining_images > 6:
         return "حداکثر 6 تصویر قابل بارگذاری است."
 
     allowed_types = {

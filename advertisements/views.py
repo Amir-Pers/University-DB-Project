@@ -132,7 +132,7 @@ def edit_ad_view(request, ad_id):
 
         data = get_post_ad_data(request)
 
-        error = validate_post_ad(data=data, profile=profile, has_images=ad.images.exists(),)
+        error = validate_post_ad(data=data, profile=profile, existing_images=ad.images.exists().count())
 
         if error:
             messages.error(request, error)
