@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load number_format %}
 {% block content %}
 <main>
   <section class="hero reveal">
@@ -8,9 +9,9 @@
     <h1>خرید و فروش <span>خودرو و موتورسیکلت</span><br>سریع، امن و بدون واسطه</h1>
     <p>آگهی‌تو رایگان ثبت کن یا بین صدها خودرو و موتور فیلتر شده، دقیقا همونی که دنبالشی رو پیدا کن.</p>
     <div class="hero-stats">
-      <div class="stat"><b id="statTotal">{{ total_ads }}</b><span>آگهی فعال</span></div>
-      <div class="stat"><b id="statCar">{{ car_count }}</b><span>خودرو</span></div>
-      <div class="stat"><b id="statMoto">{{ motorcycle_count }}</b><span>موتورسیکلت</span></div>
+      <div class="stat"><b id="statTotal">{{ total_ads|fa_number }}</b><span>آگهی فعال</span></div>
+      <div class="stat"><b id="statCar">{{ car_count|fa_number }}</b><span>خودرو</span></div>
+      <div class="stat"><b id="statMoto">{{ motorcycle_count|fa_number }}</b><span>موتورسیکلت</span></div>
     </div>
   </section>
 
@@ -107,7 +108,7 @@
           <span>📍 {{ ad.address.city.name }}</span>
 
           {% if ad.km_age %}
-          <span>⏱️ {{ ad.km_age }} کیلومتر</span>
+          <span>⏱️ {{ ad.km_age|fa_number }} کیلومتر</span>
           {% endif %}
         </div>
 
@@ -118,7 +119,7 @@
 
           <span class="price-val">
             {% if ad.price %}
-            {{ ad.price }} تومان
+            {{ ad.price|fa_number }} تومان
             {% else %}
             توافقی
             {% endif %}

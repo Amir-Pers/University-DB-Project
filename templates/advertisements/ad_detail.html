@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load number_format %}
 
 {% block content %}
 <style>
@@ -574,11 +575,11 @@
         {% endif %} -->
         <div class="detail-box">
           <div class="box-icon">📅</div>
-          <div class="box-text"><span>سال ساخت</span><strong>{{ ad.vehicle.production_year }}</strong></div>
+          <div class="box-text"><span>سال ساخت</span><strong>{{ ad.vehicle.production_year|fa_number }}</strong></div>
         </div>
         <div class="detail-box">
           <div class="box-icon">🛣</div>
-          <div class="box-text"><span>کارکرد</span><strong>{{ ad.km_age }} کیلومتر</strong></div>
+          <div class="box-text"><span>کارکرد</span><strong>{{ ad.km_age|fa_number }} کیلومتر</strong></div>
         </div>
         <div class="detail-box">
           <div class="box-icon">♻️</div>
@@ -645,23 +646,23 @@
           {% if ad.sell_type == 'اقساطی' %}
             <div class="price-label">پیش‌پرداخت</div>
             <div class="main-price">
-              {{ ad.instalment.first_payment }} <span class="price-unit">تومان</span>
+              {{ ad.instalment.first_payment|fa_number }} <span class="price-unit">تومان</span>
             </div>
             <div class="price-sub-list">
-              <div class="price-sub-item"><span>مبلغ هر قسط</span><strong>{{ ad.instalment.payment_per_instalment|default:"—" }} تومان</strong></div>
-              <div class="price-sub-item"><span>دوره پرداخت</span><strong>{{ ad.instalment.payment_period|default:"—" }}</strong></div>
-              <div class="price-sub-item"><span>تعداد اقساط</span><strong>{{ ad.instalment.payment_count|default:"—" }}</strong></div>
+              <div class="price-sub-item"><span>مبلغ هر قسط</span><strong>{{ ad.instalment.payment_per_instalment|default:"—"|fa_number }} تومان</strong></div>
+              <div class="price-sub-item"><span>دوره پرداخت</span><strong>{{ ad.instalment.payment_period|default:"—"|fa_number }}</strong></div>
+              <div class="price-sub-item"><span>تعداد اقساط</span><strong>{{ ad.instalment.payment_count|default:"—"|fa_number }}</strong></div>
               <div class="price-sub-item"><span>زمان تحویل</span><strong>{{ ad.instalment.delivery_date|default:"—" }}</strong></div>
             </div>
 
           {% elif ad.sell_type == 'حواله' %}
             <div class="price-label">مبلغ نهایی تقریبی</div>
             <div class="main-price">
-              {{ ad.remittance.final_price|default:"—" }} <span class="price-unit">تومان</span>
+              {{ ad.remittance.final_price|default:"—"|fa_number }} <span class="price-unit">تومان</span>
             </div>
             <div class="price-sub-list">
-              <div class="price-sub-item"><span>مبلغ واریزی تاکنون</span><strong>{{ ad.remittance.deposit_amount|default:"—" }} تومان</strong></div>
-              <div class="price-sub-item"><span>زمان تحویل حواله</span><strong>{{ ad.remittance.delivery_time|default:"—" }}</strong></div>
+              <div class="price-sub-item"><span>مبلغ واریزی تاکنون</span><strong>{{ ad.remittance.deposit_amount|default:"—"|fa_number }} تومان</strong></div>
+              <div class="price-sub-item"><span>زمان تحویل حواله</span><strong>{{ ad.remittance.delivery_time|default:"—"|fa_number }}</strong></div>
             </div>
 
           {% elif ad.sell_type == 'توافقی' %}
@@ -673,7 +674,7 @@
             <div class="price-label">قیمت کل</div>
             <div class="main-price">
               {% if ad.price %}
-                {{ ad.price }} <span class="price-unit">تومان</span>
+                {{ ad.price|fa_number }} <span class="price-unit">تومان</span>
               {% else %}
                 توافقی
               {% endif %}

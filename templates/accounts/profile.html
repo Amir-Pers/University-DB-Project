@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load number_format %}
 
 {% block content %}
 <main class="reveal reveal-1">
@@ -292,7 +293,7 @@
       <div id="my-ads" class="tab-content active">
         <div class="acc-ads-header">
           <h3>آگهی‌های فعال و غیرفعال من</h3>
-          <span style="font-size: 14px; color: var(--muted);">{{ ads_count|default:0 }} آگهی</span>
+          <span style="font-size: 14px; color: var(--muted);">{{ ads_count|default:0|fa_number }} آگهی</span>
         </div>
 
         {% for ad in ads %}
@@ -328,7 +329,7 @@
             <div style="font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
               <span style="background: var(--bg2); padding: 2px 8px; border-radius: 6px;">{{ ad.vehicle.production_year }}</span>
               <span style="color: var(--line);">|</span>
-              <span style="background: var(--bg2); padding: 2px 8px; border-radius: 6px;">کارکرد {{ ad.km_age }} کیلومتر</span>
+              <span style="background: var(--bg2); padding: 2px 8px; border-radius: 6px;">کارکرد {{ ad.km_age|fa_number }} کیلومتر</span>
               <span style="color: var(--line);">|</span>
               <span style="display: flex; align-items: center; gap: 4px; color: #6b7280; font-weight: 500;">📅 {{ ad.created_date|date:"Y/m/d" }}</span>
               <span style="color: var(--line);">|</span>
@@ -339,7 +340,7 @@
             <div style="margin-top: 6px;">
               <div class="price-val" style="font-size: 19px; font-weight: 900; color: var(--text);">
                 {% if ad.price %}
-                  {{ ad.price }}
+                  {{ ad.price|fa_number }}
                 {% else %}
                   ---
                 {% endif %}
