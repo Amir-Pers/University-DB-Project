@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import transaction
 from django.views.decorators.http import require_POST
+from django.http import JsonResponse
 
 from .models import Advertisement, Image
 from vehicles.models import Brand
@@ -180,3 +181,22 @@ def edit_ad_view(request, ad_id):
         "advertisements/post_ad.html",
         context,
     )
+
+
+@login_required
+@require_POST
+def toggle_ad_status_view(request, ad_id):
+
+    ad = get_object_or_404(
+        Advertisement,
+        ad_id=ad_id,
+        userid=request.user.profile,
+    )
+
+    ad.active_status = not ad.active_status
+    ad.save(update_fields=["active_status"])
+
+    return JsonResponse({
+        "success": True,
+        "active_status": ad.active_status,
+    })

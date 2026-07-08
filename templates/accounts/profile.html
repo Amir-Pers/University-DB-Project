@@ -356,7 +356,9 @@
               <span style="font-size: 12px; font-weight: 700; color: var(--text);">نمایش عمومی آگهی</span>
               <label class="luxury-toggle">
                 <input
+                  class="toggle-ad-status"
                   type="checkbox"
+                  data-ad-id="{{ ad.ad_id }}"
                   {% if ad.active_status %}checked{% endif %}
                 >
                 <span class="luxury-slider"></span>
@@ -582,6 +584,7 @@
 
 {% block extra_js %}
 <script src="{% static 'js/location-selector.js' %}"></script>
+<script src="{% static 'js/ad-status.js' %}"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const tabs = document.querySelectorAll(".sidebar-tab");
@@ -611,17 +614,6 @@
       });
     });
 
-    // مدیریت تغییر وضعیت فعال/غیرفعال آگهی در فرانت‌اند
-    const toggleAd = document.getElementById('toggle-ad-status');
-    if (toggleAd) {
-      toggleAd.addEventListener('change', function() {
-        if(this.checked) {
-          console.log("درخواست تغییر وضعیت: آگهی به حالت نمایش عمومی درآمد.");
-        } else {
-          console.log("درخواست تغییر وضعیت: آگهی موقتاً مخفی شد.");
-        }
-      });
-    }
   });
 </script>
 {% endblock %}
