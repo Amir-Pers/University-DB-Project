@@ -5,9 +5,21 @@
 <main class="reveal reveal-1" style="max-width: 850px; margin: 0 auto; padding: 24px 16px;">
 
   <div style="margin-bottom: 32px; text-align: center;">
-    <h2 style="font-size: 24px; font-weight: 800; color: var(--amber); margin-bottom: 8px;">ثبت آگهی جدید وسایل نقلیه
+    <h2 style="font-size: 24px; font-weight: 800; color: var(--amber); margin-bottom: 8px;">
+    {% if edit_mode %}
+    ویرایش آگهی
+    {% else %}
+    ثبت آگهی جدید وسایل نقلیه
+    {% endif %}
     </h2>
-    <p style="color: var(--muted); font-size: 14px;">مراحل زیر را به ترتیب تکمیل کنید تا آگهی شما ثبت شود</p>
+
+    <p style="color: var(--muted); font-size: 14px;">
+    {% if edit_mode %}
+    اطلاعات آگهی خود را ویرایش کنید.
+    {% else %}
+    مراحل زیر را به ترتیب تکمیل کنید تا آگهی شما ثبت شود.
+    {% endif %}
+    </p>
   </div>
 
   <div class="stepper-container"
@@ -59,7 +71,9 @@
     </div>
   </div>
 
-  <form id="multi-step-form" class="wizard-form-container" method="POST" action="" enctype="multipart/form-data">
+  <form id="multi-step-form" class="wizard-form-container" method="POST"
+    action="{% if edit_mode %}{% url 'advertisements:edit_ad' ad.ad_id %}{% else %}{% url 'advertisements:post_ad' %}{% endif %}"
+    enctype="multipart/form-data">
     {% csrf_token %}
 
     <div style="display: flex; flex-direction: column; gap: 24px; margin-bottom: 24px;">
@@ -77,17 +91,34 @@
           <div class="field">
             <label for="sell_type">نوع فروش <span style="color: #f87171;">*</span></label>
             <select id="sell_type" name="sell_type" required>
-              <option value="نقدی" selected>نقدی</option>
-              <option value="اقساطی">اقساطی</option>
-              <option value="حواله">حواله</option>
-              <option value="توافقی">توافقی</option>
+              <option value="نقدی"
+                {% if edit_mode and ad.sell_type == "نقدی" %}selected{% endif %}>
+                 نقدی
+              </option>
+
+              <option value="اقساطی"
+                {% if edit_mode and ad.sell_type == "اقساطی" %}selected{% endif %}>
+                اقساطی
+              </option>
+
+              <option value="حواله"
+                {% if edit_mode and ad.sell_type == "حواله" %}selected{% endif %}>
+                حواله
+              </option>
+
+              <option value="توافقی"
+                {% if edit_mode and ad.sell_type == "توافقی" %}selected{% endif %}>
+                توافقی
+              </option>
             </select>
           </div>
 
           <div id="sell-fields-cash" class="sell-type-group">
             <div class="field">
               <label for="price">قیمت کل (تومان) <span style="color: #f87171;">*</span></label>
-              <input type="number" id="price" name="price" placeholder="مثال: ۵۵۰,۰۰۰,۰۰۰">
+              <input type="number" id="price"
+                name="price" placeholder="مثال: ۵۵۰,۰۰۰,۰۰۰"
+                value="{% if edit_mode %}{{ ad.price }}{% endif %}">
             </div>
           </div>
 
@@ -95,30 +126,43 @@
             <div class="field-grid">
               <div class="field">
                 <label for="pre_payment">مبلغ پیش‌پرداخت (تومان) <span style="color: #f87171;">*</span></label>
-                <input type="number" id="pre_payment" name="pre_payment" placeholder="مثال: ۲۰۰,۰۰۰,۰۰۰">
+                <input type="number" id="pre_payment" name="pre_payment" placeholder="مثال: ۲۰۰,۰۰۰,۰۰۰"
+                  value="{% if edit_mode %}{{ instalment.first_payment }}{% endif %}">
               </div>
               <div class="field">
                 <label for="installment_amount">مبلغ هر قسط (تومان) <span style="color: #f87171;">*</span></label>
-                <input type="number" id="installment_amount" name="installment_amount" placeholder="مثال: ۱۵,۰۰۰,۰۰۰">
+                <input type="number" id="installment_amount" name="installment_amount" placeholder="مثال: ۱۵,۰۰۰,۰۰۰"
+                  value="{% if edit_mode %}{{ instalment.payment_per_instalment }}{% endif %}">
               </div>
             </div>
             <div class="field-grid" style="margin-top: 16px;">
               <div class="field">
                 <label for="payment_period">دوره پرداخت <span style="color: #f87171;">*</span></label>
                 <select id="payment_period" name="payment_period">
-                  <option value="ماهانه">ماهانه</option>
-                  <option value="دو ماهه">دو ماهه</option>
-                  <option value="سه ماهه (فصلی)">سه ماهه (فصلی)</option>
+                  <option value="ماهانه"
+                    {% if edit_mode and instalment.payment_period == "ماهانه" %}selected{% endif %}>
+                    ماهانه
+                  </option>
+                  <option value="دو ماهه"
+                    {% if edit_mode and instalment.payment_period == "دو ماهه" %}selected{% endif %}>
+                    دو ماهه
+                  </option>
+                  <option value="سه ماهه (فصلی)"
+                    {% if edit_mode and instalment.payment_period == "سه ماهه (فصلی)" %}selected{% endif %}>
+                    سه ماهه (فصلی)
+                  </option>
                 </select>
               </div>
               <div class="field">
                 <label for="installment_count">تعداد اقساط <span style="color: #f87171;">*</span></label>
-                <input type="number" id="installment_count" name="installment_count" placeholder="مثال: ۱۲">
+                <input type="number" id="installment_count" name="installment_count" placeholder="مثال: ۱۲"
+                  value="{% if edit_mode %}{{ instalment.payment_count }}{% endif %}">
               </div>
             </div>
             <div class="field" style="margin-top: 16px;">
               <label for="delivery_time_inst">زمان تحویل <span style="color: #f87171;">*</span></label>
-              <input type="text" id="delivery_time_inst" name="delivery_time_inst" placeholder="مثال: فوری، ۳۰ روزه">
+              <input type="text" id="delivery_time_inst" name="delivery_time_inst" placeholder="مثال: فوری، ۳۰ روزه"
+                value="{% if edit_mode %}{{ instalment.delivery_date }}{% endif %}">
             </div>
           </div>
 
@@ -126,16 +170,19 @@
             <div class="field-grid">
               <div class="field">
                 <label for="deposit_amount">مبلغ واریزی تا کنون (تومان) <span style="color: #f87171;">*</span></label>
-                <input type="number" id="deposit_amount" name="deposit_amount" placeholder="مثال: ۱۰۰,۰۰۰,۰۰۰">
+                <input type="number" id="deposit_amount" name="deposit_amount" placeholder="مثال: ۱۰۰,۰۰۰,۰۰۰"
+                  value="{% if edit_mode %}{{ remittance.deposit_amount }}{% endif %}">
               </div>
               <div class="field">
                 <label for="final_price">مبلغ نهایی تقریبی (تومان) <span style="color: #f87171;">*</span></label>
-                <input type="number" id="final_price" name="final_price" placeholder="قیمت تمام شده برای خریدار">
+                <input type="number" id="final_price" name="final_price" placeholder="قیمت تمام شده برای خریدار"
+                  value="{% if edit_mode %}{{ remittance.final_price }}{% endif %}">
               </div>
             </div>
             <div class="field" style="margin-top: 16px;">
               <label for="delivery_time_draft">زمان تحویل حواله <span style="color: #f87171;">*</span></label>
-              <input type="text" id="delivery_time_draft" name="delivery_time_draft" placeholder="مثال: بهمن ۱۴۰۵">
+              <input type="text" id="delivery_time_draft" name="delivery_time_draft" placeholder="مثال: بهمن ۱۴۰۵"
+                value="{% if edit_mode %}{{ remittance.delivery_time }}{% endif %}">
             </div>
           </div>
 
@@ -159,8 +206,14 @@
           <div class="field">
             <label for="vehicle_type">نوع وسیله نقلیه <span style="color: #f87171;">*</span></label>
             <select id="vehicle_type" name="vehicle_type">
-              <option value="car" selected>خودرو</option>
-              <option value="motorcycle">موتورسیکلت</option>
+              <option value="car"
+                {% if not edit_mode or vehicle_type == "car" %}selected{% endif %}>
+                خودرو
+              </option>
+              <option value="motorcycle"
+                {% if edit_mode and vehicle_type == "motorcycle" %}selected{% endif %}>
+                موتورسیکلت
+              </option>
               <!-- <option value="heavy_vehicle">ماشین سنگین</option> -->
             </select>
           </div>
@@ -179,7 +232,8 @@
             </div>
             <div class="field">
               <label for="car_tip">تیپ</label>
-              <input type="text" id="car_tip" name="car_tip" placeholder="مثلاً TU5، پانوراما، GLX ...">
+              <input type="text" id="car_tip" name="car_tip" placeholder="مثلاً TU5، پانوراما، GLX ..."
+                value="{% if edit_mode %}{{ ad.car_tip }}{% endif %}">
             </div>
           </div>
         </div>
@@ -206,7 +260,8 @@
                 سال تولید <span style="color:#f87171;">*</span>
               </label>
               <input type="number" id="production_year" name="production_year" min="1300" max="1500"
-                placeholder="مثلاً ۱۴۰۲">
+                placeholder="مثلاً ۱۴۰۲"
+                value="{% if edit_mode %}{{ ad.vehicle.production_year }}{% endif %}">
             </div>
 
             <div class="field">
@@ -214,7 +269,9 @@
                 کارکرد (کیلومتر)
                 <span style="color:#f87171;">*</span>
               </label>
-              <input type="number" id="km_age" name="km_age" placeholder="برای صفر عدد ۰ وارد کنید">
+              <input type="number" id="km_age"
+                name="km_age" placeholder="برای صفر عدد ۰ وارد کنید"
+                value="{% if edit_mode %}{{ ad.km_age }}{% endif %}">
             </div>
           </div>
 
@@ -222,18 +279,36 @@
             <div class="field">
               <label for="car_condition">وضعیت خودرو</label>
               <select id="car_condition" name="car_condition">
-                <option value="کارکرده">کارکرده</option>
-                <option value="صفر">صفر</option>
+                <option value="کارکرده"
+                  {% if edit_mode and ad.car_condition == "کارکرده" %}selected{% endif %}>
+                  کارکرده
+                </option>
+                <option value="صفر"
+                  {% if edit_mode and ad.car_condition == "صفر" %}selected{% endif %}>
+                  صفر
+                </option>
               </select>
             </div>
 
             <div class="field">
               <label for="body_status">وضعیت رنگ و بدنه</label>
               <select id="body_status" name="body_status">
-                <option value="بدون رنگ">بدون رنگ</option>
-                <option value="صافکاری بی‌رنگ">صافکاری بی‌رنگ</option>
-                <option value="یک لکه رنگ">یک لکه رنگ</option>
-                <option value="دوررنگ">دوررنگ</option>
+                <option value="بدون رنگ"
+                  {% if edit_mode and ad.body_status == "بدون رنگ" %}selected{% endif %}>
+                  بدون رنگ
+                </option>
+                <option value="صافکاری بی‌رنگ"
+                  {% if edit_mode and ad.body_status == "صافکاری بی‌رنگ" %}selected{% endif %}>
+                  صافکاری بی‌رنگ
+                </option>
+                <option value="یک لکه رنگ"
+                  {% if edit_mode and ad.body_status == "یک لکه رنگ" %}selected{% endif %}>
+                  یک لکه رنگ
+                </option>
+                <option value="دوررنگ"
+                  {% if edit_mode and ad.body_status == "دوررنگ" %}selected{% endif %}>
+                  دوررنگ
+                </option>
               </select>
             </div>
           </div>
@@ -242,8 +317,14 @@
             <div class="field">
               <label for="ad_type">نوع آگهی</label>
               <select id="ad_type" name="ad_type">
-                <option value="شخصی">شخصی</option>
-                <option value="نمایشگاه">نمایشگاه</option>
+                <option value="شخصی"
+                  {% if edit_mode and ad.ad_type == "شخصی" %}selected{% endif %}>
+                  شخصی
+                </option>
+                <option value="نمایشگاه"
+                  {% if edit_mode and ad.ad_type == "نمایشگاه" %}selected{% endif %}>
+                  نمایشگاه
+                </option>
               </select>
             </div>
 
@@ -252,15 +333,15 @@
                 رنگ بدنه <span style="color:#f87171;">*</span>
               </label>
               <select id="body_color" name="body_color">
-                <option value="" disabled selected>انتخاب کنید</option>
-                <option value="سفید">سفید</option>
-                <option value="نقره‌ای">نقره‌ای</option>
-                <option value="طوسی">طوسی</option>
-                <option value="مشکی">مشکی</option>
-                <option value="نوک مدادی">نوک مدادی</option>
-                <option value="آبی">آبی</option>
-                <option value="قرمز">قرمز</option>
-                <option value="سبز">سبز</option>
+                <option value="" disabled {% if not edit_mode %}selected{% endif %}>انتخاب کنید</option>
+                <option value="سفید" {% if edit_mode and ad.body_color == "سفید" %}selected{% endif %}>سفید</option>
+                <option value="نقره‌ای" {% if edit_mode and ad.body_color == "نقره‌ای" %}selected{% endif %}>نقره‌ای</option>
+                <option value="طوسی" {% if edit_mode and ad.body_color == "طوسی" %}selected{% endif %}>طوسی</option>
+                <option value="مشکی" {% if edit_mode and ad.body_color == "مشکی" %}selected{% endif %}>مشکی</option>
+                <option value="نوک مدادی" {% if edit_mode and ad.body_color == "نوک مدادی" %}selected{% endif %}>نوک مدادی</option>
+                <option value="آبی" {% if edit_mode and ad.body_color == "آبی" %}selected{% endif %}>آبی</option>
+                <option value="قرمز" {% if edit_mode and ad.body_color == "قرمز" %}selected{% endif %}>قرمز</option>
+                <option value="سبز" {% if edit_mode and ad.body_color == "سبز" %}selected{% endif %}>سبز</option>
               </select>
             </div>
           </div>
@@ -272,16 +353,15 @@
                 <span style="color: var(--muted); font-size:11px;">(اختیاری)</span>
               </label>
               <select id="cabin_color" name="cabin_color">
-                <option value="" disabled selected>انتخاب کنید</option>
-                <option value="سفید">سفید</option>
-                <option value="نقره‌ای">نقره‌ای</option>
-                <option value="طوسی">طوسی</option>
-                <option value="مشکی">مشکی</option>
-                <option value="نوک مدادی">نوک مدادی</option>
-                <option value="بژ">بژ</option>
-                <option value="خاکستری">خاکستری</option>
-                <option value="کرم">کرم</option>
-                <option value="بژ">بژ</option>
+                <option value="" disabled {% if not edit_mode %}selected{% endif %}>انتخاب کنید</option>
+                <option value="سفید" {% if edit_mode and ad.cabin_color == "سفید" %}selected{% endif %}>سفید</option>
+                <option value="نقره‌ای" {% if edit_mode and ad.cabin_color == "نقره‌ای" %}selected{% endif %}>نقره‌ای</option>
+                <option value="طوسی" {% if edit_mode and ad.cabin_color == "طوسی" %}selected{% endif %}>طوسی</option>
+                <option value="مشکی" {% if edit_mode and ad.cabin_color == "مشکی" %}selected{% endif %}>مشکی</option>
+                <option value="نوک مدادی" {% if edit_mode and ad.cabin_color == "نوک مدادی" %}selected{% endif %}>نوک مدادی</option>
+                <option value="بژ" {% if edit_mode and ad.cabin_color == "بژ" %}selected{% endif %}>بژ</option>
+                <option value="خاکستری" {% if edit_mode and ad.cabin_color == "خاکستری" %}selected{% endif %}>خاکستری</option>
+                <option value="کرم" {% if edit_mode and ad.cabin_color == "کرم" %}selected{% endif %}>کرم</option>
               </select>
             </div>
             <div class="field">
@@ -289,9 +369,9 @@
                 نوع گیربکس <span style="color:#f87171;">*</span>
               </label>
               <select id="gearbox" name="gearbox">
-                <option value="" disabled selected>انتخاب کنید...</option>
-                <option value="دنده ای">دنده ای</option>
-                <option value="اتوماتیک">اتوماتیک</option>
+                <option value="" disabled {% if not edit_mode %}selected{% endif %}>انتخاب کنید...</option>
+                <option value="دنده ای" {% if edit_mode and ad.gearbox == "دنده ای" %}selected{% endif %}>دنده ای</option>
+                <option value="اتوماتیک" {% if edit_mode and ad.gearbox == "اتوماتیک" %}selected{% endif %}>اتوماتیک</option>
               </select>
             </div>
           </div>
@@ -304,11 +384,11 @@
                 نوع سوخت <span style="color:#f87171;">*</span>
               </label>
               <select id="fuel_type" name="fuel_type">
-                <option value="" disabled selected>انتخاب کنید...</option>
-                <option value="بنزین">بنزین</option>
+                <option value="" disabled {% if not edit_mode %}selected{% endif %}>انتخاب کنید...</option>
+                <option value="بنزین" {% if edit_mode and ad.fuel_type == "بنزین" %}selected{% endif %}>بنزین</option>
                 <!-- <option value="دوگانه سوز">دوگانه سوز</option> -->
-                <option value="هیبرید">هیبریدی</option>
-                <option value="دیزل">دیزل</option>
+                <option value="هیبرید" {% if edit_mode and ad.fuel_type == "هیبرید" %}selected{% endif %}>هیبریدی</option>
+                <option value="دیزل" {% if edit_mode and ad.fuel_type == "دیزل" %}selected{% endif %}>دیزل</option>
                 <!-- <option value="برقی">برقی</option> -->
               </select>
             </div>
@@ -332,6 +412,19 @@
 
         <div class="step-body" style="display:none;">
           <div class="field">
+
+            {% if edit_mode and ad.images.all %}
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:12px;margin-bottom:16px;">
+              {% for image in ad.images.all %}
+              <div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);height:80px;">
+                <img src="{{ image.image.url }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">
+              </div>
+              {% endfor %}
+            </div>
+            <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">
+              تصاویر فعلی آگهی. برای جایگزینی، تصاویر جدید انتخاب کنید.
+            </p>
+            {% endif %}
 
             <div
               style="border:2px dashed var(--line);border-radius:12px;padding:28px 20px;text-align:center;background:var(--bg);position:relative;overflow:hidden;">
@@ -377,31 +470,38 @@
           <div
             style="display: flex; gap: 24px; background: var(--bg); padding: 14px; border-radius: 12px; border: 1px solid var(--line);">
             <div style="display: flex; align-items: center; gap: 8px;">
-              <input type="radio" id="addr_type_default" name="address_mode" value="default" checked
+              <input type="radio" id="addr_type_default" name="address_mode" value="default"
+                {% if not edit_mode or ad.address_id == profile.default_address.address_id %}checked{% endif %}
                 style="width: auto;">
               <label for="addr_type_default" style="margin-bottom:0; cursor:pointer;">آدرس پیش‌فرض حساب کاربری</label>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <input type="radio" id="addr_type_new" name="address_mode" value="new" style="width: auto;">
+              <input type="radio" id="addr_type_new" name="address_mode" value="new"
+                {% if edit_mode and ad.address_id != profile.default_address.address_id %}checked{% endif %}
+                style="width: auto;">
               <label for="addr_type_new" style="margin-bottom:0; cursor:pointer;">ثبت آدرس جدید</label>
             </div>
           </div>
 
           <!-- باکس آدرس پیش‌فرض -->
           <div id="default-address-box"
-            style="padding: 14px; background: var(--amber-soft); border-radius: 12px; font-size: 13.5px; border: 1px dashed var(--amber); color: var(--text);">
+            style="{% if edit_mode and ad.address_id != profile.default_address.address_id %}display:none;{% endif %}padding: 14px; background: var(--amber-soft); border-radius: 12px; font-size: 13.5px; border: 1px dashed var(--amber); color: var(--text);">
             📍 آگهی شما با موقعیت جغرافیایی ثبت‌شده در پروفایلتان منتشر خواهد شد.
           </div>
 
           <!-- باکس آدرس جدید -->
-          <div id="new-address-box" style="display: none; flex-direction: column; gap: 16px;">
+          <div id="new-address-box"
+            style="display: {% if edit_mode and ad.address_id != profile.default_address.address_id %} flex {% else %} none {% endif %}; flex-direction: column; gap: 16px;">
             <div class="field-grid">
               <div class="field">
                 <label for="state">استان <span style="color: #f87171;">*</span></label>
                 <select id="state" name="state">
-                  <option value="" disabled selected>انتخاب استان...</option>
+                  <option value="" disabled {% if not edit_mode %}selected{% endif %}>انتخاب استان...</option>
                   {% for province in provinces %}
-                  <option value="{{ province.province_id }}">{{ province.name }}</option>
+                  <option value="{{ province.province_id }}"
+                    {% if edit_mode and ad.address.city.province_id == province.province_id %}selected{% endif %}>
+                    {{ province.name }}
+                  </option>
                   {% endfor %}
                 </select>
               </div>
@@ -409,13 +509,23 @@
                 <label for="city">شهر <span style="color: #f87171;">*</span></label>
                 <select id="city" name="city">
                   <option value="">انتخاب شهر...</option>
+                  {% if edit_mode %}
+                  {% for city in cities %}
+                  <option value="{{ city.city_id }}"
+                    {% if ad.address.city_id == city.city_id %}selected{% endif %}>
+                    {{ city.name }}
+                  </option>
+                  {% endfor %}
+                  {% endif %}
                 </select>
               </div>
             </div>
             <div class="field">
               <label for="neighborhood">محله <span
                   style="color: var(--muted); font-size: 11px;">(اختیاری)</span></label>
-              <input type="text" id="neighborhood" name="neighborhood" placeholder="مثال: نیاوران، احمدآباد">
+              <input type="text" id="neighborhood" 
+                name="neighborhood" placeholder="مثال: نیاوران، احمدآباد"
+                value="{% if edit_mode %}{{ ad.address.neighborhood }}{% endif %}">
             </div>
           </div>
         </div>
@@ -433,7 +543,7 @@
         <div class="step-body" style="display: none;">
           <div class="field">
             <textarea id="descriptions" name="descriptions" rows="5"
-              placeholder="مثال: وضعیت بیمه، تخفیف پای معامله و..."></textarea>
+              placeholder="مثال: وضعیت بیمه، تخفیف پای معامله و...">{% if edit_mode %}{{ ad.descriptions }}{% endif %}</textarea>
           </div>
         </div>
       </div>
@@ -466,8 +576,15 @@
 
       <div id="next-btn-wrapper" style="flex: 1; text-align: left;">
         <button type="button" id="btn-next" class="btn btn-amber btn-nav">مرحله بعد</button>
-        <button type="submit" id="btn-submit-final" class="btn btn-amber btn-nav"
-          style="display: none; font-weight: 800;">🚀 انتشار و ثبت نهایی آگهی</button>
+        <button type="submit" id="btn-submit-final"
+          class="btn btn-amber btn-nav"
+          style="display: none; font-weight: 800;">
+          {% if edit_mode %}
+          💾 ذخیره تغییرات
+          {% else %}
+          🚀 انتشار و ثبت نهایی آگهی
+          {% endif %}
+        </button>
       </div>
     </div>
 
@@ -476,7 +593,18 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+window.initialVehicle = {
+    vehicleType: "{{ vehicle_type }}",
+    brandId: "{{ brand_id }}",
+    modelId: "{{ model_id }}",
+};
 
+window.initialAddress = {
+    provinceId: "{{ province_id }}",
+    cityId: "{{ city_id }}",
+};
+</script>
 <script src="{% static 'js/post_ad.js' %}"></script>
 <script src="{% static 'js/vehicle-selector.js' %}"></script>
 <script src="{% static 'js/location-selector.js' %}"></script>

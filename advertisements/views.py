@@ -107,14 +107,16 @@ def delete_ad_view(request, ad_id):
     messages.success(request, "آگهی با موفقیت حذف شد.")
     return redirect("accounts:profile")
 
-
 @login_required
 def edit_ad_view(request, ad_id):
 
     profile = request.user.profile
 
     ad = get_object_or_404(
-        Advertisement,
+        Advertisement.objects.select_related(
+            "vehicle__model__brand",
+            "address__city__province",
+        ),
         ad_id=ad_id,
         userid=profile,
     )
@@ -124,15 +126,30 @@ def edit_ad_view(request, ad_id):
         "ad": ad,
         "edit_mode": True,
 
+        "vehicle_type": ad.vehicle.model.category,
+        "brand_id": ad.vehicle.model.brand_id,
+        "model_id": ad.vehicle.model_id,
+
+        "province_id": ad.address.city.province_id,
+        "city_id": ad.address.city_id,
+
         "brands": Brand.objects.all(),
 
-        "provinces": Province.objects.prefetch_related("cities").all(),
+        "provinces": Province.objects.prefetch_related("cities"),
 
         "cities": (
             profile.default_address.city.province.cities.all()
             if profile.default_address
             else []
         ),
+
+        "instalment": getattr(ad, "instalment", None),
+        "remittance": getattr(ad, "remittance", None),
+
     }
 
-    return render(request, "advertisements/post_ad.html", context)
+    return render(
+        request,
+        "advertisements/post_ad.html",
+        context,
+    )

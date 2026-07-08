@@ -7,13 +7,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!vehicleTypeSelect || !brandSelect || !modelSelect)
         return;
 
+    const initial = window.initialVehicle || {};
+
     // -------------------------
     // بارگذاری برندها
     // -------------------------
 
     vehicleTypeSelect.addEventListener("change", async function () {
-
-        const type = this.value;
 
         brandSelect.innerHTML =
             '<option>در حال بارگذاری...</option>';
@@ -21,10 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
         modelSelect.innerHTML =
             '<option>ابتدا برند را انتخاب کنید...</option>';
 
-        const category = this.value;
-
         const response =
-            await fetch(`/vehicles/brands/?category=${encodeURIComponent(category)}`);
+            await fetch(`/vehicles/brands/?category=${encodeURIComponent(this.value)}`);
 
         const brands = await response.json();
 
@@ -38,6 +36,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
 
+        // اگر در حالت ویرایش هستیم
+        if (initial.brandId) {
+
+            brandSelect.value = initial.brandId;
+            brandSelect.dispatchEvent(new Event("change"));
+
+            // فقط یک بار انجام شود
+            initial.brandId = null;
+        }
+
     });
 
     // -------------------------
@@ -47,6 +55,14 @@ document.addEventListener("DOMContentLoaded", () => {
     brandSelect.addEventListener("change", async function () {
 
         const brandId = this.value;
+
+        if (!brandId) {
+
+            modelSelect.innerHTML =
+                '<option value="">ابتدا برند را انتخاب کنید...</option>';
+
+            return;
+        }
 
         modelSelect.innerHTML =
             '<option>در حال بارگذاری...</option>';
@@ -66,9 +82,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
 
+        // اگر در حالت ویرایش هستیم
+        if (initial.modelId) {
+
+            modelSelect.value = initial.modelId;
+
+            // فقط یک بار انجام شود
+            initial.modelId = null;
+        }
+
     });
 
-    // بارگذاری اولیه برندهای خودرو
-    vehicleTypeSelect.dispatchEvent(new Event("change"));
+    // -------------------------
+    // مقدار اولیه
+    // -------------------------
+
+    vehicleTypeSelect.value =
+        initial.vehicleType || "car";
+
+    vehicleTypeSelect.dispatchEvent(
+        new Event("change")
+    );
 
 });
