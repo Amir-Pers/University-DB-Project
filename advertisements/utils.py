@@ -350,7 +350,9 @@ def update_advertisement(advertisement, data):
                 image.image.delete(save=False)
 
             image.delete()
-
+    
+    if data["images"]: 
+        create_images(advertisement, data["images"])
 
     if data["address_mode"] == "default":
 
