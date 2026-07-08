@@ -8,7 +8,13 @@ from django.views.decorators.http import require_POST
 from .models import Advertisement, Image
 from vehicles.models import Brand
 from locations.models import Province
-from .utils import get_post_ad_data, validate_post_ad, create_advertisement
+from .utils import (
+    get_post_ad_data,
+    validate_post_ad,
+    create_advertisement,
+    update_advertisement,
+)
+
 
 def advertisement_detail(request, ad_id):
 
@@ -120,6 +126,27 @@ def edit_ad_view(request, ad_id):
         ad_id=ad_id,
         userid=profile,
     )
+
+    if request.method == "POST":
+
+        data = get_post_ad_data(request)
+
+        error = validate_post_ad(data=data, profile=profile, has_images=ad.images.exists(),)
+
+        if error:
+            messages.error(request, error)
+            return redirect("advertisements:edit_ad", ad_id=ad.ad_id)
+
+        with transaction.atomic():
+            update_advertisement(ad, profile, data)
+
+        messages.success(
+            request,
+            "تغییرات با موفقیت ذخیره شد. آگهی پس از بررسی مجدد منتشر خواهد شد."
+        )
+
+        return redirect("accounts:profile")
+
 
     context = {
         "profile": profile,

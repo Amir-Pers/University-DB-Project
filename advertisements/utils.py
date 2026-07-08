@@ -50,7 +50,7 @@ def get_post_ad_data(request):
 
 
 
-def validate_post_ad(data, profile):
+def validate_post_ad(data, profile, has_images=False):
 
     required_fields = [
         data["sell_type"],
@@ -171,7 +171,7 @@ def validate_post_ad(data, profile):
 
     images = data["images"]
 
-    if not images:
+    if not images and not has_images:
         return "حداقل یک تصویر برای آگهی انتخاب کنید."
 
     if len(images) > 6:
@@ -292,4 +292,15 @@ def create_advertisement(profile, data):
     create_instalment(advertisement, data)
     create_remittance(advertisement, data)
     
+    return advertisement
+
+
+
+def update_advertisement(advertisement, profile, data):
+
+    advertisement.updated_date = timezone.now()
+    advertisement.published = False
+
+    advertisement.save()
+
     return advertisement

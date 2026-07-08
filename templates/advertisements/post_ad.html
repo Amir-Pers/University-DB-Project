@@ -334,14 +334,14 @@
               </label>
               <select id="body_color" name="body_color">
                 <option value="" disabled {% if not edit_mode %}selected{% endif %}>انتخاب کنید</option>
-                <option value="سفید" {% if edit_mode and ad.body_color == "سفید" %}selected{% endif %}>سفید</option>
-                <option value="نقره‌ای" {% if edit_mode and ad.body_color == "نقره‌ای" %}selected{% endif %}>نقره‌ای</option>
-                <option value="طوسی" {% if edit_mode and ad.body_color == "طوسی" %}selected{% endif %}>طوسی</option>
-                <option value="مشکی" {% if edit_mode and ad.body_color == "مشکی" %}selected{% endif %}>مشکی</option>
-                <option value="نوک مدادی" {% if edit_mode and ad.body_color == "نوک مدادی" %}selected{% endif %}>نوک مدادی</option>
-                <option value="آبی" {% if edit_mode and ad.body_color == "آبی" %}selected{% endif %}>آبی</option>
-                <option value="قرمز" {% if edit_mode and ad.body_color == "قرمز" %}selected{% endif %}>قرمز</option>
-                <option value="سبز" {% if edit_mode and ad.body_color == "سبز" %}selected{% endif %}>سبز</option>
+                <option value="سفید" {% if edit_mode and ad.vehicle.color_out == "سفید" %}selected{% endif %}>سفید</option>
+                <option value="نقره‌ای" {% if edit_mode and ad.vehicle.color_out == "نقره‌ای" %}selected{% endif %}>نقره‌ای</option>
+                <option value="طوسی" {% if edit_mode and ad.vehicle.color_out == "طوسی" %}selected{% endif %}>طوسی</option>
+                <option value="مشکی" {% if edit_mode and ad.vehicle.color_out == "مشکی" %}selected{% endif %}>مشکی</option>
+                <option value="نوک مدادی" {% if edit_mode and ad.vehicle.color_out == "نوک مدادی" %}selected{% endif %}>نوک مدادی</option>
+                <option value="آبی" {% if edit_mode and ad.vehicle.color_out == "آبی" %}selected{% endif %}>آبی</option>
+                <option value="قرمز" {% if edit_mode and ad.vehicle.color_out == "قرمز" %}selected{% endif %}>قرمز</option>
+                <option value="سبز" {% if edit_mode and ad.vehicle.color_out == "سبز" %}selected{% endif %}>سبز</option>
               </select>
             </div>
           </div>
@@ -353,15 +353,15 @@
                 <span style="color: var(--muted); font-size:11px;">(اختیاری)</span>
               </label>
               <select id="cabin_color" name="cabin_color">
-                <option value="" disabled {% if not edit_mode %}selected{% endif %}>انتخاب کنید</option>
-                <option value="سفید" {% if edit_mode and ad.cabin_color == "سفید" %}selected{% endif %}>سفید</option>
-                <option value="نقره‌ای" {% if edit_mode and ad.cabin_color == "نقره‌ای" %}selected{% endif %}>نقره‌ای</option>
-                <option value="طوسی" {% if edit_mode and ad.cabin_color == "طوسی" %}selected{% endif %}>طوسی</option>
-                <option value="مشکی" {% if edit_mode and ad.cabin_color == "مشکی" %}selected{% endif %}>مشکی</option>
-                <option value="نوک مدادی" {% if edit_mode and ad.cabin_color == "نوک مدادی" %}selected{% endif %}>نوک مدادی</option>
-                <option value="بژ" {% if edit_mode and ad.cabin_color == "بژ" %}selected{% endif %}>بژ</option>
-                <option value="خاکستری" {% if edit_mode and ad.cabin_color == "خاکستری" %}selected{% endif %}>خاکستری</option>
-                <option value="کرم" {% if edit_mode and ad.cabin_color == "کرم" %}selected{% endif %}>کرم</option>
+                <option value="" disabled {% if not edit_mode or not ad.vehicle.color_in %}selected{% endif %}>انتخاب کنید</option>
+                <option value="سفید" {% if edit_mode and ad.vehicle.color_in == "سفید" %}selected{% endif %}>سفید</option>
+                <option value="نقره‌ای" {% if edit_mode and ad.vehicle.color_in == "نقره‌ای" %}selected{% endif %}>نقره‌ای</option>
+                <option value="طوسی" {% if edit_mode and ad.vehicle.color_in == "طوسی" %}selected{% endif %}>طوسی</option>
+                <option value="مشکی" {% if edit_mode and ad.vehicle.color_in == "مشکی" %}selected{% endif %}>مشکی</option>
+                <option value="نوک مدادی" {% if edit_mode and ad.vehicle.color_in == "نوک مدادی" %}selected{% endif %}>نوک مدادی</option>
+                <option value="بژ" {% if edit_mode and ad.vehicle.color_in == "بژ" %}selected{% endif %}>بژ</option>
+                <option value="خاکستری" {% if edit_mode and ad.vehicle.color_in == "خاکستری" %}selected{% endif %}>خاکستری</option>
+                <option value="کرم" {% if edit_mode and ad.vehicle.color_in == "کرم" %}selected{% endif %}>کرم</option>
               </select>
             </div>
             <div class="field">
@@ -370,8 +370,8 @@
               </label>
               <select id="gearbox" name="gearbox">
                 <option value="" disabled {% if not edit_mode %}selected{% endif %}>انتخاب کنید...</option>
-                <option value="دنده ای" {% if edit_mode and ad.gearbox == "دنده ای" %}selected{% endif %}>دنده ای</option>
-                <option value="اتوماتیک" {% if edit_mode and ad.gearbox == "اتوماتیک" %}selected{% endif %}>اتوماتیک</option>
+                <option value="دنده ای" {% if edit_mode and ad.vehicle.transmission_type == "دنده ای" %}selected{% endif %}>دنده ای</option>
+                <option value="اتوماتیک" {% if edit_mode and ad.vehicle.transmission_type == "اتوماتیک" %}selected{% endif %}>اتوماتیک</option>
               </select>
             </div>
           </div>
@@ -385,10 +385,10 @@
               </label>
               <select id="fuel_type" name="fuel_type">
                 <option value="" disabled {% if not edit_mode %}selected{% endif %}>انتخاب کنید...</option>
-                <option value="بنزین" {% if edit_mode and ad.fuel_type == "بنزین" %}selected{% endif %}>بنزین</option>
+                <option value="بنزین" {% if edit_mode and ad.vehicle.fuel_type == "بنزین" %}selected{% endif %}>بنزین</option>
                 <!-- <option value="دوگانه سوز">دوگانه سوز</option> -->
-                <option value="هیبرید" {% if edit_mode and ad.fuel_type == "هیبرید" %}selected{% endif %}>هیبریدی</option>
-                <option value="دیزل" {% if edit_mode and ad.fuel_type == "دیزل" %}selected{% endif %}>دیزل</option>
+                <option value="هیبرید" {% if edit_mode and ad.vehicle.fuel_type == "هیبرید" %}selected{% endif %}>هیبریدی</option>
+                <option value="دیزل" {% if edit_mode and ad.vehicle.fuel_type == "دیزل" %}selected{% endif %}>دیزل</option>
                 <!-- <option value="برقی">برقی</option> -->
               </select>
             </div>
