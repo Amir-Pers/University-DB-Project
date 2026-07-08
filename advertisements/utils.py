@@ -45,6 +45,7 @@ def get_post_ad_data(request):
         "neighborhood": request.POST.get("neighborhood", "").strip(),
 
         "images": request.FILES.getlist("images"),
+        "deleted_images": request.POST.get("deleted_images", ""),
     }
 
 
@@ -327,6 +328,28 @@ def update_advertisement(advertisement, data):
     advertisement.updated_date = timezone.now()
 
     advertisement.published = False
+
+    deleted_images = data["deleted_images"]
+    
+    if deleted_images:
+
+        image_ids = [
+            int(image_id)
+            for image_id in deleted_images.split(",")
+            if image_id.strip()
+        ]
+
+        images = Image.objects.filter(
+            ad=advertisement,
+            image_id__in=image_ids,
+        )
+
+        for image in images:
+
+            if image.image:
+                image.image.delete(save=False)
+
+            image.delete()
 
 
     if data["address_mode"] == "default":
