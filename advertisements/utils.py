@@ -155,20 +155,6 @@ def validate_post_ad(data, profile, existing_images=0):
     else:
         return "نوع آدرس معتبر نیست."
 
-    vehicle = Vehicle.objects.filter(
-    model_id=data["model_id"],
-    production_year=data["production_year"],
-    color_out=data["body_color"],
-    color_in=data["cabin_color"] or None,
-    transmission_type=data["gearbox"],
-    fuel_type=data["fuel_type"],
-    ).first()
-
-    if vehicle is None:
-        return "خودروی انتخاب شده در سیستم وجود ندارد."
-
-    data["vehicle"] = vehicle
-
 
     images = data["images"]
 
@@ -275,7 +261,14 @@ def create_advertisement(profile, data):
         )
 
 
-    vehicle = data["vehicle"]
+    vehicle, created = Vehicle.objects.get_or_create(
+        model_id=data["model_id"],
+        production_year=data["production_year"],
+        color_out=data["body_color"],
+        color_in=data["cabin_color"] or None,
+        transmission_type=data["gearbox"],
+        fuel_type=data["fuel_type"],
+    )
 
     title = f"{vehicle.model.brand.name} {vehicle.model.name}"
 
