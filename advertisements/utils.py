@@ -49,6 +49,18 @@ def get_post_ad_data(request):
     }
 
 
+def get_or_create_vehicle(data):
+
+    vehicle, _ = Vehicle.objects.get_or_create(
+        model_id=data["model_id"],
+        production_year=data["production_year"],
+        color_out=data["body_color"],
+        color_in=data["cabin_color"] or None,
+        transmission_type=data["gearbox"],
+        fuel_type=data["fuel_type"],
+    )
+
+    return vehicle
 
 
 def validate_post_ad(data, profile, existing_images=0):
@@ -261,14 +273,7 @@ def create_advertisement(profile, data):
         )
 
 
-    vehicle, created = Vehicle.objects.get_or_create(
-        model_id=data["model_id"],
-        production_year=data["production_year"],
-        color_out=data["body_color"],
-        color_in=data["cabin_color"] or None,
-        transmission_type=data["gearbox"],
-        fuel_type=data["fuel_type"],
-    )
+    vehicle = get_or_create_vehicle(data)
 
     title = f"{vehicle.model.brand.name} {vehicle.model.name}"
 
@@ -310,7 +315,7 @@ def create_advertisement(profile, data):
 
 def update_advertisement(advertisement, data):
 
-    vehicle = data["vehicle"]
+    vehicle = get_or_create_vehicle(data)
 
     title = f"{vehicle.model.brand.name} {vehicle.model.name}"
 
