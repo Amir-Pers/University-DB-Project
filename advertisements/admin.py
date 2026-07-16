@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Advertisement, Image, Video, Instalment, Favorite
+from .models import Advertisement, Image, Video, Instalment, Favorite, Remittance
 
 # Register your models here.
 
@@ -18,6 +18,11 @@ class InstalmentInline(admin.StackedInline):
     extra = 0
     max_num = 1
 
+class RemittanceInline(admin.StackedInline):
+    model = Remittance
+    extra = 0
+    max_num = 1
+
 class AdvertisementAdmin(admin.ModelAdmin):
     list_display = ["ad_id", "title", "userid", "ad_type", "active_status",
                     "published", "created_date", "updated_date"]
@@ -25,7 +30,7 @@ class AdvertisementAdmin(admin.ModelAdmin):
                     "vehicle__model__name", "vehicle__model__brand__name",)
     list_filter = ["sell_type", "car_condition", "ad_type", 'published', "free_zone", "active_status", ]
     autocomplete_fields = ("userid", "vehicle", "address",)
-    inlines = (ImageInline, VideoInline, InstalmentInline,)
+    inlines = (ImageInline, VideoInline, InstalmentInline, RemittanceInline)
     ordering = ["-created_date"]
 
 
@@ -53,8 +58,14 @@ class FavoriteAdmin(admin.ModelAdmin):
     ordering = ["-created_date"]
 
 
+class RemittanceAdmin(admin.ModelAdmin):
+    list_display = ["remittance_id", "advertisement__title", "deposit_amount", "final_price"]
+    search_fields = ["advertisement__title"]
+
+
 admin.site.register(Advertisement, AdvertisementAdmin)
 admin.site.register(Image, ImageAdmin)
 admin.site.register(Video, VideoAdmin)
 admin.site.register(Instalment, InstalmentAdmin)
 admin.site.register(Favorite, FavoriteAdmin)
+admin.site.register(Remittance, RemittanceAdmin)
