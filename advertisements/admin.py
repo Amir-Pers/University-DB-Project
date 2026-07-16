@@ -1,8 +1,7 @@
 from django.contrib import admin
-from .models import Advertisement, Image, Video, Instalment
-from django.utils.html import format_html
-# Register your models here.
+from .models import Advertisement, Image, Video, Instalment, Favorite
 
+# Register your models here.
 
 class ImageInline(admin.TabularInline):
     model = Image
@@ -44,7 +43,18 @@ class InstalmentAdmin(admin.ModelAdmin):
     list_display = ("ad", "first_payment", "payment_per_instalment", "payment_count",)
 
 
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = [ "user", "ad", "created_date"]
+    search_fields = [
+        "user__username",
+        "user__phone",
+        "ad__title",
+    ]
+    ordering = ["-created_date"]
+
+
 admin.site.register(Advertisement, AdvertisementAdmin)
 admin.site.register(Image, ImageAdmin)
 admin.site.register(Video, VideoAdmin)
 admin.site.register(Instalment, InstalmentAdmin)
+admin.site.register(Favorite, FavoriteAdmin)

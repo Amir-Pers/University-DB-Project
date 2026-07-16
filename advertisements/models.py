@@ -101,3 +101,21 @@ class Remittance(models.Model):
 
     def __str__(self):
         return f"Remittance #{self.remittance_id}"
+    
+
+class Favorite(models.Model):
+    favorite_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, 
+        db_column="userid", related_name="favorites"
+    )
+    ad = models.ForeignKey(Advertisement, on_delete=models.CASCADE,
+        db_column="ad_id", related_name="favorites"                    
+    )
+    created_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = "Favorite"
+    
+    def __str__(self):
+        return f"{self.user} -> {self.ad}"
