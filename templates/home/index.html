@@ -38,6 +38,10 @@
         {% endfor %}
       </select>
 
+      <select id="fModel" name="fModel">
+        <option value="">مدل: همه</option>
+      </select>
+
       <input id="fPriceMin" name="fPriceMin" type="number" value="{{ request.GET.fPriceMin|default:'' }}"
         placeholder="حداقل قیمت (میلیون)" />
 
@@ -45,13 +49,14 @@
         placeholder="حداکثر قیمت (میلیون)" />
 
       <div class="filter-actions">
+        <button type="submit" class="btn btn-amber">
+          جستجو
+        </button>
+        
         <button type="button" class="btn btn-ghost" id="btnResetFilter">
           پاک کردن
         </button>
 
-        <button type="submit" class="btn btn-amber">
-          جستجو
-        </button>
       </div>
     </form>
   </section>
@@ -151,6 +156,14 @@
 <script src="{% static 'js/hero-road.js' %}"></script>
 
 <script>
+window.selectedType = "{{ selected_type|default:'' }}";
+window.selectedBrandId = "{{ selected_brand_id|default:'' }}";
+window.selectedModelId = "{{ selected_model_id|default:'' }}";
+</script>
+
+<script src="{% static 'js/vehicle-selector.js' %}"></script>
+
+<script>
   document.addEventListener("DOMContentLoaded", function () {
 
     const resetBtn = document.getElementById("btnResetFilter");
@@ -162,28 +175,6 @@
       });
     }
 
-
-    if (carLink) {
-      carLink.addEventListener("click", function (e) {
-        e.preventDefault();
-
-        const url = new URL(window.location.origin + "{% url 'home:index' %}");
-        url.searchParams.set("fType", "car");
-
-        window.location.href = url;
-      });
-    }
-
-    if (motoLink) {
-      motoLink.addEventListener("click", function (e) {
-        e.preventDefault();
-
-        const url = new URL(window.location.origin + "{% url 'home:index' %}");
-        url.searchParams.set("fType", "motorcycle");
-
-        window.location.href = url;
-      });
-    }
 
     const resultCount = document.getElementById("resultCount");
 

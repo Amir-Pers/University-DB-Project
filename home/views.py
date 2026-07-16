@@ -10,6 +10,7 @@ def index(request):
     search = request.GET.get('fSearch', '').strip()
     ad_type = request.GET.get('fType', '')
     brand_id_str = request.GET.get('fBrand', '')
+    model_id_str = request.GET.get("fModel", "")
     price_min = request.GET.get('fPriceMin', '')
     price_max = request.GET.get('fPriceMax', '')
 
@@ -18,10 +19,15 @@ def index(request):
     except ValueError:
         selected_brand_id = None
 
+    try:
+        selected_model_id = int(model_id_str) if model_id_str else None
+    except ValueError:
+        selected_model_id = None
+
     type_choices = [
         {'value': '', 'label': 'نوع: همه', 'is_selected': not ad_type},
         {'value': 'car', 'label': 'خودرو', 'is_selected': ad_type == 'car'},
-        {'value': 'moto', 'label': 'موتورسیکلت', 'is_selected': ad_type == 'moto'},
+        {'value': 'motorcycle', 'label': 'موتورسیکلت', 'is_selected': ad_type == 'motorcycle'},
     ]
 
     # ---- پایه کوئری ----
@@ -51,9 +57,12 @@ def index(request):
     if selected_brand_id is not None:
         qs = qs.filter(vehicle__model__brand_id=selected_brand_id)
 
+    if selected_model_id is not None:
+        qs = qs.filter(vehicle__model_id=selected_model_id)
+
     if ad_type == 'car':
         qs = qs.filter(vehicle__car__isnull=False)
-    elif ad_type == 'moto':
+    elif ad_type == 'motorcycle':
         qs = qs.filter(vehicle__motorcycle__isnull=False)
 
     if price_min:
@@ -97,23 +106,18 @@ def index(request):
         vehicle__advertisements__active_status=True,
     ).distinct().count()
 
-    brands = Brand.objects.all().order_by('name')
-    brand_list = []
-    for brand in brands:
-        brand_list.append({
-            'brand': brand,
-            'is_selected': (selected_brand_id == brand.brand_id)
-        })
 
     context = {
         "advertisements": advertisements,
         "total_ads": total_ads,
         "car_count": car_count,
         "motorcycle_count": motorcycle_count,
-        "brand_list": brand_list,           
         "type_choices": type_choices,       
         "total_filtered": total_filtered,
         "page_obj": page_obj,
+        "selected_brand_id": selected_brand_id,
+        "selected_model_id": selected_model_id,
+        "selected_type": ad_type,
     }
 
     return render(request, "home/index.html", context)

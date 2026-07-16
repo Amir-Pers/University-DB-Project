@@ -1,12 +1,26 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const vehicleTypeSelect = document.getElementById("vehicle_type");
-    const brandSelect = document.getElementById("car_brand");
-    const modelSelect = document.getElementById("car_model");
+    // تشخیص صفحه
+    const isPostAd = document.getElementById("vehicle_type") !== null;
+    const isHome = document.getElementById("fType") !== null;
 
-    if (!vehicleTypeSelect || !brandSelect || !modelSelect)
+    if (!isPostAd && !isHome)
         return;
 
+    // انتخاب المنت‌های مناسب
+    const vehicleTypeSelect = isPostAd
+        ? document.getElementById("vehicle_type")
+        : document.getElementById("fType");
+
+    const brandSelect = isPostAd
+        ? document.getElementById("car_brand")
+        : document.getElementById("fBrand");
+
+    const modelSelect = isPostAd
+        ? document.getElementById("car_model")
+        : document.getElementById("fModel");
+
+    // فقط در صفحه ثبت آگهی وجود دارد
     const initial = window.initialVehicle || {};
 
     // -------------------------
@@ -15,19 +29,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
     vehicleTypeSelect.addEventListener("change", async function () {
 
+        const category = this.value;
+
+        if (!category) {
+
+            brandSelect.innerHTML =
+                '<option value="">برند: همه</option>';
+
+            if (modelSelect) {
+                modelSelect.innerHTML =
+                    '<option value="">مدل: همه</option>';
+            }
+
+            return;
+        }
+
         brandSelect.innerHTML =
             '<option>در حال بارگذاری...</option>';
 
-        modelSelect.innerHTML =
-            '<option>ابتدا برند را انتخاب کنید...</option>';
+        if (modelSelect) {
+            modelSelect.innerHTML = isPostAd
+                ? '<option value="">ابتدا برند را انتخاب کنید...</option>'
+                : '<option value="">مدل: همه</option>';
+        }
 
-        const response =
-            await fetch(`/vehicles/brands/?category=${encodeURIComponent(this.value)}`);
+        const response = await fetch(
+            `/vehicles/brands/?category=${encodeURIComponent(category)}`
+        );
 
         const brands = await response.json();
 
-        brandSelect.innerHTML =
-            '<option value="">انتخاب برند...</option>';
+        brandSelect.innerHTML = isPostAd
+            ? '<option value="">انتخاب برند...</option>'
+            : '<option value="">برند: همه</option>';
 
         brands.forEach(brand => {
 
@@ -36,20 +70,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
 
-        // اگر در حالت ویرایش هستیم
-        if (initial.brandId) {
+        // حالت ویرایش آگهی
+        if (isPostAd && initial.brandId) {
 
             brandSelect.value = initial.brandId;
             brandSelect.dispatchEvent(new Event("change"));
 
-            // فقط یک بار انجام شود
             initial.brandId = null;
+        }
+
+        // صفحه اصلی (برگشت فیلترها بعد از جستجو)
+        if (isHome && window.selectedBrandId) {
+
+            brandSelect.value = window.selectedBrandId;
+            brandSelect.dispatchEvent(new Event("change"));
+
+            window.selectedBrandId = null;
         }
 
     });
 
     // -------------------------
-    // بارگذاری مدل ها
+    // بارگذاری مدل‌ها
     // -------------------------
 
     brandSelect.addEventListener("change", async function () {
@@ -58,8 +100,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!brandId) {
 
-            modelSelect.innerHTML =
-                '<option value="">ابتدا برند را انتخاب کنید...</option>';
+            modelSelect.innerHTML = isPostAd
+                ? '<option value="">ابتدا برند را انتخاب کنید...</option>'
+                : '<option value="">مدل: همه</option>';
 
             return;
         }
@@ -67,13 +110,15 @@ document.addEventListener("DOMContentLoaded", () => {
         modelSelect.innerHTML =
             '<option>در حال بارگذاری...</option>';
 
-        const response =
-            await fetch(`/vehicles/models/?brand=${brandId}`);
+        const response = await fetch(
+            `/vehicles/models/?brand=${brandId}`
+        );
 
         const models = await response.json();
 
-        modelSelect.innerHTML =
-            '<option value="">انتخاب مدل...</option>';
+        modelSelect.innerHTML = isPostAd
+            ? '<option value="">انتخاب مدل...</option>'
+            : '<option value="">مدل: همه</option>';
 
         models.forEach(model => {
 
@@ -82,13 +127,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
 
-        // اگر در حالت ویرایش هستیم
-        if (initial.modelId) {
+        // حالت ویرایش
+        if (isPostAd && initial.modelId) {
 
             modelSelect.value = initial.modelId;
-
-            // فقط یک بار انجام شود
             initial.modelId = null;
+        }
+
+        // صفحه اصلی
+        if (isHome && window.selectedModelId) {
+
+            modelSelect.value = window.selectedModelId;
+            window.selectedModelId = null;
         }
 
     });
@@ -97,8 +147,17 @@ document.addEventListener("DOMContentLoaded", () => {
     // مقدار اولیه
     // -------------------------
 
-    vehicleTypeSelect.value =
-        initial.vehicleType || "car";
+    if (isPostAd) {
+
+        vehicleTypeSelect.value =
+            initial.vehicleType || "car";
+
+    } else {
+
+        vehicleTypeSelect.value =
+            window.selectedType || "";
+
+    }
 
     vehicleTypeSelect.dispatchEvent(
         new Event("change")
