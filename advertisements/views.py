@@ -19,10 +19,30 @@ from .utils import (
 
 def advertisement_detail(request, ad_id):
 
-    advertisement = get_object_or_404(Advertisement, ad_id=ad_id)
-        
-    return render(request, "advertisements/ad_detail.html", {"ad": advertisement,},
-)
+    advertisement = (
+        Advertisement.objects
+        .select_related(
+            "vehicle",
+            "vehicle__model",
+            "vehicle__model__brand",
+            "userid",
+            "address",
+            "address__city",
+        )
+        .prefetch_related(
+            Prefetch(
+                "images",
+                queryset=Image.objects.order_by("image_id"),
+            )
+        )
+        .get(ad_id=ad_id)
+    )
+
+    context = {
+        "ad": advertisement,
+    }
+
+    return render(request, "advertisements/ad_detail.html",context)
 
 
 @login_required
