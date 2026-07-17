@@ -6,7 +6,7 @@ from django.utils import timezone
 
 from .models import User
 from locations.models import Address, Province, City
-from advertisements.models import Advertisement
+from advertisements.models import Advertisement, Favorite
 
 
 def handle_identity_form(request, profile):
@@ -134,10 +134,27 @@ def get_profile_context(profile):
         .order_by("-created_date")
     )
 
+    favorite_ads = (
+        Favorite.objects
+        .filter(user=profile)
+        .select_related(
+            "ad",
+            "ad__vehicle__model__brand",
+            "ad__address__city",
+        )
+        .prefetch_related(
+            "ad__images",
+        )
+        .order_by("-created_date")
+    )
+
     return {
         "profile": profile,
         "ads": ads,
         "ads_count": ads.count(),
+
+        "favorite_ads": favorite_ads,
+        "favorites_count": favorite_ads.count(),
         
         "provinces": Province.objects.prefetch_related("cities").all(),
 

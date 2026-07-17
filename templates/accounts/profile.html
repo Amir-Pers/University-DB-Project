@@ -194,17 +194,39 @@
         padding-top: 16px;
       }
 
-        .btn-view-premium {
-      background: linear-gradient(135deg, var(--amber) 0%, #f59e0b 100%);
-      color: #fff;
-      font-weight: 700;
-      border: none;
-      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
-      transition: transform 0.2s ease;
-      cursor: pointer;
+      .btn-view-premium {
+        background: linear-gradient(135deg, var(--amber) 0%, #f59e0b 100%);
+        color: #fff;
+        font-weight: 700;
+        border: none;
+        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+        transition: transform 0.2s ease;
+        cursor: pointer;
       }
       .btn-view-premium:hover {
         transform: scale(1.02);
+      }
+      
+      /* دکمه جدید برای حذف از علاقه‌مندی‌ها */
+      .btn-unfavorite-action {
+        background: rgba(239, 68, 68, 0.08);
+        color: #ef4444;
+        font-weight: 600;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        padding: 8px 12px;
+        font-size: 13px;
+        border-radius: 10px;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        width: 100%;
+      }
+      .btn-unfavorite-action:hover {
+        background: rgba(239, 68, 68, 0.15);
+        border-color: rgba(239, 68, 68, 0.3);
       }
 
       @media(min-width: 640px) {
@@ -216,6 +238,11 @@
           flex-direction: row;
           align-items: center;
           justify-content: space-between;
+        }
+        .action-layout-favorites {
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: center;
         }
       }
 
@@ -233,18 +260,18 @@
 
       /* بخش تصویر آگهی (عکس واقعی یا حالت جایگزین) */
       .ad-image {
+        position: relative;
         background: var(--bg2);
         border-radius: 16px;
         overflow: hidden;
         min-height: 110px;
-        height: 100%;
+        height: 110px;
         border: 1px solid var(--line);
       }
 
       .ad-image img {
         width: 100%;
         height: 100%;
-        min-height: 110px;
         object-fit: cover;
         display: block;
       }
@@ -252,7 +279,6 @@
       .ad-image .no-image {
         width: 100%;
         height: 100%;
-        min-height: 110px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -262,7 +288,15 @@
         color: var(--muted);
       }
 
-    </style>
+      /* انیمیشن خروج کارت هنگام حذف */
+      @keyframes cardFadeOut {
+        0% { opacity: 1; transform: scale(1); }
+        100% { opacity: 0; transform: scale(0.9); max-height: 0; padding: 0; margin: 0; border: none; }
+      }
+
+      .card-removing {
+        animation: cardFadeOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }</style>
 
     <!-- ================= سایدبار (تب‌ها) ================= -->
     <aside class="sidebar-box">
@@ -313,7 +347,7 @@
               <h4 class="card-title" style="font-size: 18px; margin: 0; font-weight: 800; color: var(--text); letter-spacing: -0.3px;"> {{ ad.title }}</h4>
               <span style="font-size: 11px; padding: 3px 10px; background: rgba(245,158,11,0.1); color: var(--amber); border-radius: 8px; font-weight: 800; border: 1px solid rgba(245,158,11,0.2);"> {{ ad.sell_type }} </span>
 
-              <!-- بج وضعیت آگهی (در انتظار تایید / تایید شده / رد شده) -->
+              <!-- بج وضعیت آگهی -->
               {% if ad.published %}
                 <span class="status-badge status-approved">
                     ✅ منتشر شده
@@ -325,7 +359,7 @@
               {% endif %}
             </div>
 
-            <!-- لاین مشخصات فنی همراه با زمان ثبت و بازدید -->
+            <!-- مشخصات فنی همراه با زمان ثبت و بازدید -->
             <div style="font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
               <span style="background: var(--bg2); padding: 2px 8px; border-radius: 6px;">{{ ad.vehicle.production_year }}</span>
               <span style="color: var(--line);">|</span>
@@ -338,8 +372,7 @@
 
             <!-- قیمت -->
             <div style="margin-top: 6px;">
-              <div class="price-val" style="font-size: 19px; font-weight: 900; color: var(--text);">
-                {% if ad.price %}
+              <div class="price-val" style="font-size: 19px; font-weight: 900; color: var(--text);">{% if ad.price %}
                   {{ ad.price|fa_number }}
                 {% else %}
                   ---
@@ -366,16 +399,14 @@
               </label>
             </div>
 
-            <!-- ساختار دکمه‌های ۳‌گانه عمودی متمایز -->
+            <!-- دکمه‌های عمودی متمایز -->
             <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
-              <!-- دکمه مشاهده با دیزاین شاخص به عنوان هدف اصلی -->
-              <a  href="{% url 'advertisements:detail' ad.ad_id %}"  
+              <a href="{% url 'advertisements:detail' ad.ad_id %}"  
                 class="btn btn-view-premium" 
                 style="padding: 10px 16px; font-size: 13px; width: 100%; border-radius: 12px; justify-content: center; display: flex; align-items: center; gap: 6px;">
                 👁️ مشاهده آگهی
               </a>
 
-              <!-- ردیف دکمه‌های فرعی برای تعادل بصری بی‌نظیر -->
               <div style="display: flex; gap: 8px; width: 100%;">
                 <a href="{% url 'advertisements:edit_ad' ad.ad_id %}" 
                   class="btn btn-ghost" style="padding: 8px 12px; 
@@ -399,7 +430,6 @@
           </div>
         </div>
         {% empty %}
-
         <p style="padding:40px;text-align:center;">
             هنوز هیچ آگهی ثبت نکرده‌اید.
         </p>
@@ -411,41 +441,78 @@
       <div id="favorites" class="tab-content">
         <div class="acc-ads-header">
           <h3>آگهی‌های نشان‌شده خودرو و موتور</h3>
+          <span id="fav-count-badge" style="font-size: 14px; color: var(--muted);">{{ favorites_count|fa_number }} آگهی</span>
         </div>
 
-        <!-- گرید آگهی‌های مورد علاقه -->
-        <div class="grid" style="margin-top: 10px;">
-          <!-- نمونه خودرو نشان شده -->
-          <div class="card" style="animation: none;">
-            <div class="media-car card-media">
-              🚗
-              <span class="badge badge-car">کارکرده</span>
+        <!-- گرید آگهی‌های مورد علاقه (با پترن VIP ستون اصلی) -->
+        <div id="favorites-list-container" style="display: flex; flex-direction: column; gap: 16px; margin-top: 10px;">
+          {% for favorite in favorite_ads %}
+          <div class="premium-ad-card" id="fav-card-{{ favorite.ad.ad_id }}">
+            
+            <!-- بخش ۱: تصویر -->
+            <div class="ad-image">
+              {% if favorite.ad.images.first %}
+                <img src="{{ favorite.ad.images.first.image.url }}" alt="{{ favorite.ad.title }}">
+              {% else %}
+                <div class="no-image">🚘</div>
+              {% endif %}
             </div>
-            <div class="card-body">
-              <h4 class="card-title">هیوندای سانتافه</h4>
-              <div class="card-sub">مدل ۲۰۱۶ | فول آپشن</div>
-              <div class="card-price">
-                <span class="price-val">۲,۹۰۰,۰۰۰,۰۰۰ تومان</span>
-              </div>
-            </div>
-          </div>
 
-          <!-- نمونه موتور نشان شده -->
-          <div class="card" style="animation: none;">
-            <div class="media-moto card-media">
-              🏍️
-              <span class="badge badge-moto">صفر</span>
-            </div>
-            <div class="card-body">
-              <h4 class="card-title">بنلی جفت سیلندر 250</h4>
-              <div class="card-sub">مدل ۱۴۰۳ | رنگ مشکی</div>
-              <div class="card-price">
-                <span class="price-val">۳۲۰,۰۰۰,۰۰۰ تومان</span>
+            <!-- بخش ۲: مشخصات و جزئیات فنی آگهی -->
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <h4 class="card-title" style="font-size: 18px; margin: 0; font-weight: 800; color: var(--text); letter-spacing: -0.3px;">{{ favorite.ad.title }}</h4>
+                <span style="font-size: 11px; padding: 3px 10px; background: rgba(245,158,11,0.1); color: var(--amber); border-radius: 8px; font-weight: 800; border: 1px solid rgba(245,158,11,0.2);">{{ favorite.ad.sell_type }}</span>
+              </div>
+
+              <div style="font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <span style="background: var(--bg2); padding: 2px 8px; border-radius: 6px;">{{ favorite.ad.vehicle.production_year }}</span>
+                <span style="color: var(--line);">|</span>
+                <span style="background: var(--bg2); padding: 2px 8px; border-radius: 6px;">کارکرد {{ favorite.ad.km_age|fa_number }} کیلومتر</span>
+                <span style="color: var(--line);">|</span>
+                <span style="display: flex; align-items: center; gap: 4px; color: #6b7280; font-weight: 500;">📍 {{ favorite.ad.address.city.name }}</span>
+              </div>
+
+              <!-- قیمت -->
+              <div style="margin-top: 6px;">
+                <div class="price-val" style="font-size: 19px; font-weight: 900; color: var(--text);">
+                  {% if favorite.ad.price %}
+                    {{ favorite.ad.price|fa_number }}
+                  {% else %}
+                    ---
+                  {% endif %}
+                  <span style="font-size: 13px; font-weight: 500; color: var(--muted);">تومان</span>
+                </div>
               </div>
             </div>
+
+            <!-- بخش ۳: دکمه‌ی مشاهده جزئیات آگهی و حذف از علاقه‌مندی‌ها -->
+            <div class="action-layout action-layout-favorites">
+              <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                <a href="{% url 'advertisements:detail' favorite.ad.ad_id %}" 
+                   class="btn btn-view-premium" 
+                   style="padding: 10px 16px; font-size: 13px; width: 100%; border-radius: 12px; justify-content: center; display: flex; align-items: center; gap: 6px;">
+                  👀 مشاهده آگهی
+                </a>
+                
+                <button class="btn btn-unfavorite-action remove-favorite-btn" data-ad-id="{{ favorite.ad.ad_id }}">
+                  🗑️ حذف از علاقه‌مندی‌ها
+                </button>
+              </div>
+            </div>
+
           </div>
+          {% empty %}
+          <!-- بخش وضعیت خالی (Empty State) در صورت نبود آگهی نشان‌شده -->
+          <div id="fav-empty-state" style="padding: 60px 20px; text-align: center; background: var(--card); border: 1px dashed var(--line); border-radius: 18px;">
+            <div style="font-size: 50px; margin-bottom: 14px;">🤍</div>
+            <h4 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">لیست علاقه‌مندی‌های شما خالی است</h4>
+            <p style="color: var(--muted); font-size: 14px;">شما هنوز هیچ آگهی را نشان نکرده‌اید.</p>
+          </div>
+          {% endfor %}
         </div>
       </div>
+      <!-- پایان تب ۲ -->
 
       <!-- ================= تب ۳: تنظیمات حساب ================= -->
       <div id="settings" class="tab-content">
@@ -541,9 +608,7 @@
             </button>
           </form>
 
-          <hr style="border: 0; border-top: 1px solid var(--line); margin: 0;">
-
-          <!-- فرم سوم: امنیت و تغییر رمز عبور -->
+          <hr style="border: 0; border-top: 1px solid var(--line); margin: 0;"><!-- فرم سوم: امنیت و تغییر رمز عبور -->
           <form method="POST" action="{% url 'accounts:profile' %}" style="display: flex; flex-direction: column; gap: 16px;">
             {% csrf_token %}
             <input type="hidden" name="form_type" value="password">
@@ -614,6 +679,94 @@
         switchTab(targetTab);
       });
     });
+
+    // مدیریت حذف از علاقه‌مندی‌ها با دکمه‌ی اختصاصی
+    const removeFavBtns = document.querySelectorAll(".remove-favorite-btn");
+    
+    removeFavBtns.forEach(btn => {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        const adId = this.getAttribute("data-ad-id");
+        const card = document.getElementById(`fav-card-${adId}`);
+        const originalText = this.innerHTML;
+        this.innerHTML = "در حال حذف...";
+        this.style.pointerEvents = "none";
+
+        // ارسال درخواست لغو علاقه‌مندی به اندپوینت
+        fetch(`/advertisements/favorite/${adId}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("اختلال در سرور");
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data && data.status === 'ok' && !data.is_favorite) {
+            // اضافه کردن انیمیشن حذف کارت با شتاب نرم
+            if (card) {
+              card.classList.add("card-removing");
+              
+              // بعد از اتمام انیمیشن، کارت را از DOM حذف کن
+              card.addEventListener("animationend", function () {card.remove();
+                
+                // به‌روزرسانی تعداد آگهی‌های علاقه‌مندی روی هدر تب
+                updateFavoriteCount();
+              });
+            }
+          }
+        })
+        .catch(err => {
+          console.error("خطا در ارسال درخواست:", err);
+          this.innerHTML = originalText;
+          this.style.pointerEvents = "auto";
+        });
+      });
+    });
+
+    // به‌روزرسانی شمارنده آگهی‌ها در تب علاقه‌مندی‌ها و مدیریت صفحه خالی (Empty State)
+    function updateFavoriteCount() {
+      const container = document.getElementById("favorites-list-container");
+      const remainingCards = container.querySelectorAll(".premium-ad-card");
+      const countBadge = document.getElementById("fav-count-badge");
+
+      if (countBadge) {
+        countBadge.textContent = toPersianDigits(remainingCards.length) + " آگهی";
+      }
+
+      // در صورتی که کارتی باقی نمانده باشد، قالب صفحه خالی را به شکل متحرک جایگزین کن
+      if (remainingCards.length === 0) {
+        const emptyStateHTML = `
+          <div id="fav-empty-state" style="padding: 60px 20px; text-align: center; background: var(--card); border: 1px dashed var(--line); border-radius: 18px; opacity: 0; transform: translateY(10px); transition: all 0.4s ease;">
+            <div style="font-size: 50px; margin-bottom: 14px;">🤍</div>
+            <h4 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">لیست علاقه‌مندی‌های شما خالی است</h4>
+            <p style="color: var(--muted); font-size: 14px;">شما هنوز هیچ آگهی را نشان نکرده‌اید.</p>
+          </div>
+        `;
+        container.innerHTML = emptyStateHTML;
+        
+        // اجرای انیمیشن ملایم لود شدنِ بخش خالی
+        setTimeout(() => {
+          const emptyState = document.getElementById("fav-empty-state");
+          if (emptyState) {
+            emptyState.style.opacity = "1";
+            emptyState.style.transform = "translateY(0)";
+          }
+        }, 50);
+      }
+    }
+
+    function toPersianDigits(num) {
+      const persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+      return String(num).replace(/[0-9]/g, function (d) {
+        return persian[d];
+      });
+    }
 
   });
 </script>
