@@ -5,8 +5,9 @@ from django.contrib import messages
 from django.db import transaction
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
+from django.utils import timezone
 
-from .models import Advertisement, Image
+from .models import Advertisement, Image, Favorite
 from vehicles.models import Brand
 from locations.models import Province
 from .utils import (
@@ -199,4 +200,30 @@ def toggle_ad_status_view(request, ad_id):
     return JsonResponse({
         "success": True,
         "active_status": ad.active_status,
+    })
+
+
+@login_required
+@require_POST
+def toggle_favorite_view(request, ad_id):
+    
+    ad = get_object_or_404(
+        Advertisement,
+        ad_id=ad_id,
+    )
+
+    favorite, created = Favorite.objects.get_or_create(
+        user=request.user.profile,
+        ad=ad,
+        defaults={
+        "created_date": timezone.now(),
+    }
+    )
+
+    if not created:
+        favorite.delete()
+
+    return JsonResponse({
+        "status" : "ok",
+        "is_favorite": created,
     })

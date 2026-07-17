@@ -584,10 +584,13 @@
           {% if user.is_authenticated %}
           <!-- دکمه شناور علاقه‌مندی‌ها -->
           <button id="favoriteBtn" class="favorite-btn-floating" data-ad-id="{{ ad.ad_id }}" 
-            title="{% if is_favorite %}حذف از علاقه‌مندی‌ها{% else %}افزودن به علاقه‌مندی‌ها{% endif %}">
+            title="{% if is_favorite %}حذف از علاقه‌مندی‌ها{% else %}افزودن به علاقه‌مندی‌ها{% endif %}"
+            data-url="{% url 'advertisements:toggle_favorite' 0 %}">
+
             <span class="heart-icon">
               {% if is_favorite %}❤️{% else %}🤍{% endif %}
             </span>
+
           </button>
           {% endif %}
 
@@ -816,9 +819,12 @@
     if (favBtn) {
       favBtn.addEventListener("click", function(e) {
         e.preventDefault(); // جلوگیری از رفتارهای ناخواسته دکمه
-        const adId = this.getAttribute("data-ad-id");
+        const adId = this.dataset.adId;
+        const url = this.dataset.url.replace("0", adId);
+
+        console.log(url)
         
-        fetch(`/ads/favorite/${adId}/`, {
+        fetch(url, {
           method: 'POST',
           headers: {
             'X-CSRFToken': '{{ csrf_token }}',  // توکن امنیت جنگو
