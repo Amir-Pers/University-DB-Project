@@ -15,49 +15,74 @@
     </div>
   </section>
 
+  <!-- بخش فیلترها سازگار با ساختار آکاردئونی جدید -->
   <section class="filters reveal reveal-1">
-    <form method="GET" action="" id="filterForm" class="filter-row">
+    <form method="GET" action="" id="filterForm" class="accordion-filter-form">
 
-      <input id="fSearch" name="fSearch" value="{{ request.GET.fSearch|default:'' }}"
-        placeholder="جستجو برند یا مدل…" />
-
-      <select id="fType" name="fType">
-        {% for choice in type_choices %}
-        <option value="{{ choice.value }}" {% if choice.is_selected %}selected{% endif %}>
-          {{ choice.label }}
-        </option>
-        {% endfor %}
-      </select>
-
-      <select id="fBrand" name="fBrand">
-        <option value="">برند: همه</option>
-        {% for item in brand_list %}
-        <option value="{{ item.brand.brand_id }}" {% if item.is_selected %}selected{% endif %}>
-          {{ item.brand.name }}
-        </option>
-        {% endfor %}
-      </select>
-
-      <select id="fModel" name="fModel">
-        <option value="">مدل: همه</option>
-      </select>
-
-      <input id="fPriceMin" name="fPriceMin" type="number" value="{{ request.GET.fPriceMin|default:'' }}"
-        placeholder="حداقل قیمت (میلیون)" />
-
-      <input id="fPriceMax" name="fPriceMax" type="number" value="{{ request.GET.fPriceMax|default:'' }}"
-        placeholder="حداکثر قیمت (میلیون)" />
-
-      <div class="filter-actions">
-        <button type="submit" class="btn btn-amber">
-          جستجو
-        </button>
-        
-        <button type="button" class="btn btn-ghost" id="btnResetFilter">
-          پاک کردن
-        </button>
-
+      <!-- سطر اصلی و همیشه نمایان -->
+      <div class="filter-main-bar">
+        <div class="search-input-field">
+          <input id="fSearch" name="fSearch" value="{{ request.GET.fSearch|default:'' }}"
+            placeholder="جستجو برند، مدل یا کلمه کلیدی…" autocomplete="off" />
+        </div>
+        <div class="main-bar-actions">
+          <button type="button" class="btn btn-ghost" id="btnToggleAdvanced">
+            ⚙️ فیلترهای پیشرفته
+          </button>
+          <button type="submit" class="btn btn-amber">
+            جستجو
+          </button>
+        </div>
       </div>
+
+      <!-- باکس کشویی فیلترهای پیشرفته (بدون فضای خالی اضافه در حالت بسته) -->
+      <div class="filter-advanced-panel" id="advancedFilterPanel">
+        <div class="advanced-grid">
+          
+          <div class="select-field">
+            <select id="fType" name="fType">
+              {% for choice in type_choices %}
+              <option value="{{ choice.value }}" {% if choice.is_selected %}selected{% endif %}>
+                {{ choice.label }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="select-field">
+            <select id="fBrand" name="fBrand">
+              <option value="">برند: همه</option>
+              {% for item in brand_list %}
+              <option value="{{ item.brand.brand_id }}" {% if item.is_selected %}selected{% endif %}>
+                {{ item.brand.name }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="select-field">
+            <select id="fModel" name="fModel">
+              <option value="">مدل: همه</option>
+            </select>
+          </div>
+
+          <div class="price-field-group">
+            <input id="fPriceMin" name="fPriceMin" type="number" value="{{ request.GET.fPriceMin|default:'' }}"
+              placeholder="حداقل قیمت (میلیون)" min="0" />
+            <input id="fPriceMax" name="fPriceMax" type="number" value="{{ request.GET.fPriceMax|default:'' }}"
+              placeholder="حداکثر قیمت (میلیون)" min="0" />
+          </div>
+
+        </div>
+
+        <!-- دکمه پاک کردن فیلترها درون پنل پیشرفته -->
+        <div class="advanced-footer">
+          <button type="button" class="btn-ghost-danger" id="btnResetFilter">
+            🗑️ پاک کردن تمام فیلترها
+          </button>
+        </div>
+      </div>
+
     </form>
   </section>
 
@@ -67,84 +92,62 @@
   </div>
 
   <div class="grid" id="listingGrid">
-
     {% for ad in advertisements %}
-
     <div class="card" data-id="{{ ad.ad_id }}" onclick="window.location.href='/advertisements/{{ ad.ad_id }}/'">
-
       <div class="card-media">
-
         {% with ad.images.first as image %}
         {% if image %}
         <img src="{{ image.image.url }}" alt="{{ ad.title }}" class="card-image">
         {% else %}
-
         {% if ad.vehicle.car %}
         <div class="card-placeholder">🚗</div>
         {% elif ad.vehicle.motorcycle %}
         <div class="card-placeholder">🏍️</div>
         {% endif %}
+        {% endif %}{% endwith %}
 
-        {% endif %}
-        {% endwith %}
-
-        {% if ad.vehicle.car %}
-        <span class="badge badge-car">خودرو</span>
+        {% if ad.vehicle.car %}<span class="badge badge-car">خودرو</span>
         {% elif ad.vehicle.motorcycle %}
         <span class="badge badge-moto">موتورسیکلت</span>
         {% endif %}
-
       </div>
 
       <div class="card-body">
-
         <div class="card-title">
-          {{ ad.vehicle.model.brand.name }}
-          {{ ad.vehicle.model.name }}
+          {{ ad.vehicle.model.brand.name }} {{ ad.vehicle.model.name }}
         </div>
-
         <div class="card-sub">
-          مدل {{ ad.vehicle.production_year }}
-          ·
-          {{ ad.address.city.name }}
+          مدل {{ ad.vehicle.production_year }} · {{ ad.address.city.name }}
         </div>
-
         <div class="card-meta">
           <span>📍 {{ ad.address.city.name }}</span>
-
           {% if ad.km_age %}
           <span>⏱️ {{ ad.km_age|fa_number }} کیلومتر</span>
           {% endif %}
         </div>
-
         <div class="card-price">
-          <span style="font-size:12px;color:var(--muted);">
-            قیمت
-          </span>
-
+          <span style="font-size:12px;color:var(--muted);">نوع فروش</span>
           <span class="price-val">
-            {% if ad.price %}
-            {{ ad.price|fa_number }} تومان
-            {% else %}
-            توافقی
+            {% if ad.sell_type == 'نقدی' %}
+              {{ ad.price|fa_number }} تومان
+            {% elif ad.sell_type == 'توافقی' %}
+              توافقی
+            {% elif ad.sell_type == 'حواله' %}
+              حواله
+            {% elif ad.sell_type == 'اقساطی' %}
+              اقساطی
             {% endif %}
           </span>
         </div>
-
       </div>
-
     </div>
-
     {% empty %}
-
     <div class="empty" style="grid-column:1/-1;">
-      <div class="ico">🔍</div>
-      آگهی‌ای پیدا نشد.
+      <div class="ico">🔍</div>آگهی‌ای پیدا نشد.
     </div>
-
     {% endfor %}
-
   </div>
+
   <div class="load-more-wrap" id="loadMoreWrap">
     <button class="btn btn-ghost" id="btnLoadMore">نمایش آگهی‌های بیشتر</button>
     <span class="load-more-hint" id="loadMoreHint"></span>
@@ -154,20 +157,33 @@
 
 {% block extra_js %}
 <script src="{% static 'js/hero-road.js' %}"></script>
-
 <script>
 window.selectedType = "{{ selected_type|default:'' }}";
 window.selectedBrandId = "{{ selected_brand_id|default:'' }}";
 window.selectedModelId = "{{ selected_model_id|default:'' }}";
 </script>
-
 <script src="{% static 'js/vehicle-selector.js' %}"></script>
-
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+    // منطق آکاردئونی جدید منطبق با شناسه اصلاح‌شده
+    const toggleBtn = document.getElementById("btnToggleAdvanced");
+    const advancedPanel = document.getElementById("advancedFilterPanel");
+    
+    if (toggleBtn && advancedPanel) {
+      toggleBtn.addEventListener("click", function() {
+        advancedPanel.classList.toggle("open");
+        toggleBtn.classList.toggle("active");
+      });
+      
+      // باز نگه‌داشتن آکاردئون در صورتی که فیلتری از قبل اعمال شده باشد
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('fType') || urlParams.get('fBrand') || urlParams.get('fPriceMin') || urlParams.get('fPriceMax')) {
+        advancedPanel.classList.add("open");
+        toggleBtn.classList.add("active");
+      }
+    }
 
     const resetBtn = document.getElementById("btnResetFilter");
-
     if (resetBtn) {
       resetBtn.addEventListener("click", function (e) {
         e.preventDefault();
@@ -175,13 +191,10 @@ window.selectedModelId = "{{ selected_model_id|default:'' }}";
       });
     }
 
-
     const resultCount = document.getElementById("resultCount");
-
     if (resultCount) {
       resultCount.textContent = "{{ advertisements|length }} آگهی";
     }
-
   });
 </script>
 {% endblock %}
