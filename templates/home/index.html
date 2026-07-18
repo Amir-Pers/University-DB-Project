@@ -148,24 +148,57 @@
     {% endfor %}
   </div>
 
-  <div class="load-more-wrap" id="loadMoreWrap">
-    <button class="btn btn-ghost" id="btnLoadMore">نمایش آگهی‌های بیشتر</button>
-    <span class="load-more-hint" id="loadMoreHint"></span>
+  {% if advertisements.has_other_pages %}
+  <div class="pagination-wrap">
+    <nav class="pagination" aria-label="صفحه‌بندی آگهی‌ها">
+      {% if advertisements.has_previous %}
+        <a href="?page={{ advertisements.previous_page_number }}
+          {% if request.GET.fSearch %}&fSearch={{ request.GET.fSearch }}{% endif %}
+          {% if request.GET.fType %}&fType={{ request.GET.fType }}{% endif %}
+          {% if request.GET.fBrand %}&fBrand={{ request.GET.fBrand }}{% endif %}
+          {% if request.GET.fPriceMin %}&fPriceMin={{ request.GET.fPriceMin }}{% endif %}
+          {% if request.GET.fPriceMax %}&fPriceMax={{ request.GET.fPriceMax }}{% endif %}"
+          class="page-link prev">
+            « قبلی
+        </a>
+      {% endif %}
+
+      {% for num in advertisements.paginator.page_range %}
+        {% if advertisements.number == num %}
+          <span class="page-link active">{{ num|fa_number }}</span>
+        {% elif num > advertisements.number|add:'-3' and num < advertisements.number|add:'3' %}
+          <a href="?page={{ num }}{% if request.GET.fSearch %}&fSearch={{ request.GET.fSearch }}{% endif %}
+            {% if request.GET.fType %}&fType={{ request.GET.fType }}{% endif %}
+            {% if request.GET.fBrand %}&fBrand={{ request.GET.fBrand }}{% endif %} 
+            {% if request.GET.fPriceMin %}&fPriceMin={{ request.GET.fPriceMin }}{% endif %}
+            {% if request.GET.fPriceMax %}&fPriceMax={{ request.GET.fPriceMax }}{% endif %}"
+            class="page-link">
+              {{ num|fa_number }}
+          </a>
+        {% endif %}
+      {% endfor %}
+
+      {% if advertisements.has_next %}
+        <a href="?page={{ advertisements.next_page_number }}{% if request.GET.fSearch %}&fSearch={{ request.GET.fSearch }}{% endif %}
+        {% if request.GET.fType %}&fType={{ request.GET.fType }}{% endif %}
+        {% if request.GET.fBrand %}&fBrand={{ request.GET.fBrand }}{% endif %}
+        {% if request.GET.fPriceMin %}&fPriceMin={{ request.GET.fPriceMin }}{% endif %}
+        {% if request.GET.fPriceMax %}&fPriceMax={{ request.GET.fPriceMax }}{% endif %}" 
+        class="page-link next">
+          بعدی »
+      </a>
+      {% endif %}
+    </nav>
   </div>
+  {% endif %}
 </main>
 {% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/hero-road.js' %}"></script>
 <script>
-window.selectedType = "{{ selected_type|default:'' }}";
-window.selectedBrandId = "{{ selected_brand_id|default:'' }}";
-window.selectedModelId = "{{ selected_model_id|default:'' }}";
-</script>
-<script src="{% static 'js/vehicle-selector.js' %}"></script>
-<script>
   document.addEventListener("DOMContentLoaded", function () {
-    // منطق آکاردئونی جدید منطبق با شناسه اصلاح‌شده
+    // منطق آکاردئونی فیلترها
     const toggleBtn = document.getElementById("btnToggleAdvanced");
     const advancedPanel = document.getElementById("advancedFilterPanel");
     
@@ -175,7 +208,6 @@ window.selectedModelId = "{{ selected_model_id|default:'' }}";
         toggleBtn.classList.toggle("active");
       });
       
-      // باز نگه‌داشتن آکاردئون در صورتی که فیلتری از قبل اعمال شده باشد
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('fType') || urlParams.get('fBrand') || urlParams.get('fPriceMin') || urlParams.get('fPriceMax')) {
         advancedPanel.classList.add("open");
@@ -191,10 +223,12 @@ window.selectedModelId = "{{ selected_model_id|default:'' }}";
       });
     }
 
-    const resultCount = document.getElementById("resultCount");
+    // اصلاح شمارشگر آگهی‌ها برای نمایش تعداد کل آگهی‌های یافت شده در کل صفحات
+  const resultCount = document.getElementById("resultCount");
     if (resultCount) {
-      resultCount.textContent = "{{ advertisements|length }} آگهی";
-    }
+      // نمایش تعداد کل آگهی‌های فیلتر شده از کانتکست ویو
+      resultCount.textContent = "{{ total_filtered|fa_number }} آگهی";
+  }
   });
 </script>
 {% endblock %}

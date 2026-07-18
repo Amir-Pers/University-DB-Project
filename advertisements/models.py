@@ -27,6 +27,7 @@ class Advertisement(models.Model):
     class Meta:
         managed = False
         db_table = 'Advertisement'
+        ordering = ["-created_date"]
 
     def __str__(self):
         return self.title

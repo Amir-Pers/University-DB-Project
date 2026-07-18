@@ -81,7 +81,7 @@ def index(request):
 
     total_filtered = qs.count()
 
-    paginator = Paginator(qs, 12)
+    paginator = Paginator(qs, 9)
     page_number = request.GET.get('page', 1)
     try:
         page_obj = paginator.page(page_number)
@@ -90,7 +90,7 @@ def index(request):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
 
-    advertisements = page_obj.object_list
+    advertisements = page_obj
 
     total_ads = Advertisement.objects.filter(
         active_status=True, published=True
