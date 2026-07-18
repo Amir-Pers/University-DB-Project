@@ -1,7 +1,7 @@
 from locations.models import City
-from vehicles.models import Vehicle, VehicleModel, Brand, Motorcycle, Car
+from vehicles.models import Vehicle, Motorcycle, Car
 from advertisements.models import Advertisement, Image, Instalment
-from locations.models import Address, Province, City
+from locations.models import Address, City
 from django.utils import timezone
 from .models import Remittance
 
@@ -51,7 +51,7 @@ def get_post_ad_data(request):
 
 def get_or_create_vehicle(data):
 
-    vehicle, _ = Vehicle.objects.get_or_create(
+    vehicle, created = Vehicle.objects.get_or_create(
         model_id=data["model_id"],
         production_year=data["production_year"],
         color_out=data["body_color"],
@@ -59,6 +59,22 @@ def get_or_create_vehicle(data):
         transmission_type=data["gearbox"],
         fuel_type=data["fuel_type"],
     )
+
+    if created:
+
+        category = vehicle.model.category
+
+        if category == "car":
+
+            Car.objects.get_or_create(
+                vehicle=vehicle,
+            )
+        
+        elif category == "motorcycle":
+
+            Motorcycle.objects.get_or_create(
+                vehicle=vehicle,
+            )
 
     return vehicle
 
