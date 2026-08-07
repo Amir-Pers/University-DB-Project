@@ -1,4 +1,164 @@
-/* اصلاح دکمه نهایی سابمیت برای درخشش و زیبایی بیشتر */
+/* ==========================================
+   WIZARD CONTAINER & STEP CARDS
+========================================== */
+.wizard-form-container {
+  background-color: var(--card) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 20px !important;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.wizard-step-card {
+  border: 1px solid var(--line) !important;
+  border-radius: 14px !important;
+  background-color: var(--bg2) !important;
+  overflow: hidden;
+  color: var(--text) !important;
+  transition: all 0.3s ease;
+}
+
+.wizard-step-card.active-card {
+  border-color: var(--amber) !important;
+  opacity: 1;
+}
+
+.wizard-step-card.inactive-card {
+  border-color: var(--line) !important;
+  opacity: 0.6;
+}
+
+.step-header {
+  padding: 16px 20px;
+  background-color: var(--card) !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.step-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: var(--bg2) !important;
+}
+
+/* ==========================================
+   STEPPER INDICATORS (CIRCLES & LABELS)
+========================================== */
+.step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 8px;
+  font-weight: 700;
+  border: 2px solid var(--line);
+  transition: all 0.3s;
+}
+
+.step-circle-active {
+  background: var(--amber) !important;
+  border-color: var(--amber) !important;
+  color: var(--btn-text) !important;
+}
+
+.step-circle-completed {
+  background: var(--amber-soft) !important;
+  border-color: var(--amber) !important;
+  color: var(--amber) !important;
+}
+
+.step-circle-pending {
+  background: var(--bg2) !important;
+  border-color: var(--line) !important;
+  color: var(--muted) !important;
+}
+
+.step-label {
+  font-size: 12px;
+  transition: color 0.3s;
+}
+
+.step-label-active {
+  color: var(--amber) !important;
+  font-weight: 700;
+}
+
+.step-label-completed {
+  color: var(--text) !important;
+}
+
+.step-label-pending {
+  color: var(--muted) !important;
+}
+
+/* ==========================================
+   FORM FIELDS & INPUTS
+========================================== */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: right;
+  direction: rtl;
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  opacity: 0.9;
+}
+
+.field input,
+.field select,
+.field textarea {
+  padding: 11px 14px;
+  background-color: var(--bg) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  color: var(--text) !important;
+  font-size: 14px;
+  outline: none;
+  text-align: right;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--amber) !important;
+  box-shadow: 0 0 0 3px var(--amber-soft) !important;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  direction: rtl;
+}
+
+@media(min-width: 600px) {
+  .field-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ==========================================
+   BUTTONS
+========================================== */
+.btn-nav {
+  border-radius: 12px !important;
+  font-size: 14px;
+  padding: 12px 24px;
+}
+
 #btn-submit-final {
   box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
   border: none;
@@ -12,7 +172,6 @@
   opacity: 1 !important;
 }
 
-/* افکت‌های هاور تمیز برای دکمه مرحله قبل */
 #btn-prev {
   background: transparent;
   border: 1px solid var(--line);
@@ -24,4 +183,45 @@
   background: var(--bg1);
   border-color: var(--amber);
   color: var(--amber);
+}
+
+/* ==========================================
+   IMAGE PREVIEW
+========================================== */
+.img-preview-box {
+  position: relative;
+  width: 85px;
+  height: 85px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+
+.img-preview-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-img-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.remove-img-btn:hover {
+  background: #f87171 !important;
+  transform: scale(1.1);
 }

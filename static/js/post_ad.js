@@ -13,9 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnPrev = document.getElementById('btn-prev');
     const btnSubmitFinal = document.getElementById('btn-submit-final');
 
-    // ============================================================
-    //  1.  ADDRESS FIELDS TOGGLE
-    // ============================================================
+    // Address elements
     const addrDefaultRadio = document.getElementById('addr_type_default');
     const addrNewRadio = document.getElementById('addr_type_new');
     const defaultAddressBox = document.getElementById('default-address-box');
@@ -23,35 +21,46 @@ document.addEventListener("DOMContentLoaded", function () {
     const stateSelect = document.getElementById('state');
     const citySelect = document.getElementById('city');
 
-    function handleAddressFields() {
-        if (addrNewRadio.checked) {
-            newAddressBox.style.display = 'flex';
-            defaultAddressBox.style.display = 'none';
-            if (currentStep === 5) {
-                stateSelect.setAttribute('required', 'required');
-                citySelect.setAttribute('required', 'required');
-            }
-        } else {
-            newAddressBox.style.display = 'none';
-            defaultAddressBox.style.display = 'block';
-            stateSelect.removeAttribute('required');
-            citySelect.removeAttribute('required');
-        }
-    }
-
-    addrDefaultRadio.addEventListener('change', handleAddressFields);
-    addrNewRadio.addEventListener('change', handleAddressFields);
-
-    // ============================================================
-    //  2.  SELL TYPE DYNAMIC FIELDS
-    // ============================================================
+    // Sell type elements
     const sellTypeSelect = document.getElementById('sell_type');
     const cashGroup = document.getElementById('sell-fields-cash');
     const installmentGroup = document.getElementById('sell-fields-installment');
     const draftGroup = document.getElementById('sell-fields-draft');
     const agreementGroup = document.getElementById('sell-fields-agreement');
 
+    // Image upload elements
+    const imageInput = document.getElementById('images');
+    const previewContainer = document.getElementById('image-preview-container');
+
+    // ============================================================
+    //  1. ADDRESS FIELDS TOGGLE
+    // ============================================================
+    function handleAddressFields() {
+        if (addrNewRadio && addrNewRadio.checked) {
+            newAddressBox.style.display = 'flex';
+            defaultAddressBox.style.display = 'none';
+            if (currentStep === 5) {
+                stateSelect?.setAttribute('required', 'required');
+                citySelect?.setAttribute('required', 'required');
+            }
+        } else if (defaultAddressBox && newAddressBox) {
+            newAddressBox.style.display = 'none';
+            defaultAddressBox.style.display = 'block';
+            stateSelect?.removeAttribute('required');
+            citySelect?.removeAttribute('required');
+        }
+    }
+
+    if (addrDefaultRadio && addrNewRadio) {
+        addrDefaultRadio.addEventListener('change', handleAddressFields);
+        addrNewRadio.addEventListener('change', handleAddressFields);
+    }
+
+    // ============================================================
+    //  2. SELL TYPE DYNAMIC FIELDS
+    // ============================================================
     function handleSellTypeFields() {
+        if (!sellTypeSelect) return;
         const type = sellTypeSelect.value;
 
         // Hide all groups
@@ -68,87 +77,72 @@ document.addEventListener("DOMContentLoaded", function () {
         if (type === 'نقدی') {
             cashGroup.style.display = 'block';
             if (currentStep === 1) {
-                document.getElementById('price').setAttribute('required', 'required');
+                document.getElementById('price')?.setAttribute('required', 'required');
             }
         } else if (type === 'اقساطی') {
             installmentGroup.style.display = 'block';
             if (currentStep === 1) {
-                document.getElementById('pre_payment').setAttribute('required', 'required');
-                document.getElementById('installment_amount').setAttribute('required', 'required');
-                document.getElementById('payment_period').setAttribute('required', 'required');
-                document.getElementById('installment_count').setAttribute('required', 'required');
-                document.getElementById('delivery_time_inst').setAttribute('required', 'required');
+                ['pre_payment', 'installment_amount', 'payment_period', 'installment_count', 'delivery_time_inst'].forEach(id => {
+                    document.getElementById(id)?.setAttribute('required', 'required');
+                });
             }
         } else if (type === 'حواله') {
             draftGroup.style.display = 'block';
             if (currentStep === 1) {
-                document.getElementById('deposit_amount').setAttribute('required', 'required');
-                document.getElementById('final_price').setAttribute('required', 'required');
-                document.getElementById('delivery_time_draft').setAttribute('required', 'required');
+                ['deposit_amount', 'final_price', 'delivery_time_draft'].forEach(id => {
+                    document.getElementById(id)?.setAttribute('required', 'required');
+                });
             }
         } else if (type === 'توافقی') {
             agreementGroup.style.display = 'block';
         }
     }
 
-    sellTypeSelect.addEventListener('change', handleSellTypeFields);
-    handleSellTypeFields(); // initial call
+    if (sellTypeSelect) {
+        sellTypeSelect.addEventListener('change', handleSellTypeFields);
+        handleSellTypeFields();
+    }
 
     // ============================================================
-    //  3.  WIZARD NAVIGATION & UI UPDATE
+    //  3. WIZARD NAVIGATION & UI UPDATE
     // ============================================================
     function updateWizard() {
-        // Update step indicators (circles and labels)
         stepItems.forEach(item => {
             const stepNum = parseInt(item.getAttribute('data-step'));
             const circle = item.querySelector('.step-circle');
             const label = item.querySelector('.step-label');
 
             if (stepNum === currentStep) {
-                circle.style.background = 'var(--amber)';
-                circle.style.borderColor = 'var(--amber)';
-                circle.style.color = 'var(--btn-text)';
-                label.style.color = 'var(--amber)';
-                label.style.fontWeight = '700';
+                circle.className = 'step-circle step-circle-active';
+                label.className = 'step-label step-label-active';
             } else if (stepNum < currentStep) {
-                circle.style.background = 'var(--amber-soft)';
-                circle.style.borderColor = 'var(--amber)';
-                circle.style.color = 'var(--amber)';
-                label.style.color = 'var(--text)';
+                circle.className = 'step-circle step-circle-completed';
+                label.className = 'step-label step-label-completed';
             } else {
-                circle.style.background = 'var(--bg2)';
-                circle.style.borderColor = 'var(--line)';
-                circle.style.color = 'var(--muted)';
-                label.style.color = 'var(--muted)';
+                circle.className = 'step-circle step-circle-pending';
+                label.className = 'step-label step-label-pending';
             }
         });
 
-        // Show/hide step cards and update status icon
         stepCards.forEach(card => {
             const stepNum = parseInt(card.getAttribute('data-step'));
             const body = card.querySelector('.step-body');
             const statusIcon = card.querySelector('.step-header span');
 
             if (stepNum === currentStep) {
-                card.style.borderColor = 'var(--amber)';
-                card.style.opacity = '1';
+                card.classList.add('active-card');
+                card.classList.remove('inactive-card');
                 body.style.display = 'flex';
                 if (statusIcon) statusIcon.textContent = '⏳';
                 card.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } else {
-                card.style.borderColor = 'var(--line)';
+                card.classList.remove('active-card');
+                card.classList.add('inactive-card');
                 body.style.display = 'none';
-                if (stepNum < currentStep) {
-                    card.style.opacity = '0.85';
-                    if (statusIcon) statusIcon.textContent = '✅';
-                } else {
-                    card.style.opacity = '0.5';
-                    if (statusIcon) statusIcon.textContent = '🔽';
-                }
+                if (statusIcon) statusIcon.textContent = stepNum < currentStep ? '✅' : '🔽';
             }
         });
 
-        // Show/hide navigation buttons
         btnPrev.style.display = (currentStep === 1) ? 'none' : 'inline-block';
         if (currentStep === totalSteps) {
             btnNext.style.display = 'none';
@@ -175,35 +169,24 @@ document.addEventListener("DOMContentLoaded", function () {
         return isValid;
     }
 
-    // Next button
-    btnNext.addEventListener('click', function () {
-        // Ensure dynamic fields are up-to-date
+    btnNext?.addEventListener('click', function () {
         handleSellTypeFields();
         handleAddressFields();
 
-        // Set required attributes for step 2 & 3 (they are set dynamically, but ensure they exist)
         if (currentStep === 2) {
-            document.getElementById('vehicle_type').setAttribute('required', 'required');
-            document.getElementById('car_brand').setAttribute('required', 'required');
-            document.getElementById('car_model').setAttribute('required', 'required');
+            ['vehicle_type', 'car_brand', 'car_model'].forEach(id => document.getElementById(id)?.setAttribute('required', 'required'));
         }
         if (currentStep === 3) {
-            document.getElementById('km_age').setAttribute('required', 'required');
-            document.getElementById('body_color').setAttribute('required', 'required');
-            document.getElementById('gearbox').setAttribute('required', 'required');
-            document.getElementById('fuel_type').setAttribute('required', 'required');
+            ['km_age', 'body_color', 'gearbox', 'fuel_type'].forEach(id => document.getElementById(id)?.setAttribute('required', 'required'));
         }
 
-        if (validateStep(currentStep)) {
-            if (currentStep < totalSteps) {
-                currentStep++;
-                updateWizard();
-            }
+        if (validateStep(currentStep) && currentStep < totalSteps) {
+            currentStep++;
+            updateWizard();
         }
     });
 
-    // Previous button
-    btnPrev.addEventListener('click', function () {
+    btnPrev?.addEventListener('click', function () {
         if (currentStep > 1) {
             currentStep--;
             updateWizard();
@@ -211,42 +194,36 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // ============================================================
-    //  4.  IMAGE UPLOADER
+    //  4. IMAGE UPLOADER
     // ============================================================
-    const imageInput = document.getElementById('images');
-    const previewContainer = document.getElementById('image-preview-container');
-
-    imageInput.addEventListener('change', function () {
-        const files = Array.from(this.files);
-        if (selectedFiles.length + files.length > 10) {
-            alert("⚠️ شما حداکثر مجاز به انتخاب ۱۰ عکس برای آگهی خود هستید.");
-            return;
-        }
-        files.forEach(file => {
-            if (file.type.startsWith('image/')) {
-                selectedFiles.push(file);
-                renderPreviews();
+    if (imageInput) {
+        imageInput.addEventListener('change', function () {
+            const files = Array.from(this.files);
+            if (selectedFiles.length + files.length > 6) {
+                alert("⚠️ حداکثر می‌توانید ۶ تصویر انتخاب کنید.");
+                return;
             }
+            files.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    selectedFiles.push(file);
+                }
+            });
+            renderPreviews();
+            syncFilesToInput();
         });
-        syncFilesToInput();
-    });
+    }
 
     function renderPreviews() {
+        if (!previewContainer) return;
         previewContainer.innerHTML = '';
         selectedFiles.forEach((file, index) => {
             const reader = new FileReader();
             reader.onload = function (e) {
                 const div = document.createElement('div');
-                div.style.cssText =
-                    'position: relative; width: 85px; height: 85px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line);';
+                div.className = 'img-preview-box';
                 div.innerHTML = `
-                    <img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover;">
-                    <span class="remove-img-btn" data-index="${index}" 
-                          style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.7); color: #fff; 
-                                 width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; 
-                                 justify-content: center; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s;">
-                        ×
-                    </span>
+                    <img src="${e.target.result}" alt="پیش‌نمایش">
+                    <span class="remove-img-btn" data-index="${index}">×</span>
                 `;
                 previewContainer.appendChild(div);
             };
@@ -254,8 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Remove image on click
-    previewContainer.addEventListener('click', function (e) {
+    previewContainer?.addEventListener('click', function (e) {
         if (e.target.classList.contains('remove-img-btn')) {
             const indexToRemove = parseInt(e.target.getAttribute('data-index'));
             selectedFiles.splice(indexToRemove, 1);
@@ -265,20 +241,25 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function syncFilesToInput() {
+        if (!imageInput) return;
         const dataTransfer = new DataTransfer();
         selectedFiles.forEach(file => dataTransfer.items.add(file));
         imageInput.files = dataTransfer.files;
     }
 
     // ============================================================
-    //  5.  SUMMARY BUILDER (final step)
+    //  5. SUMMARY BUILDER
     // ============================================================
     function buildSummary() {
         const container = document.getElementById('summary-container');
-        const type = document.getElementById('vehicle_type').value;
-        const brand = document.getElementById('car_brand').options[document.getElementById('car_brand').selectedIndex]?.text || '';
-        const model = document.getElementById('car_model').options[document.getElementById('car_model').selectedIndex]?.text || '';
-        const sellType = sellTypeSelect.value;
+        if (!container) return;
+
+        const type = document.getElementById('vehicle_type')?.value || '';
+        const brandSelect = document.getElementById('car_brand');
+        const modelSelect = document.getElementById('car_model');
+        const brand = brandSelect?.options[brandSelect.selectedIndex]?.text || '';
+        const model = modelSelect?.options[modelSelect.selectedIndex]?.text || '';
+        const sellType = sellTypeSelect?.value || '';
 
         container.innerHTML = `
             <h4 style="color: var(--amber); margin-top:0;">📋 بررسی مشخصات نهایی</h4>
@@ -288,8 +269,5 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
     }
 
-    // ============================================================
-    //  INIT
-    // ============================================================
     updateWizard();
 });

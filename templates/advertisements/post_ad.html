@@ -2,7 +2,6 @@
 {% load static %}
 {% load number_format %}
 
-
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/post_ad.css' %}">
 {% endblock %}
@@ -12,68 +11,53 @@
 
   <div style="margin-bottom: 32px; text-align: center;">
     <h2 style="font-size: 24px; font-weight: 800; color: var(--amber); margin-bottom: 8px;">
-    {% if edit_mode %}
-    ویرایش آگهی
-    {% else %}
-    ثبت آگهی جدید وسایل نقلیه
-    {% endif %}
+      {% if edit_mode %}
+        ویرایش آگهی
+      {% else %}
+        ثبت آگهی جدید وسایل نقلیه
+      {% endif %}
     </h2>
 
     <p style="color: var(--muted); font-size: 14px;">
-    {% if edit_mode %}
-    اطلاعات آگهی خود را ویرایش کنید.
-    {% else %}
-    مراحل زیر را به ترتیب تکمیل کنید تا آگهی شما ثبت شود.
-    {% endif %}
+      {% if edit_mode %}
+        اطلاعات آگهی خود را ویرایش کنید.
+      {% else %}
+        مراحل زیر را به ترتیب تکمیل کنید تا آگهی شما ثبت شود.
+      {% endif %}
     </p>
   </div>
 
-  <div class="stepper-container"
-    style="display: flex; justify-content: space-between; align-items: center; position: relative; margin-bottom: 40px; direction: rtl; padding: 0 10px;">
-    <div style="position: absolute; top: 20px; left: 0; right: 0; height: 2px; background: var(--line); z-index: 1;">
-    </div>
+  <!-- Stepper -->
+  <div class="stepper-container" style="display: flex; justify-content: space-between; align-items: center; position: relative; margin-bottom: 40px; direction: rtl; padding: 0 10px;">
+    <div style="position: absolute; top: 20px; left: 0; right: 0; height: 2px; background: var(--line); z-index: 1;"></div>
 
     <div class="step-item active" data-step="1" style="z-index: 2; text-align: center; flex: 1;">
-      <div class="step-circle"
-        style="width: 40px; height: 40px; border-radius: 50%; background: var(--amber); color: var(--btn-text); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: 700; border: 2px solid var(--amber); transition: all 0.3s;">
-        ۱</div>
-      <div class="step-label" style="font-size: 12px; font-weight: 700; color: var(--amber);">اطلاعات فروش</div>
+      <div class="step-circle step-circle-active">۱</div>
+      <div class="step-label step-label-active">اطلاعات فروش</div>
     </div>
     <div class="step-item" data-step="2" style="z-index: 2; text-align: center; flex: 1;">
-      <div class="step-circle"
-        style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg2); color: var(--muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: 700; border: 2px solid var(--line); transition: all 0.3s;">
-        ۲</div>
-      <div class="step-label" style="font-size: 12px; font-weight: 500; color: var(--muted);">انتخاب وسیله</div>
+      <div class="step-circle step-circle-pending">۲</div>
+      <div class="step-label step-label-pending">انتخاب وسیله</div>
     </div>
     <div class="step-item" data-step="3" style="z-index: 2; text-align: center; flex: 1;">
-      <div class="step-circle"
-        style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg2); color: var(--muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: 700; border: 2px solid var(--line); transition: all 0.3s;">
-        ۳</div>
-      <div class="step-label" style="font-size: 12px; font-weight: 500; color: var(--muted);">مشخصات فنی</div>
+      <div class="step-circle step-circle-pending">۳</div>
+      <div class="step-label step-label-pending">مشخصات فنی</div>
     </div>
     <div class="step-item" data-step="4" style="z-index: 2; text-align: center; flex: 1;">
-      <div class="step-circle"
-        style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg2); color: var(--muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: 700; border: 2px solid var(--line); transition: all 0.3s;">
-        ۴</div>
-      <div class="step-label" style="font-size: 12px; font-weight: 500; color: var(--muted);">تصاویر</div>
+      <div class="step-circle step-circle-pending">۴</div>
+      <div class="step-label step-label-pending">تصاویر</div>
     </div>
     <div class="step-item" data-step="5" style="z-index: 2; text-align: center; flex: 1;">
-      <div class="step-circle"
-        style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg2); color: var(--muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: 700; border: 2px solid var(--line); transition: all 0.3s;">
-        ۵</div>
-      <div class="step-label" style="font-size: 12px; font-weight: 500; color: var(--muted);">آدرس</div>
+      <div class="step-circle step-circle-pending">۵</div>
+      <div class="step-label step-label-pending">آدرس</div>
     </div>
     <div class="step-item" data-step="6" style="z-index: 2; text-align: center; flex: 1;">
-      <div class="step-circle"
-        style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg2); color: var(--muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: 700; border: 2px solid var(--line); transition: all 0.3s;">
-        ۶</div>
-      <div class="step-label" style="font-size: 12px; font-weight: 500; color: var(--muted);">توضیحات</div>
+      <div class="step-circle step-circle-pending">۶</div>
+      <div class="step-label step-label-pending">توضیحات</div>
     </div>
     <div class="step-item" data-step="7" style="z-index: 2; text-align: center; flex: 1;">
-      <div class="step-circle"
-        style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg2); color: var(--muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: 700; border: 2px solid var(--line); transition: all 0.3s;">
-        ۷</div>
-      <div class="step-label" style="font-size: 12px; font-weight: 500; color: var(--muted);">پیش‌نمایش</div>
+      <div class="step-circle step-circle-pending">۷</div>
+      <div class="step-label step-label-pending">پیش‌نمایش</div>
     </div>
   </div>
 
@@ -85,7 +69,7 @@
     <div style="display: flex; flex-direction: column; gap: 24px; margin-bottom: 24px;">
 
       <!-- مرحله ۱: اطلاعات فروش -->
-      <div class="wizard-step-card" data-step="1">
+      <div class="wizard-step-card active-card" data-step="1">
         <div class="step-header">
           <div>
             <h3 style="font-size: 16px; font-weight: 700; color: var(--amber); margin: 0;">مرحله ۱: اطلاعات فروش</h3>
@@ -97,33 +81,17 @@
           <div class="field">
             <label for="sell_type">نوع فروش <span style="color: #f87171;">*</span></label>
             <select id="sell_type" name="sell_type" required>
-              <option value="نقدی"
-                {% if edit_mode and ad.sell_type == "نقدی" %}selected{% endif %}>
-                 نقدی
-              </option>
-
-              <option value="اقساطی"
-                {% if edit_mode and ad.sell_type == "اقساطی" %}selected{% endif %}>
-                اقساطی
-              </option>
-
-              <option value="حواله"
-                {% if edit_mode and ad.sell_type == "حواله" %}selected{% endif %}>
-                حواله
-              </option>
-
-              <option value="توافقی"
-                {% if edit_mode and ad.sell_type == "توافقی" %}selected{% endif %}>
-                توافقی
-              </option>
+              <option value="نقدی" {% if edit_mode and ad.sell_type == "نقدی" %}selected{% endif %}>نقدی</option>
+              <option value="اقساطی" {% if edit_mode and ad.sell_type == "اقساطی" %}selected{% endif %}>اقساطی</option>
+              <option value="حواله" {% if edit_mode and ad.sell_type == "حواله" %}selected{% endif %}>حواله</option>
+              <option value="توافقی" {% if edit_mode and ad.sell_type == "توافقی" %}selected{% endif %}>توافقی</option>
             </select>
           </div>
 
           <div id="sell-fields-cash" class="sell-type-group">
             <div class="field">
               <label for="price">قیمت کل (تومان) <span style="color: #f87171;">*</span></label>
-              <input type="text" id="price"
-                name="price" placeholder="مثال: ۵۵۰,۰۰۰,۰۰۰"
+              <input type="text" id="price" name="price" placeholder="مثال: ۵۵۰,۰۰۰,۰۰۰"
                 class="persian-number" inputmode="numeric" autocomplete="off"
                 value="{% if edit_mode %}{{ ad.price }}{% endif %}">
             </div>
@@ -148,18 +116,9 @@
               <div class="field">
                 <label for="payment_period">دوره پرداخت <span style="color: #f87171;">*</span></label>
                 <select id="payment_period" name="payment_period">
-                  <option value="ماهانه"
-                    {% if edit_mode and instalment.payment_period == "ماهانه" %}selected{% endif %}>
-                    ماهانه
-                  </option>
-                  <option value="دو ماهه"
-                    {% if edit_mode and instalment.payment_period == "دو ماهه" %}selected{% endif %}>
-                    دو ماهه
-                  </option>
-                  <option value="سه ماهه (فصلی)"
-                    {% if edit_mode and instalment.payment_period == "سه ماهه (فصلی)" %}selected{% endif %}>
-                    سه ماهه (فصلی)
-                  </option>
+                  <option value="ماهانه" {% if edit_mode and instalment.payment_period == "ماهانه" %}selected{% endif %}>ماهانه</option>
+                  <option value="دو ماهه" {% if edit_mode and instalment.payment_period == "دو ماهه" %}selected{% endif %}>دو ماهه</option>
+                  <option value="سه ماهه (فصلی)" {% if edit_mode and instalment.payment_period == "سه ماهه (فصلی)" %}selected{% endif %}>سه ماهه (فصلی)</option>
                 </select>
               </div>
               <div class="field">
@@ -205,7 +164,7 @@
       </div>
 
       <!-- مرحله ۲: انتخاب وسیله -->
-      <div class="wizard-step-card collapsed" data-step="2">
+      <div class="wizard-step-card inactive-card" data-step="2">
         <div class="step-header">
           <div>
             <h3 style="font-size: 15px; font-weight: 700; margin: 0;">مرحله ۲: انتخاب وسیله</h3>
@@ -217,15 +176,8 @@
           <div class="field">
             <label for="vehicle_type">نوع وسیله نقلیه <span style="color: #f87171;">*</span></label>
             <select id="vehicle_type" name="vehicle_type">
-              <option value="car"
-                {% if not edit_mode or vehicle_type == "car" %}selected{% endif %}>
-                خودرو
-              </option>
-              <option value="motorcycle"
-                {% if edit_mode and vehicle_type == "motorcycle" %}selected{% endif %}>
-                موتورسیکلت
-              </option>
-              <!-- <option value="heavy_vehicle">ماشین سنگین</option> -->
+              <option value="car" {% if not edit_mode or vehicle_type == "car" %}selected{% endif %}>خودرو</option>
+              <option value="motorcycle" {% if edit_mode and vehicle_type == "motorcycle" %}selected{% endif %}>موتورسیکلت</option>
             </select>
           </div>
           <div class="field-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
@@ -249,39 +201,27 @@
           </div>
         </div>
       </div>
-      <div class="wizard-step-card collapsed" data-step="3">
+
+      <!-- مرحله ۳: مشخصات فنی -->
+      <div class="wizard-step-card inactive-card" data-step="3">
         <div class="step-header">
           <div>
-            <h3 style="font-size: 15px; font-weight: 700; margin: 0;">
-              مرحله ۳: مشخصات فنی و ظاهری
-            </h3>
-            <p style="font-size: 12px; color: var(--muted); margin: 4px 0 0 0;">
-              جزئیات بدنه، رنگ و جعبه‌دنده را مشخص کنید
-            </p>
+            <h3 style="font-size: 15px; font-weight: 700; margin: 0;">مرحله ۳: مشخصات فنی و ظاهری</h3>
+            <p style="font-size: 12px; color: var(--muted); margin: 4px 0 0 0;">جزئیات بدنه، رنگ و جعبه‌دنده را مشخص کنید</p>
           </div>
           <span style="font-size: 16px; color: var(--muted);">🔽</span>
         </div>
 
         <div class="step-body" style="display: none;">
-
-          <!-- سال تولید و کارکرد -->
           <div class="field-grid">
             <div class="field">
-              <label for="production_year">
-                سال تولید <span style="color:#f87171;">*</span>
-              </label>
-              <input type="number" id="production_year" name="production_year" 
-                placeholder="مثلاً ۱۴۰۲"
+              <label for="production_year">سال تولید <span style="color:#f87171;">*</span></label>
+              <input type="number" id="production_year" name="production_year" placeholder="مثلاً ۱۴۰۲"
                 value="{% if edit_mode %}{{ ad.vehicle.production_year }}{% endif %}">
             </div>
-
             <div class="field">
-              <label for="km_age">
-                کارکرد (کیلومتر)
-                <span style="color:#f87171;">*</span>
-              </label>
-              <input type="number" id="km_age"
-                name="km_age" placeholder="برای صفر عدد ۰ وارد کنید"
+              <label for="km_age">کارکرد (کیلومتر) <span style="color:#f87171;">*</span></label>
+              <input type="number" id="km_age" name="km_age" placeholder="برای صفر عدد ۰ وارد کنید"
                 value="{% if edit_mode %}{{ ad.km_age }}{% endif %}">
             </div>
           </div>
@@ -290,36 +230,17 @@
             <div class="field">
               <label for="car_condition">وضعیت خودرو</label>
               <select id="car_condition" name="car_condition">
-                <option value="کارکرده"
-                  {% if edit_mode and ad.car_condition == "کارکرده" %}selected{% endif %}>
-                  کارکرده
-                </option>
-                <option value="صفر"
-                  {% if edit_mode and ad.car_condition == "صفر" %}selected{% endif %}>
-                  صفر
-                </option>
+                <option value="کارکرده" {% if edit_mode and ad.car_condition == "کارکرده" %}selected{% endif %}>کارکرده</option>
+                <option value="صفر" {% if edit_mode and ad.car_condition == "صفر" %}selected{% endif %}>صفر</option>
               </select>
             </div>
-
             <div class="field">
               <label for="body_status">وضعیت رنگ و بدنه</label>
               <select id="body_status" name="body_status">
-                <option value="بدون رنگ"
-                  {% if edit_mode and ad.body_status == "بدون رنگ" %}selected{% endif %}>
-                  بدون رنگ
-                </option>
-                <option value="صافکاری بی‌رنگ"
-                  {% if edit_mode and ad.body_status == "صافکاری بی‌رنگ" %}selected{% endif %}>
-                  صافکاری بی‌رنگ
-                </option>
-                <option value="یک لکه رنگ"
-                  {% if edit_mode and ad.body_status == "یک لکه رنگ" %}selected{% endif %}>
-                  یک لکه رنگ
-                </option>
-                <option value="دوررنگ"
-                  {% if edit_mode and ad.body_status == "دوررنگ" %}selected{% endif %}>
-                  دوررنگ
-                </option>
+                <option value="بدون رنگ" {% if edit_mode and ad.body_status == "بدون رنگ" %}selected{% endif %}>بدون رنگ</option>
+                <option value="صافکاری بی‌رنگ" {% if edit_mode and ad.body_status == "صافکاری بی‌رنگ" %}selected{% endif %}>صافکاری بی‌رنگ</option>
+                <option value="یک لکه رنگ" {% if edit_mode and ad.body_status == "یک لکه رنگ" %}selected{% endif %}>یک لکه رنگ</option>
+                <option value="دوررنگ" {% if edit_mode and ad.body_status == "دوررنگ" %}selected{% endif %}>دوررنگ</option>
               </select>
             </div>
           </div>
@@ -328,21 +249,12 @@
             <div class="field">
               <label for="ad_type">نوع آگهی</label>
               <select id="ad_type" name="ad_type">
-                <option value="شخصی"
-                  {% if edit_mode and ad.ad_type == "شخصی" %}selected{% endif %}>
-                  شخصی
-                </option>
-                <option value="نمایشگاه"
-                  {% if edit_mode and ad.ad_type == "نمایشگاه" %}selected{% endif %}>
-                  نمایشگاه
-                </option>
+                <option value="شخصی" {% if edit_mode and ad.ad_type == "شخصی" %}selected{% endif %}>شخصی</option>
+                <option value="نمایشگاه" {% if edit_mode and ad.ad_type == "نمایشگاه" %}selected{% endif %}>نمایشگاه</option>
               </select>
             </div>
-
             <div class="field">
-              <label for="body_color">
-                رنگ بدنه <span style="color:#f87171;">*</span>
-              </label>
+              <label for="body_color">رنگ بدنه <span style="color:#f87171;">*</span></label>
               <select id="body_color" name="body_color">
                 <option value="" disabled {% if not edit_mode %}selected{% endif %}>انتخاب کنید</option>
                 <option value="سفید" {% if edit_mode and ad.vehicle.color_out == "سفید" %}selected{% endif %}>سفید</option>
@@ -359,10 +271,7 @@
 
           <div class="field-grid">
             <div class="field">
-              <label for="cabin_color">
-                رنگ کابین
-                <span style="color: var(--muted); font-size:11px;">(اختیاری)</span>
-              </label>
+              <label for="cabin_color">رنگ کابین <span style="color: var(--muted); font-size:11px;">(اختیاری)</span></label>
               <select id="cabin_color" name="cabin_color">
                 <option value="" disabled {% if not edit_mode or not ad.vehicle.color_in %}selected{% endif %}>انتخاب کنید</option>
                 <option value="سفید" {% if edit_mode and ad.vehicle.color_in == "سفید" %}selected{% endif %}>سفید</option>
@@ -376,9 +285,7 @@
               </select>
             </div>
             <div class="field">
-              <label for="gearbox">
-                نوع گیربکس <span style="color:#f87171;">*</span>
-              </label>
+              <label for="gearbox">نوع گیربکس <span style="color:#f87171;">*</span></label>
               <select id="gearbox" name="gearbox">
                 <option value="" disabled {% if not edit_mode %}selected{% endif %}>انتخاب کنید...</option>
                 <option value="دنده ای" {% if edit_mode and ad.vehicle.transmission_type == "دنده ای" %}selected{% endif %}>دنده ای</option>
@@ -387,104 +294,69 @@
             </div>
           </div>
 
-
-          <!-- نوع سوخت -->
           <div class="field-grid">
             <div class="field">
-              <label for="fuel_type">
-                نوع سوخت <span style="color:#f87171;">*</span>
-              </label>
+              <label for="fuel_type">نوع سوخت <span style="color:#f87171;">*</span></label>
               <select id="fuel_type" name="fuel_type">
                 <option value="" disabled {% if not edit_mode %}selected{% endif %}>انتخاب کنید...</option>
                 <option value="بنزین" {% if edit_mode and ad.vehicle.fuel_type == "بنزین" %}selected{% endif %}>بنزین</option>
-                <!-- <option value="دوگانه سوز">دوگانه سوز</option> -->
                 <option value="هیبرید" {% if edit_mode and ad.vehicle.fuel_type == "هیبرید" %}selected{% endif %}>هیبریدی</option>
                 <option value="دیزل" {% if edit_mode and ad.vehicle.fuel_type == "دیزل" %}selected{% endif %}>دیزل</option>
-                <!-- <option value="برقی">برقی</option> -->
               </select>
             </div>
-
             <div></div>
           </div>
-
         </div>
       </div>
-      <!-- مرحله ۴: تصاویر آگهی -->
-      <div class="wizard-step-card collapsed" data-step="4">
+
+      <!-- مرحله ۴: تصاویر -->
+      <div class="wizard-step-card inactive-card" data-step="4">
         <div class="step-header">
           <div>
             <h3 style="font-size:15px;font-weight:700;margin:0;">مرحله ۴: تصاویر آگهی</h3>
-            <p style="font-size:12px;color:var(--muted);margin:4px 0 0 0;">
-              حداکثر تا 6 تصویر بارگذاری کنید
-            </p>
+            <p style="font-size:12px;color:var(--muted);margin:4px 0 0 0;">حداکثر تا ۶ تصویر بارگذاری کنید</p>
           </div>
           <span style="font-size:16px;color:var(--muted);">🔽</span>
         </div>
 
         <div class="step-body" style="display:none;">
           <div class="field">
-
             {% if edit_mode and ad.images.all %}
-            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:12px;margin-bottom:16px;">
-              {% for image in ad.images.all %}
-              <div class="existing-image" data-image-id="{{ image.image_id }}"
-                style="position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);height:80px;">
-
-                <img src="{{ image.image.url }}" alt="" 
-                style="width:100%;height:100%;object-fit:cover;display:block;">
-                <button type="button" class="remove-existing-image"
-                  data-image-id="{{ image.image_id }}" style="position:absolute;
-                  top:4px; left:4px ;width:22px; height:22px;
-                  border:none ;border-radius:50% ;background:#ef4444;
-                  color:white; cursor:pointer; font-weight:bold;">
-                  ×
-                </button>
-                
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:12px;margin-bottom:16px;">
+                {% for image in ad.images.all %}
+                  <div class="existing-image" data-image-id="{{ image.image_id }}"
+                    style="position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);height:80px;">
+                    <img src="{{ image.image.url }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">
+                    <button type="button" class="remove-existing-image" data-image-id="{{ image.image_id }}"
+                      style="position:absolute;top:4px;left:4px;width:22px;height:22px;border:none;border-radius:50%;background:#ef4444;color:white;cursor:pointer;font-weight:bold;">
+                      ×
+                    </button>
+                  </div>
+                {% endfor %}
               </div>
-              {% endfor %}
-            </div>
-            <input
-              type="hidden"
-              id="deleted-images"
-              name="deleted_images">
-            <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">
-              تصاویر فعلی آگهی. برای جایگزینی، تصاویر جدید انتخاب کنید.
-            </p>
+              <input type="hidden" id="deleted-images" name="deleted_images">
+              <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">
+                تصاویر فعلی آگهی. برای جایگزینی، تصاویر جدید انتخاب کنید.
+              </p>
             {% endif %}
 
-            <div
-              style="border:2px dashed var(--line);border-radius:12px;padding:28px 20px;text-align:center;background:var(--bg);position:relative;overflow:hidden;">
-
+            <div style="border:2px dashed var(--line);border-radius:12px;padding:28px 20px;text-align:center;background:var(--bg);position:relative;overflow:hidden;">
               <span style="font-size:36px;display:block;margin-bottom:10px;">📸</span>
-
-              <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px;">
-                تصاویر خود را انتخاب یا اینجا رها کنید
-              </div>
-
-              <div style="font-size:12px;color:var(--muted);margin-bottom:18px;">
-                حداکثر ظرفیت: 6 عکس
-              </div>
-
-              <div
-                style="display:inline-block;padding:10px 20px;background:#2563eb;color:#fff;border-radius:8px;font-size:14px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.15);pointer-events:none;">
+              <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px;">تصاویر خود را انتخاب یا اینجا رها کنید</div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:18px;">حداکثر ظرفیت: ۶ عکس</div>
+              <div style="display:inline-block;padding:10px 20px;background:#2563eb;color:#fff;border-radius:8px;font-size:14px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.15);pointer-events:none;">
                 📂 Choose File
               </div>
-
-              <!-- Input -->
-              <input type="file" id="images" name="images" accept="image/*" multiple
-                style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;">
+              <input type="file" id="images" name="images" accept="image/*" multiple style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;">
             </div>
 
-            <div id="image-preview-container"
-              style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:12px;margin-top:16px;">
-            </div>
-
+            <div id="image-preview-container" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:12px;margin-top:16px;"></div>
           </div>
         </div>
       </div>
 
-      <!-- مرحله ۵: موقعیت و آدرس -->
-      <div class="wizard-step-card collapsed" data-step="5">
+      <!-- مرحله ۵: آدرس -->
+      <div class="wizard-step-card inactive-card" data-step="5">
         <div class="step-header">
           <div>
             <h3 style="font-size: 15px; font-weight: 700; margin: 0;">مرحله ۵: موقعیت و آدرس</h3>
@@ -493,41 +365,33 @@
           <span style="font-size: 16px; color: var(--muted);">🔽</span>
         </div>
         <div class="step-body" style="display: none;">
-          <div
-            style="display: flex; gap: 24px; background: var(--bg); padding: 14px; border-radius: 12px; border: 1px solid var(--line);">
+          <div style="display: flex; gap: 24px; background: var(--bg); padding: 14px; border-radius: 12px; border: 1px solid var(--line);">
             <div style="display: flex; align-items: center; gap: 8px;">
               <input type="radio" id="addr_type_default" name="address_mode" value="default"
-                {% if not edit_mode or ad.address_id == profile.default_address.address_id %}checked{% endif %}
-                style="width: auto;">
+                {% if not edit_mode or ad.address_id == profile.default_address.address_id %}checked{% endif %} style="width: auto;">
               <label for="addr_type_default" style="margin-bottom:0; cursor:pointer;">آدرس پیش‌فرض حساب کاربری</label>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <input type="radio" id="addr_type_new" name="address_mode" value="new"
-                {% if edit_mode and ad.address_id != profile.default_address.address_id %}checked{% endif %}
-                style="width: auto;">
+                {% if edit_mode and ad.address_id != profile.default_address.address_id %}checked{% endif %} style="width: auto;">
               <label for="addr_type_new" style="margin-bottom:0; cursor:pointer;">ثبت آدرس جدید</label>
             </div>
           </div>
 
-          <!-- باکس آدرس پیش‌فرض -->
-          <div id="default-address-box"
-            style="{% if edit_mode and ad.address_id != profile.default_address.address_id %}display:none;{% endif %}padding: 14px; background: var(--amber-soft); border-radius: 12px; font-size: 13.5px; border: 1px dashed var(--amber); color: var(--text);">
+          <div id="default-address-box" style="{% if edit_mode and ad.address_id != profile.default_address.address_id %}display:none;{% endif %}padding: 14px; background: var(--amber-soft); border-radius: 12px; font-size: 13.5px; border: 1px dashed var(--amber); color: var(--text);">
             📍 آگهی شما با موقعیت جغرافیایی ثبت‌شده در پروفایلتان منتشر خواهد شد.
           </div>
 
-          <!-- باکس آدرس جدید -->
-          <div id="new-address-box"
-            style="display: {% if edit_mode and ad.address_id != profile.default_address.address_id %} flex {% else %} none {% endif %}; flex-direction: column; gap: 16px;">
+          <div id="new-address-box" style="display: {% if edit_mode and ad.address_id != profile.default_address.address_id %} flex {% else %} none {% endif %}; flex-direction: column; gap: 16px;">
             <div class="field-grid">
               <div class="field">
                 <label for="state">استان <span style="color: #f87171;">*</span></label>
                 <select id="state" name="state">
                   <option value="" disabled {% if not edit_mode %}selected{% endif %}>انتخاب استان...</option>
                   {% for province in provinces %}
-                  <option value="{{ province.province_id }}"
-                    {% if edit_mode and ad.address.city.province_id == province.province_id %}selected{% endif %}>
-                    {{ province.name }}
-                  </option>
+                    <option value="{{ province.province_id }}" {% if edit_mode and ad.address.city.province_id == province.province_id %}selected{% endif %}>
+                      {{ province.name }}
+                    </option>
                   {% endfor %}
                 </select>
               </div>
@@ -536,29 +400,26 @@
                 <select id="city" name="city">
                   <option value="">انتخاب شهر...</option>
                   {% if edit_mode %}
-                  {% for city in cities %}
-                  <option value="{{ city.city_id }}"
-                    {% if ad.address.city_id == city.city_id %}selected{% endif %}>
-                    {{ city.name }}
-                  </option>
-                  {% endfor %}
+                    {% for city in cities %}
+                      <option value="{{ city.city_id }}" {% if ad.address.city_id == city.city_id %}selected{% endif %}>
+                        {{ city.name }}
+                      </option>
+                    {% endfor %}
                   {% endif %}
                 </select>
               </div>
             </div>
             <div class="field">
-              <label for="neighborhood">محله <span
-                  style="color: var(--muted); font-size: 11px;">(اختیاری)</span></label>
-              <input type="text" id="neighborhood" 
-                name="neighborhood" placeholder="مثال: نیاوران، احمدآباد"
+              <label for="neighborhood">محله <span style="color: var(--muted); font-size: 11px;">(اختیاری)</span></label>
+              <input type="text" id="neighborhood" name="neighborhood" placeholder="مثال: نیاوران، احمدآباد"
                 value="{% if edit_mode %}{{ ad.address.neighborhood }}{% endif %}">
             </div>
           </div>
         </div>
       </div>
 
-      <!-- مرحله ۶: توضیحات تکمیلی -->
-      <div class="wizard-step-card collapsed" data-step="6">
+      <!-- مرحله ۶: توضیحات -->
+      <div class="wizard-step-card inactive-card" data-step="6">
         <div class="step-header">
           <div>
             <h3 style="font-size: 15px; font-weight: 700; margin: 0;">مرحله ۶: توضیحات تکمیلی</h3>
@@ -575,40 +436,36 @@
       </div>
 
       <!-- مرحله ۷: پیش‌نمایش -->
-      <div class="wizard-step-card collapsed" data-step="7">
+      <div class="wizard-step-card inactive-card" data-step="7">
         <div class="step-header">
           <div>
             <h3 style="font-size: 15px; font-weight: 700; margin: 0;">مرحله ۷: پیش‌نمایش نهایی</h3>
-            <p style="font-size: 12px; color: var(--muted); margin: 4px 0 00;">بررسی اطلاعات قبل از انتشار آگهی</p>
+            <p style="font-size: 12px; color: var(--muted); margin: 4px 0 0 0;">بررسی اطلاعات قبل از انتشار آگهی</p>
           </div>
           <span style="font-size: 16px; color: var(--muted);">🔽</span>
         </div>
         <div class="step-body" style="display: none;">
           <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 20px;">
-            <div id="summary-container"
-              style="display: flex; flex-direction: column; gap: 10px; font-size: 13.5px; color: var(--text);"></div>
+            <div id="summary-container" style="display: flex; flex-direction: column; gap: 10px; font-size: 13.5px; color: var(--text);"></div>
           </div>
         </div>
       </div>
 
     </div>
 
-    <!-- دکمه‌های ناوبری هوشمند پایینی -->
-    <div
-      style="display: flex; justify-content: space-between; align-items: center; background: var(--bg2); padding: 16px 20px; border-radius: 14px; border: 1px solid var(--line); direction: rtl; min-height: 70px; margin-top: 20px;">
+    <!-- دکمه‌های ناوبری -->
+    <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg2); padding: 16px 20px; border-radius: 14px; border: 1px solid var(--line); direction: rtl; min-height: 70px; margin-top: 20px;">
       <div id="prev-btn-wrapper" style="flex: 1; text-align: right;">
         <button type="button" id="btn-prev" class="btn btn-ghost btn-nav" style="display: none;">مرحله قبل</button>
       </div>
 
       <div id="next-btn-wrapper" style="flex: 1; text-align: left;">
         <button type="button" id="btn-next" class="btn btn-amber btn-nav">مرحله بعد</button>
-        <button type="submit" id="btn-submit-final"
-          class="btn btn-amber btn-nav"
-          style="display: none; font-weight: 800;">
+        <button type="submit" id="btn-submit-final" class="btn btn-amber btn-nav" style="display: none; font-weight: 800;">
           {% if edit_mode %}
-          💾 ذخیره تغییرات
+            💾 ذخیره تغییرات
           {% else %}
-          🚀 انتشار و ثبت نهایی آگهی
+            🚀 انتشار و ثبت نهایی آگهی
           {% endif %}
         </button>
       </div>
@@ -636,113 +493,4 @@ window.initialAddress = {
 <script src="{% static 'js/location-selector.js' %}"></script>
 <script src="{% static 'js/edit-ad-images.js' %}"></script>
 <script src="{% static 'js/persian-number-format.js' %}"></script>
-<style>
-  .wizard-form-container {
-    background-color: var(--card) !important;
-    border: 1px solid var(--line) !important;
-    border-radius: 20px !important;
-    padding: 24px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  }
-
-  .wizard-step-card {
-    border: 1px solid var(--line) !important;
-    border-radius: 14px !important;
-    background-color: var(--bg2) !important;
-    overflow: hidden;
-    color: var(--text) !important;
-    transition: all 0.3s ease;
-  }
-
-  .step-header {
-    padding: 16px 20px;
-    background-color: var(--card) !important;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .step-body {
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    background-color: var(--bg2) !important;
-  }
-
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    text-align: right;
-    direction: rtl;
-  }
-
-  .field label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-    opacity: 0.9;
-  }
-
-  /* همسان‌سازی سراسری فیلدهای داخل بخش کارت‌ها */
-  .field input,
-  .field select,
-  .field textarea {
-    padding: 11px 14px;
-    background-color: var(--bg) !important;
-    border: 1px solid var(--line) !important;
-    border-radius: 12px !important;
-    color: var(--text) !important;
-    font-size: 14px;
-    outline: none;
-    text-align: right;
-    width: 100%;
-    transition: border-color .2s, box-shadow .2s;
-  }
-
-  .field input:focus,
-  .field select:focus,
-  .field textarea:focus {
-    border-color: var(--amber) !important;
-    box-shadow: 0 0 0 3px var(--amber-soft) !important;
-  }
-
-  .field-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-    direction: rtl;
-  }
-
-  @media(min-width: 600px) {
-    .field-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  .step-circle {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 8px;
-    font-weight: 700;
-    transition: all 0.3s;
-  }
-
-  .remove-img-btn:hover {
-    background: #f87171 !important;
-    transform: scale(1.1);
-  }
-
-  .btn-nav {
-    border-radius: 12px !important;
-    font-size: 14px;
-    padding: 12px 24px;
-  }
-</style>
 {% endblock %}
