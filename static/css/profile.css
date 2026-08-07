@@ -1,0 +1,704 @@
+/* ==========================================================================
+   profile.css - Dashboard & Ad Cards Stylesheet (Fully Responsive)
+   ========================================================================== */
+
+/* ================= هدر کاربر ================= */
+.acc-header {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.acc-user-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ================= گرید اصلی داشبورد ================= */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 22px;
+  margin-top: 22px;
+}
+
+@media (min-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 280px 1fr;
+  }
+}
+
+/* ================= سایدبار (تب‌ها) ================= */
+.sidebar-box {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: fit-content;
+}
+
+.sidebar-tab {
+  justify-content: flex-start;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: right;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.sidebar-tab.active {
+  background: var(--amber) !important;
+  color: var(--btn-text) !important;
+  font-weight: 600;
+  border-color: var(--amber) !important;
+}
+
+.sidebar-divider {
+  border-top: 1px solid var(--line);
+  margin: 6px 0;
+}
+
+.sidebar-logout {
+  justify-content: flex-start;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid transparent;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: right;
+  color: #ef4444;
+  cursor: pointer;
+}
+
+.sidebar-logout:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+/* ================= محتوای تب‌ها ================= */
+.tab-contents-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 100%;
+  min-width: 0;
+}
+
+.tab-content {
+  display: none;
+  animation: fadeUp 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+.tab-content.active {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.acc-ads-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.count-badge {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ================= سوئیچ توگل ================= */
+.luxury-toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.luxury-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.luxury-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.08);
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 30px;
+  border: 1px solid var(--line);
+}
+
+.luxury-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #fff;
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.luxury-toggle input:checked + .luxury-slider {
+  background-color: #10b981;
+  border-color: #059669;
+}
+
+.luxury-toggle input:checked + .luxury-slider:before {
+  transform: translateX(20px);
+}
+
+/* ================= کارت آگهی (Mobile First) ================= */
+.tab-content .premium-ad-card {
+  position: relative;
+  display: grid !important;
+  grid-template-columns: 100px 1fr !important;
+  gap: 12px !important;
+  padding: 12px !important;
+  background: var(--card);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: 4px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  align-items: start;
+  text-align: right !important;
+}
+
+.premium-ad-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.premium-ad-card.status-pending {
+  border-top-color: #f59e0b;
+}
+
+.premium-ad-card.status-approved {
+  border-top-color: #10b981;
+}
+
+.premium-ad-card.status-rejected {
+  border-top-color: #ef4444;
+}
+
+/* تصویر آگهی */
+.tab-content .premium-ad-card .ad-image {
+  position: relative;
+  background: var(--bg2);
+  border-radius: 10px;
+  overflow: hidden;
+  width: 100px !important;
+  height: 100px !important;
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+  grid-column: 1;
+}
+
+.tab-content .premium-ad-card .ad-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tab-content .premium-ad-card .ad-image .no-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  border: 2px dashed var(--line);
+  border-radius: 10px;
+  color: var(--muted);
+}
+
+/* جزئیات کارت */
+.tab-content .ad-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  grid-column: 2;
+  text-align: right !important;
+}
+
+/* ردیف عنوان و تگ‌های وضعیت */
+.tab-content .title-status-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  width: 100% !important;
+  text-align: right !important;
+}
+
+.tab-content .card-title {
+  font-size: 14px;
+  margin: 0;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.3px;
+  line-height: 1.4;
+  word-break: break-word;
+  width: 100%;
+  text-align: right !important;
+}
+
+.tab-content .sell-type-badge {
+  font-size: 10px;
+  padding: 2px 7px;
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--amber);
+  border-radius: 6px;
+  font-weight: 700;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tab-content .status-badge {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-weight: 700;
+  border: 1px solid;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.tab-content .status-badge.status-pending {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+.tab-content .status-badge.status-approved {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.tab-content .status-badge.status-rejected {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+/* مشخصات فنی همراه با زمان ثبت و بازدید */
+.tab-content .ad-specs-row {
+  font-size: 10px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  text-align: right;
+  margin-top: 2px;
+}
+
+.tab-content .spec-tag {
+  background: var(--bg2);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.tab-content .spec-sep {
+  opacity: 0.3;
+  color: var(--line);
+}
+
+.tab-content .spec-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.tab-content .price-box {
+  margin-top: 4px;
+  text-align: right !important;
+}
+
+.tab-content .price-val {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tab-content .price-unit {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+/* اکشن‌ها و دکمه‌های عملیات */
+.tab-content .action-layout {
+  grid-column: 1 / -1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  width: 100% !important;
+  border-top: 1px dashed var(--line) !important;
+  padding-top: 10px !important;
+  margin-top: 4px;
+}
+
+.tab-content .status-toggle-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: var(--bg2);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  box-sizing: border-box;
+}
+
+.tab-content .toggle-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tab-content .action-buttons-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.tab-content .btn-view-premium {
+  background: linear-gradient(135deg, var(--amber) 0%, #f59e0b 100%);
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 3px 10px rgba(245, 158, 11, 0.25);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+  padding: 9px 0;
+  font-size: 13px;
+  width: 100%;
+  border-radius: 8px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.tab-content .action-buttons-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.tab-content .btn-edit {
+  padding: 8px 0;
+  font-size: 12px;
+  border: 1px solid var(--line);
+  color: var(--text);
+  flex: 1;
+  border-radius: 8px;
+  justify-content: center;
+  font-weight: 600;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  background: var(--bg2);
+  box-sizing: border-box;
+}
+
+.tab-content .delete-form {
+  flex: 1;
+  margin: 0;
+}
+
+.tab-content .btn-delete {
+  padding: 8px 0;
+  font-size: 12px;
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  width: 100%;
+  border-radius: 8px;
+  justify-content: center;
+  background: rgba(239, 68, 68, 0.06);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.tab-content .btn-unfavorite-action {
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
+  font-weight: 600;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 9px 12px;
+  font-size: 13px;
+  border-radius: 8px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tab-content .btn-unfavorite-action:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* ================= تب علاقه‌مندی‌ها ================= */
+.favorites-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.fav-empty-state {
+  padding: 60px 20px;
+  text-align: center;
+  background: var(--card);
+  border: 1px dashed var(--line);
+  border-radius: 18px;
+  transition: all 0.4s ease;
+}
+
+.fav-empty-state .empty-icon {
+  font-size: 50px;
+  margin-bottom: 14px;
+}
+
+.fav-empty-state h4 {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.fav-empty-state p {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0;
+}
+
+.empty-state-box {
+  padding: 40px;
+  text-align: center;
+  background: var(--card);
+  border: 1px dashed var(--line);
+  border-radius: 18px;
+  color: var(--muted);
+}
+
+@keyframes cardFadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.9);
+    max-height: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+  }
+}
+
+.card-removing {
+  animation: cardFadeOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ================= تنظیمات حساب ================= */
+.settings-card {
+  margin-top: 0;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-section-title {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 14px;
+  color: var(--amber);
+}
+
+.form-fields-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.input-ltr {
+  text-align: left;
+  direction: ltr;
+}
+
+.input-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--bg);
+}
+
+.field-half {
+  width: 100%;
+}
+
+.form-divider {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 0;
+}
+
+.optional-text {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.form-submit-btn {
+  width: fit-content;
+  align-self: flex-start;
+  padding: 10px 24px;
+}
+
+/* ================= Responsive Breakdown (Media Queries) ================= */
+
+/* موبایل‌های بسیار کوچک */
+@media (max-width: 480px) {
+  .acc-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .acc-header .btn {
+    width: 100%;
+  }
+
+  .form-submit-btn {
+    width: 100%;
+  }
+
+  .tab-content .premium-ad-card {
+    grid-template-columns: 85px 1fr !important;
+    padding: 10px !important;
+  }
+
+  .tab-content .premium-ad-card .ad-image {
+    width: 85px !important;
+    height: 85px !important;
+  }
+
+  .tab-content .card-title {
+    font-size: 13px;
+  }
+}
+
+/* تبلت و تنظیمات عمومی فرم‌ها */
+@media (min-width: 640px) {
+  .field-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .field-half {
+    width: calc(50% - 6px);
+  }
+
+  .field-grid-three {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* دسکتاپ (نمایش افقی آگهی‌ها در مانیتور) */
+@media (min-width: 800px) {
+  .tab-content .premium-ad-card {
+    display: grid !important;
+    grid-template-columns: 160px 1fr 210px !important;
+    gap: 16px !important;
+    padding: 16px !important;
+    align-items: center;
+  }
+
+  .tab-content .premium-ad-card .ad-image {
+    height: 120px !important;
+    width: 100% !important;
+  }
+
+  .tab-content .action-layout {
+    grid-column: auto !important;
+    border-top: none !important;
+    border-right: 1px solid var(--line) !important;
+    padding-top: 0 !important;
+    padding-right: 14px !important;
+    margin-top: 0;
+    justify-content: center;
+    height: 100%;
+  }
+}
