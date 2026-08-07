@@ -117,8 +117,9 @@
           <div id="sell-fields-cash" class="sell-type-group">
             <div class="field">
               <label for="price">قیمت کل (تومان) <span style="color: #f87171;">*</span></label>
-              <input type="number" id="price"
+              <input type="text" id="price"
                 name="price" placeholder="مثال: ۵۵۰,۰۰۰,۰۰۰"
+                class="persian-number" inputmode="numeric" autocomplete="off"
                 value="{% if edit_mode %}{{ ad.price }}{% endif %}">
             </div>
           </div>
@@ -127,12 +128,14 @@
             <div class="field-grid">
               <div class="field">
                 <label for="pre_payment">مبلغ پیش‌پرداخت (تومان) <span style="color: #f87171;">*</span></label>
-                <input type="number" id="pre_payment" name="pre_payment" placeholder="مثال: ۲۰۰,۰۰۰,۰۰۰"
+                <input type="text" id="pre_payment" name="pre_payment" placeholder="مثال: ۲۰۰,۰۰۰,۰۰۰"
+                  class="persian-number" inputmode="numeric" autocomplete="off"
                   value="{% if edit_mode %}{{ instalment.first_payment }}{% endif %}">
               </div>
               <div class="field">
                 <label for="installment_amount">مبلغ هر قسط (تومان) <span style="color: #f87171;">*</span></label>
-                <input type="number" id="installment_amount" name="installment_amount" placeholder="مثال: ۱۵,۰۰۰,۰۰۰"
+                <input type="text" id="installment_amount" name="installment_amount" placeholder="مثال: ۱۵,۰۰۰,۰۰۰"
+                  class="persian-number" inputmode="numeric" autocomplete="off"
                   value="{% if edit_mode %}{{ instalment.payment_per_instalment }}{% endif %}">
               </div>
             </div>
@@ -171,12 +174,14 @@
             <div class="field-grid">
               <div class="field">
                 <label for="deposit_amount">مبلغ واریزی تا کنون (تومان) <span style="color: #f87171;">*</span></label>
-                <input type="number" id="deposit_amount" name="deposit_amount" placeholder="مثال: ۱۰۰,۰۰۰,۰۰۰"
+                <input type="text" id="deposit_amount" name="deposit_amount" placeholder="مثال: ۱۰۰,۰۰۰,۰۰۰"
+                  class="persian-number" inputmode="numeric" autocomplete="off"
                   value="{% if edit_mode %}{{ remittance.deposit_amount }}{% endif %}">
               </div>
               <div class="field">
                 <label for="final_price">مبلغ نهایی تقریبی (تومان) <span style="color: #f87171;">*</span></label>
-                <input type="number" id="final_price" name="final_price" placeholder="قیمت تمام شده برای خریدار"
+                <input type="text" id="final_price" name="final_price" placeholder="قیمت تمام شده برای خریدار"
+                  class="persian-number" inputmode="numeric" autocomplete="off"
                   value="{% if edit_mode %}{{ remittance.final_price }}{% endif %}">
               </div>
             </div>
@@ -625,6 +630,7 @@ window.initialAddress = {
 <script src="{% static 'js/vehicle-selector.js' %}"></script>
 <script src="{% static 'js/location-selector.js' %}"></script>
 <script src="{% static 'js/edit-ad-images.js' %}"></script>
+<script src="{% static 'js/persian-number-format.js' %}"></script>
 <style>
   .wizard-form-container {
     background-color: var(--card) !important;

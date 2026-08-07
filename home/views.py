@@ -30,7 +30,6 @@ def index(request):
         {'value': 'motorcycle', 'label': 'موتورسیکلت', 'is_selected': ad_type == 'motorcycle'},
     ]
 
-    # ---- پایه کوئری ----
     qs = Advertisement.objects.filter(
         active_status=True,
         published=True,
@@ -67,14 +66,14 @@ def index(request):
 
     if price_min:
         try:
-            min_toman = int(float(price_min)) * 1_000_000
+            min_toman = int(float(price_min))
             qs = qs.filter(price__gte=min_toman)
         except ValueError:
             pass
 
     if price_max:
         try:
-            max_toman = int(float(price_max)) * 1_000_000
+            max_toman = int(float(price_max)) 
             qs = qs.filter(price__lte=max_toman)
         except ValueError:
             pass
