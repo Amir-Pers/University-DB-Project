@@ -1,11 +1,48 @@
-    .filter-actions {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
+/* چیدمان آمار در سمت راست همراه با کارت‌های کوچک برای اعداد */
+.hero-stats {
+  display: flex;
+  justify-content: flex-start;
+  gap: 16px;
+  margin-top: 24px;
+}
 
-    #fPriceMin,
-    #fPriceMax {
-      min-width: 170px;
-      width: 170px;
-    }
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 6px 12px 6px 8px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  backdrop-filter: blur(4px);
+}
+
+/* مربع کوچک دور عدد */
+.stat-box {
+  width: 36px;
+  height: 36px;
+  background: var(--amber);
+  color: #111;
+  font-weight: 800;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(245, 165, 36, 0.3);
+}
+
+.stat-lbl {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* حالت ریسپونسیو برای موبایل */
+@media (max-width: 768px) {
+  .hero-stats {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}

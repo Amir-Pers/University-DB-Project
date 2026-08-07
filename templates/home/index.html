@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
 {% load number_format %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock %}
+
 {% block content %}
 <main>
   <section class="hero reveal">
@@ -9,17 +14,26 @@
     <h1>خرید و فروش <span>خودرو و موتورسیکلت</span><br>سریع، امن و بدون واسطه</h1>
     <p>آگهی‌تو رایگان ثبت کن یا بین صدها خودرو و موتور فیلتر شده، دقیقا همونی که دنبالشی رو پیدا کن.</p>
     <div class="hero-stats">
-      <div class="stat"><b id="statTotal">{{ total_ads|fa_number }}</b><span>آگهی فعال</span></div>
-      <div class="stat"><b id="statCar">{{ car_count|fa_number }}</b><span>خودرو</span></div>
-      <div class="stat"><b id="statMoto">{{ motorcycle_count|fa_number }}</b><span>موتورسیکلت</span></div>
+      <div class="stat-item">
+        <div class="stat-box" id="statTotal">{{ total_ads|default:0|fa_number }}</div>
+        <span class="stat-lbl">آگهی فعال</span>
+      </div>
+      <div class="stat-item">
+        <div class="stat-box" id="statCar">{{ car_count|default:0|fa_number }}</div>
+        <span class="stat-lbl">خودرو</span>
+      </div>
+      <div class="stat-item">
+        <div class="stat-box" id="statMoto">{{ motorcycle_count|default:0|fa_number }}</div>
+        <span class="stat-lbl">موتورسیکلت</span>
+      </div>
     </div>
   </section>
 
-  <!-- بخش فیلترها سازگار با ساختار آکاردئونی جدید -->
+  <!-- بخش فیلترها -->
   <section class="filters reveal reveal-1">
     <form method="GET" action="" id="filterForm" class="accordion-filter-form">
 
-      <!-- سطر اصلی و همیشه نمایان -->
+      <!-- سطر اصلی جستجو -->
       <div class="filter-main-bar">
         <div class="search-input-field">
           <input id="fSearch" name="fSearch" value="{{ request.GET.fSearch|default:'' }}"
@@ -35,10 +49,10 @@
         </div>
       </div>
 
-      <!-- باکس کشویی فیلترهای پیشرفته (بدون فضای خالی اضافه در حالت بسته) -->
+      <!-- پنل فیلترهای پیشرفته -->
       <div class="filter-advanced-panel" id="advancedFilterPanel">
         <div class="advanced-grid">
-          
+
           <div class="select-field">
             <select id="fType" name="fType">
               {% for choice in type_choices %}
@@ -67,17 +81,14 @@
           </div>
 
           <div class="price-field-group">
-            <input id="fPriceMin" name="fPriceMin" class="persian-number" type="text" 
-              inputmode="numeric" autocomplete="off" value="{{ request.GET.fPriceMin|default:'' }}"
-              placeholder="حداقل قیمت " min="0" />
-            <input id="fPriceMax" name="fPriceMax" class="persian-number" type="text" 
-              inputmode="numeric" autocomplete="off" value="{{ request.GET.fPriceMax|default:'' }}"
-              placeholder="حداکثر قیمت " min="0" />
+            <input id="fPriceMin" name="fPriceMin" class="persian-number" type="text" inputmode="numeric"
+              autocomplete="off" value="{{ request.GET.fPriceMin|default:'' }}" placeholder="حداقل قیمت" min="0" />
+            <input id="fPriceMax" name="fPriceMax" class="persian-number" type="text" inputmode="numeric"
+              autocomplete="off" value="{{ request.GET.fPriceMax|default:'' }}" placeholder="حداکثر قیمت" min="0" />
           </div>
 
         </div>
 
-        <!-- دکمه پاک کردن فیلترها درون پنل پیشرفته -->
         <div class="advanced-footer">
           <button type="button" class="btn-ghost-danger" id="btnResetFilter">
             🗑️ پاک کردن تمام فیلترها
@@ -93,11 +104,13 @@
     <span id="resultCount"></span>
   </div>
 
+  <!-- لیست آگهی‌ها -->
   <div class="grid" id="listingGrid">
     {% for ad in advertisements %}
-    <div class="card" data-id="{{ ad.ad_id }}" onclick="window.location.href='/advertisements/{{ ad.ad_id }}/'">
+    <a href="{% url 'advertisements:detail' ad.ad_id %}" class="card" data-id="{{ ad.ad_id }}"
+      style="text-decoration: none; color: inherit; display: block;">
       <div class="card-media">
-        {% with ad.images.first as image %}
+        {% with ad.images.all|first as image %}
         {% if image %}
         <img src="{{ image.image.url }}" alt="{{ ad.title }}" class="card-image">
         {% else %}
@@ -106,9 +119,11 @@
         {% elif ad.vehicle.motorcycle %}
         <div class="card-placeholder">🏍️</div>
         {% endif %}
-        {% endif %}{% endwith %}
+        {% endif %}
+        {% endwith %}
 
-        {% if ad.vehicle.car %}<span class="badge badge-car">خودرو</span>
+        {% if ad.vehicle.car %}
+        <span class="badge badge-car">خودرو</span>
         {% elif ad.vehicle.motorcycle %}
         <span class="badge badge-moto">موتورسیکلت</span>
         {% endif %}
@@ -131,18 +146,14 @@
           <span style="font-size:12px;color:var(--muted);">نوع فروش</span>
           <span class="price-val">
             {% if ad.sell_type == 'نقدی' %}
-              {{ ad.price|fa_number }} تومان
-            {% elif ad.sell_type == 'توافقی' %}
-              توافقی
-            {% elif ad.sell_type == 'حواله' %}
-              حواله
-            {% elif ad.sell_type == 'اقساطی' %}
-              اقساطی
+            {{ ad.price|fa_number }} تومان
+            {% else %}
+            {{ ad.sell_type }}
             {% endif %}
           </span>
         </div>
       </div>
-    </div>
+    </a>
     {% empty %}
     <div class="empty" style="grid-column:1/-1;">
       <div class="ico">🔍</div>آگهی‌ای پیدا نشد.
@@ -150,46 +161,34 @@
     {% endfor %}
   </div>
 
+  <!-- صفحه‌بندی -->
   {% if advertisements.has_other_pages %}
   <div class="pagination-wrap">
     <nav class="pagination" aria-label="صفحه‌بندی آگهی‌ها">
       {% if advertisements.has_previous %}
-        <a href="?page={{ advertisements.previous_page_number }}
-          {% if request.GET.fSearch %}&fSearch={{ request.GET.fSearch }}{% endif %}
-          {% if request.GET.fType %}&fType={{ request.GET.fType }}{% endif %}
-          {% if request.GET.fBrand %}&fBrand={{ request.GET.fBrand }}{% endif %}
-          {% if request.GET.fPriceMin %}&fPriceMin={{ request.GET.fPriceMin }}{% endif %}
-          {% if request.GET.fPriceMax %}&fPriceMax={{ request.GET.fPriceMax }}{% endif %}"
-          class="page-link prev">
-            « قبلی
-        </a>
+      <a href="?page={{ advertisements.previous_page_number }}{% if request.GET.fSearch %}&fSearch={{ request.GET.fSearch }}{% endif %}{% if request.GET.fType %}&fType={{ request.GET.fType }}{% endif %}{% if request.GET.fBrand %}&fBrand={{ request.GET.fBrand }}{% endif %}{% if request.GET.fPriceMin %}&fPriceMin={{ request.GET.fPriceMin }}{% endif %}{% if request.GET.fPriceMax %}&fPriceMax={{ request.GET.fPriceMax }}{% endif %}"
+        class="page-link prev">
+        « قبلی
+      </a>
       {% endif %}
 
       {% for num in advertisements.paginator.page_range %}
-        {% if advertisements.number == num %}
-          <span class="page-link active">{{ num|fa_number }}</span>
-        {% elif num > advertisements.number|add:'-3' and num < advertisements.number|add:'3' %}
-          <a href="?page={{ num }}{% if request.GET.fSearch %}&fSearch={{ request.GET.fSearch }}{% endif %}
-            {% if request.GET.fType %}&fType={{ request.GET.fType }}{% endif %}
-            {% if request.GET.fBrand %}&fBrand={{ request.GET.fBrand }}{% endif %} 
-            {% if request.GET.fPriceMin %}&fPriceMin={{ request.GET.fPriceMin }}{% endif %}
-            {% if request.GET.fPriceMax %}&fPriceMax={{ request.GET.fPriceMax }}{% endif %}"
-            class="page-link">
-              {{ num|fa_number }}
-          </a>
+      {% if advertisements.number == num %}
+      <span class="page-link active">{{ num|fa_number }}</span>
+      {% elif num > advertisements.number|add:'-3' and num < advertisements.number|add:'3' %} <a
+        href="?page={{ num }}{% if request.GET.fSearch %}&fSearch={{ request.GET.fSearch }}{% endif %}{% if request.GET.fType %}&fType={{ request.GET.fType }}{% endif %}{% if request.GET.fBrand %}&fBrand={{ request.GET.fBrand }}{% endif %}{% if request.GET.fPriceMin %}&fPriceMin={{ request.GET.fPriceMin }}{% endif %}{% if request.GET.fPriceMax %}&fPriceMax={{ request.GET.fPriceMax }}{% endif %}"
+        class="page-link">
+        {{ num|fa_number }}
+        </a>
         {% endif %}
-      {% endfor %}
+        {% endfor %}
 
-      {% if advertisements.has_next %}
-        <a href="?page={{ advertisements.next_page_number }}{% if request.GET.fSearch %}&fSearch={{ request.GET.fSearch }}{% endif %}
-        {% if request.GET.fType %}&fType={{ request.GET.fType }}{% endif %}
-        {% if request.GET.fBrand %}&fBrand={{ request.GET.fBrand }}{% endif %}
-        {% if request.GET.fPriceMin %}&fPriceMin={{ request.GET.fPriceMin }}{% endif %}
-        {% if request.GET.fPriceMax %}&fPriceMax={{ request.GET.fPriceMax }}{% endif %}" 
-        class="page-link next">
+        {% if advertisements.has_next %}
+        <a href="?page={{ advertisements.next_page_number }}{% if request.GET.fSearch %}&fSearch={{ request.GET.fSearch }}{% endif %}{% if request.GET.fType %}&fType={{ request.GET.fType }}{% endif %}{% if request.GET.fBrand %}&fBrand={{ request.GET.fBrand }}{% endif %}{% if request.GET.fPriceMin %}&fPriceMin={{ request.GET.fPriceMin }}{% endif %}{% if request.GET.fPriceMax %}&fPriceMax={{ request.GET.fPriceMax }}{% endif %}"
+          class="page-link next">
           بعدی »
-      </a>
-      {% endif %}
+        </a>
+        {% endif %}
     </nav>
   </div>
   {% endif %}
@@ -197,41 +196,14 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+  window.selectedType = "{{ selected_type|default:'' }}";
+  window.selectedBrandId = "{% if selected_brand_id %}{{ selected_brand_id }}{% endif %}";
+  window.selectedModelId = "{% if selected_model_id %}{{ selected_model_id }}{% endif %}";
+  window.totalFilteredCount = "{{ total_filtered|fa_number }}";
+</script>
+<script src="{% static 'js/vehicle-selector.js' %}"></script>
 <script src="{% static 'js/hero-road.js' %}"></script>
 <script src="{% static 'js/persian-number-format.js' %}"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // منطق آکاردئونی فیلترها
-    const toggleBtn = document.getElementById("btnToggleAdvanced");
-    const advancedPanel = document.getElementById("advancedFilterPanel");
-    
-    if (toggleBtn && advancedPanel) {
-      toggleBtn.addEventListener("click", function() {
-        advancedPanel.classList.toggle("open");
-        toggleBtn.classList.toggle("active");
-      });
-      
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('fType') || urlParams.get('fBrand') || urlParams.get('fPriceMin') || urlParams.get('fPriceMax')) {
-        advancedPanel.classList.add("open");
-        toggleBtn.classList.add("active");
-      }
-    }
-
-    const resetBtn = document.getElementById("btnResetFilter");
-    if (resetBtn) {
-      resetBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        window.location.href = "{% url 'home:index' %}";
-      });
-    }
-
-    // اصلاح شمارشگر آگهی‌ها برای نمایش تعداد کل آگهی‌های یافت شده در کل صفحات
-  const resultCount = document.getElementById("resultCount");
-    if (resultCount) {
-      // نمایش تعداد کل آگهی‌های فیلتر شده از کانتکست ویو
-      resultCount.textContent = "{{ total_filtered|fa_number }} آگهی";
-  }
-  });
-</script>
+<script src="{% static 'js/index.js' %}"></script>
 {% endblock %}

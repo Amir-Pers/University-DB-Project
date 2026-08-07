@@ -5,14 +5,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>کاروان | خرید و فروش خودرو و موتورسیکلت</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet">
+  <title>{% block title %}کاروان | خرید و فروش خودرو و موتورسیکلت{% endblock %}</title>
+  
+  <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link rel="stylesheet" href="{% static 'css/index.css' %}">
-  <link rel="stylesheet" href="{% static 'css/contact.css' %}">
-  <link rel="stylesheet" href="{% static 'css/post_ad.css' %}">
+  
+  {% block extra_css %}
+  {% endblock %}
+
   <style>
     .messages-container {
       width: min(1100px, 95%);
@@ -26,25 +26,10 @@
       font-weight: 600;
     }
 
-    .alert-success {
-      background: #d1fae5;
-      color: #065f46;
-    }
-
-    .alert-error {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .alert-warning {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .alert-info {
-      background: #dbeafe;
-      color: #1e40af;
-    }
+    .alert-success { background: #d1fae5; color: #065f46; }
+    .alert-error { background: #fee2e2; color: #991b1b; }
+    .alert-warning { background: #fef3c7; color: #92400e; }
+    .alert-info { background: #dbeafe; color: #1e40af; }
   </style>
 </head>
 
@@ -67,7 +52,7 @@
           <span class="ico ico-moon">🌙</span>
           <span class="ico ico-sun">☀️</span>
         </button>
-        <a href="{% url 'accounts:profile' %}" class="icon-btn" id="btnAccount" title="حساب کاربری">👤</ش>
+        <a href="{% url 'accounts:profile' %}" class="icon-btn" id="btnAccount" title="حساب کاربری">👤</a>
         {% if request.user.is_authenticated %}
           <a href="{% url 'advertisements:post_ad' %}" class="btn btn-amber" id="btnAddAd">+ ثبت آگهی</a>
         {% else %}
@@ -88,9 +73,7 @@
   {% endif %}
 
   {% block content %}
-
   {% endblock %}
-
 
   <footer class="site-footer">
     <div class="footer-inner">
@@ -99,8 +82,9 @@
           <div class="footer-brand">
             <div class="mark">🚗</div>کاروان
           </div>
-          <p class="footer-desc">پلتفرم رایگان خرید و فروش خودرو و موتورسیکلت. آگهی‌تو در چند ثانیه ثبت کن و مستقیم با
-            خریدار یا فروشنده در ارتباط باش، بدون واسطه و بدون کارمزد.</p>
+          <p class="footer-desc">
+            پلتفرم رایگان خرید و فروش خودرو و موتورسیکلت. آگهی‌تو در چند ثانیه ثبت کن و مستقیم با خریدار یا فروشنده در ارتباط باش، بدون واسطه و بدون کارمزد.
+          </p>
           <div class="footer-social">
             <a href="#" title="اینستاگرام">📷</a>
             <a href="#" title="تلگرام">✈️</a>
@@ -111,7 +95,7 @@
           <h4>دسترسی سریع</h4>
           <ul>
             <li><a href="{% url 'home:index' %}?fType=car">خودروها</a></li>
-            <li><a href="{% url 'home:index' %}?fType=moto">موتورسیکلت‌ها</a></li>
+            <li><a href="{% url 'home:index' %}?fType=motorcycle">موتورسیکلت‌ها</a></li>
             <li><a href="{% url 'advertisements:post_ad' %}">ثبت آگهی</a></li>
             <li><a href="{% url 'accounts:profile' %}">حساب کاربری</a></li>
           </ul>
@@ -127,7 +111,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <span> <span id="footYear"></span> © کلیه حقوق مادی و معنوی این وبسایت متعلق به کاروان می باشد .</span>
+        <span>© کلیه حقوق مادی و معنوی این وبسایت متعلق به کاروان می‌باشد.</span>
       </div>
     </div>
   </footer>
@@ -138,7 +122,6 @@
   <script src="{% static 'js/bg-animation.js' %}"></script>
 
   {% block extra_js %}
-
   {% endblock %}
 
 </body>

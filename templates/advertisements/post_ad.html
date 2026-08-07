@@ -2,6 +2,11 @@
 {% load static %}
 {% load number_format %}
 
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/post_ad.css' %}">
+{% endblock %}
+
 {% block content %}
 <main class="reveal reveal-1" style="max-width: 850px; margin: 0 auto; padding: 24px 16px;">
 
