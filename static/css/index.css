@@ -1,4 +1,8 @@
-/* چیدمان آمار در سمت راست همراه با کارت‌های کوچک برای اعداد */
+/* ==========================================================================
+   index.css
+   ========================================================================== */
+
+/* چیدمان آمار در سمت راست همراه با کارت‌های کوچک برای اعداد[cite: 4] */
 .hero-stats {
   display: flex;
   justify-content: flex-start;
@@ -17,7 +21,7 @@
   backdrop-filter: blur(4px);
 }
 
-/* مربع کوچک دور عدد */
+/* مربع کوچک دور عدد[cite: 4] */
 .stat-box {
   width: 36px;
   height: 36px;
@@ -38,11 +42,67 @@
   color: var(--text);
 }
 
-/* حالت ریسپونسیو برای موبایل */
+/* اصلاح اندازه و چیدمان کارت‌ها فقط در حالت موبایل[cite: 4] */
 @media (max-width: 768px) {
   .hero-stats {
     justify-content: center;
     flex-wrap: wrap;
     gap: 10px;
+  }
+}
+
+@media (max-width: 639px) {
+  .grid .card {
+    display: grid !important;
+    grid-template-columns: 100px 1fr !important;
+    gap: 12px !important;
+    padding: 10px !important;
+    align-items: start;
+    text-align: right !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+  }
+
+  .grid .card-media {
+    width: 100px !important;
+    height: 100px !important;
+    border-radius: 10px;
+    flex-shrink: 0;
+    grid-column: 1;
+  }
+
+  .grid .card-image,
+  .grid .card-placeholder {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 10px;
+  }
+
+  .grid .card-body {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    text-align: right !important;
+  }
+
+  .grid .card-title {
+    text-align: right !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .grid .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-start;
+  }
+
+  .grid .card-price {
+    margin-top: 4px;
+    text-align: right !important;
   }
 }
