@@ -33,17 +33,27 @@ class Advertisement(models.Model):
         return self.title
 
 
+def advertisement_image_upload_path(instance, filename):
+    category = instance.ad.vehicle.model.category
+
+    if category == "motorcycle":
+        folder = "motorcycles"
+    else:
+        folder = "cars"
+
+    return f"{folder}/{filename}"
+
+
 class Image(models.Model):
     image_id = models.AutoField(primary_key=True)
     ad = models.ForeignKey(Advertisement, on_delete=models.CASCADE, related_name="images")
     # url = models.CharField(max_length=500)
     image = models.ImageField(
-        upload_to="cars/",
+        upload_to=advertisement_image_upload_path,
         db_column="url",
         max_length=500,
     )
     upload_date = models.DateTimeField(blank=True, null=True)
-
 
     class Meta:
         managed = False
