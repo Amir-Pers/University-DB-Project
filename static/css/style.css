@@ -791,3 +791,13 @@ a.page-link:hover {
 .page-link.prev, .page-link.next {
   min-width: auto;
 }
+
+
+/* ============ SOCIAL ICONS ============ */
+
+.social-icon {
+  width: 24px;   
+  height: 24px;
+  display: block;
+  flex-shrink: 0;
+}

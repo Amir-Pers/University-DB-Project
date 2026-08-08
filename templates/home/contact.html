@@ -24,25 +24,34 @@
       <div class="ico">📞</div>
       <h4>تماس تلفنی</h4>
       <p>پاسخگویی شنبه تا پنجشنبه</p>
-      <a class="value" href="tel:02191234567">021-91234567</a>
+      <a class="value" href="tel:02191234567">021-22970061</a>
     </div>
     <div class="info-card reveal reveal-1" style="animation-delay:.1s">
       <div class="ico">✉️</div>
       <h4>ایمیل پشتیبانی</h4>
       <p>معمولاً تا ۲۴ ساعت پاسخ می‌دیم</p>
-      <a class="value" href="mailto:support@karevan.example">support@karevan.example</a>
+      <a class="value" href="s.a.mousavi647@gmial.co">support@karevan.example</a>
     </div>
     <div class="info-card reveal reveal-1" style="animation-delay:.15s">
       <div class="ico">📍</div>
       <h4>دفتر مرکزی</h4>
-      <p>تهران، خیابان ولیعصر</p>
-      <span class="value">بالاتر از میدان ونک، برج کاروان</span>
+      <p>دانشگاه تربیت دبیر شهید رجایی</p>
+      <span class="value">تهران، لویزان، خیابان شهید شعبانلو</span>
     </div>
     <div class="info-card reveal reveal-1" style="animation-delay:.2s">
-      <div class="ico">💬</div>
-      <h4>چت آنلاین</h4>
-      <p>سریع‌ترین راه ارتباط</p>
-      <a class="value" href="#quickActions">شروع گفتگو</a>
+      <div class="ico">💻</div>
+      <h4> ارتباط با Developer</h4>
+      <div class="footer-social">
+        <a href="https://t.me/AmirPers00" title="تلگرام" target="_blank">
+          <img src="{% static 'icons/telegram.svg' %}" alt="تلگرام" class="social-icon">
+        </a>
+        <a href="https://github.com/Amir-Pers" title="گیتاب" target="_blank">
+          <img src="{% static 'icons/github.svg' %}" alt="گیتاب" class="social-icon">
+        </a>
+        <a href="https://www.linkedin.com/in/amirhosein-mousavi-069042428/" title="لینکدین" target="_blank">
+          <img src="{% static 'icons/linkedin.svg' %}" alt="لینکدین" class="social-icon">
+        </a>
+      </div>
     </div>
   </div>
 
@@ -81,31 +90,31 @@
       </div>
     </div>
 
-    <div class="side-card reveal reveal-3" id="quickActions">
+    <div class="side-card reveal reveal-3">
       <h3>راه‌های سریع‌تر</h3>
       <p class="hint">اگه عجله داری، از این راه‌ها هم می‌تونی سریع بهمون برسی.</p>
       <div class="quick-actions">
-        <button class="btn btn-amber">💬 چت در واتساپ</button>
+        <button class="btn btn-amber">💬 چت آنلاین</button>
         <button class="btn btn-ghost">✈️ پیام در تلگرام</button>
-        <a class="btn btn-ghost" href="tel:02191234567">📞 تماس مستقیم</a>
+        <a class="btn btn-ghost" href="tel:02122970061">📞 تماس مستقیم</a>
       </div>
 
-      <div class="map-box" aria-hidden="true">
+      
+      <div class="map-box map-iframe">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3236.8076954731423!2d51.4917151!3d35.780099899999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f8e0495ebfb8867%3A0x7c5162b9921bd998!2sShahid%20Rajaee%20University!5e0!3m2!1sen!2s!4v1786186264716!5m2!1sen!2s" 
+          width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      </div>
+      
+      {% comment %} <div class="map-box" aria-hidden="true">
         <div class="ring"></div>
         <div class="pin"></div>
-      </div>
+      </div>  {% endcomment %}
 
       <ul class="hours-list">
         <li><span>شنبه تا چهارشنبه</span><b>۹:۰۰ تا ۱۸:۰۰</b></li>
         <li><span>پنجشنبه</span><b>۹:۰۰ تا ۱۳:۰۰</b></li>
         <li><span>جمعه</span><b>تعطیل</b></li>
       </ul>
-
-      <div class="footer-social">
-        <a href="#" title="اینستاگرام">📷</a>
-        <a href="#" title="تلگرام">✈️</a>
-        <a href="#" title="واتساپ">💬</a>
-      </div>
     </div>
   </div>
 
