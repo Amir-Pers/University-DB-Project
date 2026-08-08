@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Advertisement, Image, Video, Instalment, Favorite, Remittance
-
+import os
 # Register your models here.
 
 class ImageInline(admin.TabularInline):
@@ -33,10 +33,34 @@ class AdvertisementAdmin(admin.ModelAdmin):
     inlines = (ImageInline, VideoInline, InstalmentInline, RemittanceInline)
     ordering = ["-created_date"]
 
+    def delete_model(self, request, obj):
+        for img in obj.images.all():
+            if img.image and os.path.isfile(img.image.path):
+                os.remove(img.image.path)
+        super().delete_model(request, obj)
+
+    def delete_queryset(self, request, queryset):
+        for ad in queryset:
+            for img in ad.images.all():
+                if img.image and os.path.isfile(img.image.path):
+                    os.remove(img.image.path)
+        super().delete_queryset(request, queryset)
+
 
 class ImageAdmin(admin.ModelAdmin):
     list_display = ("image_id", "ad","image","upload_date",)
     ordering = ["-upload_date"]
+
+    def delete_model(self, request, obj):
+        if obj.image and os.path.isfile(obj.image.path):
+            os.remove(obj.image.path)
+        super().delete_model(request, obj)
+
+    def delete_queryset(self, request, queryset):
+        for img in queryset:
+            if img.image and os.path.isfile(img.image.path):
+                os.remove(img.image.path)
+        super().delete_queryset(request, queryset)
 
 
 class VideoAdmin(admin.ModelAdmin):

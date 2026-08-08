@@ -115,6 +115,7 @@ def delete_ad_view(request, ad_id):
     messages.success(request, "آگهی با موفقیت حذف شد.")
     return redirect("accounts:profile")
 
+
 @login_required
 def edit_ad_view(request, ad_id):
 
