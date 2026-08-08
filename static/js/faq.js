@@ -1,10 +1,14 @@
-document.addEventListener('DOMContentLoaded', ()=>{
-  document.querySelectorAll('.faq-item .faq-q').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const item = btn.closest('.faq-item');
-      const wasOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item.open').forEach(i=> i.classList.remove('open'));
-      if(!wasOpen) item.classList.add('open');
+document.addEventListener('DOMContentLoaded', function () {
+  const faqItems = document.querySelectorAll('.faq-item');
+
+  faqItems.forEach(item => {
+    const btn = item.querySelector('.faq-q');
+    const answer = item.querySelector('.faq-a');
+
+    btn.addEventListener('click', function () {
+
+      this.classList.toggle('open');
+      answer.classList.toggle('open');
     });
   });
 });
