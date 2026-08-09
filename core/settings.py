@@ -37,9 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     "django.contrib.sites",
     "django.contrib.sitemaps",
-    'home',
+    "robots",
+
+    "home",
     "accounts",
     "vehicles",
     "advertisements",
@@ -47,6 +50,10 @@ INSTALLED_APPS = [
 ]
 
 SITE_ID = 1001
+
+ROBOTS_USE_HOST = True
+ROBOTS_USE_SITEMAP = True
+ROBOTS_SITEMAP_VIEW_NAME = "sitemap"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
