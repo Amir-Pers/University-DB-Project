@@ -1,0 +1,449 @@
+/* ============ PRIVACY PAGE STYLES ============ */
+
+.info-body {
+    line-height: 1.9;
+    color: var(--text);
+}
+
+.info-updated {
+    display: inline-block;
+    background: var(--amber-soft);
+    color: var(--amber);
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 99px;
+    margin-bottom: 20px;
+    border: 1px solid var(--amber);
+}
+
+.info-body h4 {
+    font-size: 17px;
+    font-weight: 700;
+    margin: 22px 0 10px 0;
+    color: var(--text);
+}
+
+.info-body h4:first-of-type {
+    margin-top: 0;
+}
+
+.info-body p {
+    color: var(--muted);
+    font-size: 14.5px;
+    line-height: 1.9;
+    margin-bottom: 14px;
+}
+
+.info-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 18px 0;
+}
+
+.info-body ul li {
+    position: relative;
+    padding-right: 24px;
+    color: var(--muted);
+    font-size: 14.5px;
+    line-height: 1.9;
+    margin-bottom: 6px;
+}
+
+.info-body ul li::before {
+    content: "•";
+    position: absolute;
+    right: 0;
+    color: var(--amber);
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* ======================================================
+   PAGE: PRIVACY & TERMS (استایل‌های اختصاصی و زیبا)
+   ====================================================== */
+
+/* ---- 1. هدر صفحه با افکت شیشه‌ای و آیکون ---- */
+.page-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 40px 32px;
+    border-radius: 24px;
+    background: radial-gradient(circle at 90% 20%, var(--amber-soft), transparent 50%),
+                radial-gradient(circle at 10% 80%, var(--teal-soft), transparent 50%),
+                var(--bg2);
+    border: 1px solid var(--line);
+    transition: all 0.3s ease;
+}
+
+/* یک دایره نورانی در پس‌زمینه */
+.page-hero::before {
+    content: '';
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    top: -80px;
+    right: -60px;
+    background: radial-gradient(circle, var(--amber-soft), transparent 70%);
+    border-radius: 50%;
+    opacity: 0.4;
+    pointer-events: none;
+    animation: heroGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes heroGlow {
+    0% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+    100% { transform: translate(-20px, 20px) scale(1.2); opacity: 0.6; }
+}
+
+/* آیکون تزیینی در هدر (با CSS ساخته شده) */
+.page-hero .hero-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: var(--amber-soft);
+    color: var(--amber);
+    font-size: 28px;
+    margin-bottom: 12px;
+    border: 1px solid var(--amber);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 8px 24px rgba(245, 165, 36, 0.15);
+}
+
+.page-hero h1 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin: 6px 0 4px;
+}
+
+.page-hero h1 .highlight {
+    color: var(--amber);
+    position: relative;
+}
+
+.page-hero h1 .highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--amber);
+    border-radius: 99px;
+    opacity: 0.3;
+}
+
+.page-hero p {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 560px;
+    line-height: 1.8;
+    margin-top: 6px;
+}
+
+/* مسیر راهنما (breadcrumb) */
+.page-hero .crumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 10px;
+}
+
+.page-hero .crumb a {
+    color: var(--muted);
+    transition: color 0.2s ease;
+    text-decoration: none;
+}
+
+.page-hero .crumb a:hover {
+    color: var(--amber);
+}
+
+.page-hero .crumb .sep {
+    color: var(--line);
+}
+
+/* ---- 2. کارت محتوای اصلی ---- */
+.content-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 32px 36px;
+    margin-top: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.content-card:hover {
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+/* ---- 3. بدنه اطلاعات ---- */
+.info-body {
+    line-height: 1.9;
+    color: var(--text);
+}
+
+/* تاریخ بروزرسانی */
+.info-updated {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--amber-soft);
+    color: var(--amber);
+    font-size: 12px;
+    padding: 4px 14px;
+    border-radius: 99px;
+    border: 1px solid var(--amber);
+    font-weight: 600;
+    margin-bottom: 24px;
+    backdrop-filter: blur(4px);
+}
+
+.info-updated::before {
+    content: '🔄';
+    font-size: 13px;
+}
+
+/* تیترهای بخش‌ها */
+.info-body h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 28px 0 12px 0;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 16px;
+    border-right: 4px solid var(--amber);
+    transition: border-color 0.3s ease, padding-right 0.3s ease;
+}
+
+.info-body h4:hover {
+    border-color: var(--teal);
+    padding-right: 20px;
+}
+
+/* شماره‌های تیترها (با CSS) */
+.info-body h4 .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--amber-soft);
+    color: var(--amber);
+    font-size: 13px;
+    font-weight: 800;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid var(--amber);
+}
+
+/* پاراگراف‌ها */
+.info-body p {
+    color: var(--muted);
+    font-size: 14.5px;
+    line-height: 2;
+    margin-bottom: 14px;
+    padding-right: 16px;
+}
+
+/* لیست‌ها */
+.info-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 20px 0;
+}
+
+.info-body ul li {
+    position: relative;
+    padding: 8px 32px 8px 16px;
+    color: var(--muted);
+    font-size: 14.5px;
+    line-height: 1.9;
+    margin-bottom: 4px;
+    border-radius: 10px;
+    transition: background 0.2s ease, transform 0.2s ease;
+    cursor: default;
+}
+
+.info-body ul li:hover {
+    background: var(--bg2);
+    transform: translateX(-4px);
+}
+
+/* آیکون‌های لیست (با CSS) */
+.info-body ul li::before {
+    content: '✦';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--amber);
+    font-size: 14px;
+    font-weight: 700;
+    transition: transform 0.3s ease;
+}
+
+.info-body ul li:hover::before {
+    transform: translateY(-50%) scale(1.2) rotate(30deg);
+}
+
+/* ---- 4. کارت نکات کلیدی (Highlights) ---- */
+.highlight-box {
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-right: 4px solid var(--amber);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin: 24px 0 16px 0;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.highlight-box:hover {
+    border-color: var(--teal);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.highlight-box .label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.highlight-box p {
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.9;
+    margin: 0;
+    padding: 0;
+}
+
+/* ---- 5. دکمه بازگشت به بالا ---- */
+.back-to-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 12px;
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    margin-top: 28px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.back-to-top:hover {
+    border-color: var(--amber);
+    color: var(--amber);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(245, 165, 36, 0.12);
+}
+
+.back-to-top .arrow {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.back-to-top:hover .arrow {
+    transform: translateY(-3px);
+}
+
+/* ---- 6. انیمیشن برای نمایش تدریجی بخش‌ها ---- */
+.info-body > * {
+    opacity: 0;
+    animation: fadeUp 0.6s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+.info-body > *:nth-child(1) { animation-delay: 0.05s; }
+.info-body > *:nth-child(2) { animation-delay: 0.10s; }
+.info-body > *:nth-child(3) { animation-delay: 0.15s; }
+.info-body > *:nth-child(4) { animation-delay: 0.20s; }
+.info-body > *:nth-child(5) { animation-delay: 0.25s; }
+.info-body > *:nth-child(6) { animation-delay: 0.30s; }
+.info-body > *:nth-child(7) { animation-delay: 0.35s; }
+.info-body > *:nth-child(8) { animation-delay: 0.40s; }
+.info-body > *:nth-child(9) { animation-delay: 0.45s; }
+.info-body > *:nth-child(10) { animation-delay: 0.50s; }
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---- 7. واکنش‌گرایی (Responsive) ---- */
+@media (max-width: 640px) {
+    .page-hero {
+        padding: 28px 18px;
+        border-radius: 18px;
+    }
+
+    .page-hero h1 {
+        font-size: 22px;
+    }
+
+    .page-hero .hero-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 22px;
+    }
+
+    .content-card {
+        padding: 20px 16px;
+        border-radius: 16px;
+    }
+
+    .info-body h4 {
+        font-size: 16px;
+        padding-right: 12px;
+        margin-top: 22px;
+    }
+
+    .info-body h4 .num {
+        width: 24px;
+        height: 24px;
+        font-size: 11px;
+    }
+
+    .info-body p {
+        font-size: 13.5px;
+        padding-right: 8px;
+    }
+
+    .info-body ul li {
+        font-size: 13.5px;
+        padding: 6px 28px 6px 12px;
+    }
+
+    .highlight-box {
+        padding: 14px 16px;
+    }
+
+    .back-to-top {
+        width: 100%;
+        justify-content: center;
+    }
+}
