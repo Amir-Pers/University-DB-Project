@@ -1,7 +1,0 @@
-USE CarMarketDB;
-GO
-
-
-ALTER TABLE Instalment
-ALTER COLUMN delivery_date NVARCHAR(100) NULL;
-GO

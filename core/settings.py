@@ -92,7 +92,7 @@ DATABASES = {
     "default": {
         "ENGINE": "mssql",
         "NAME": "CarMarketDB",
-        "HOST": "(local)", #"LAPTOP-761VROK8",
+        "HOST": "(local)",
         "OPTIONS": {
             "driver": "ODBC Driver 17 for SQL Server",
             "trusted_connection": "yes",

@@ -1,3 +1,7 @@
+----------------------------------------------------
+-- you should do "python manage.py runserver" first
+----------------------------------------------------
+
 USE CarMarketDB;
 GO
 
@@ -18,6 +22,21 @@ CREATE TABLE City (
 );
 GO
 
+
+CREATE TABLE Address (
+    address_id INT PRIMARY KEY IDENTITY(1,1),
+    city_id INT NOT NULL,
+    neighborhood NVARCHAR(200) NULL,
+    CONSTRAINT FK_Address_City FOREIGN KEY (city_id) 
+        REFERENCES City(city_id)
+        ON DELETE CASCADE
+);
+GO
+
+CREATE INDEX IX_Address_CityID ON Address (city_id);
+GO
+
+
 CREATE TABLE Brand (
     brand_id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(100) NOT NULL,
@@ -30,32 +49,12 @@ CREATE TABLE Model (
     model_id INT PRIMARY KEY IDENTITY(1,1),
     brand_id INT NOT NULL,
     name NVARCHAR(100) NOT NULL,
+    category VARCHAR(20) NOT NULL DEFAULT 'car',
     CONSTRAINT FK_Model_Brand FOREIGN KEY (brand_id) 
         REFERENCES Brand(brand_id)
         ON DELETE CASCADE
 );
 GO
-
-
-CREATE TABLE [User] (
-    userid INT PRIMARY KEY IDENTITY(1,1),
-    phone NVARCHAR(20) NOT NULL,
-    reg_status BIT DEFAULT 0,                 
-    account_status BIT DEFAULT 1,            
-    register_date DATETIME2 NULL,             
-    national_id NVARCHAR(10) NULL,
-    CONSTRAINT UQ_User_Phone UNIQUE (phone),
-    CONSTRAINT CHK_User_RegStatus CHECK (reg_status IN (0, 1)),
-    CONSTRAINT CHK_User_AccountStatus CHECK (account_status IN (0, 1)),
-    CONSTRAINT CHK_User_NationalID CHECK (
-        national_id IS NULL OR (LEN(national_id) = 10 AND national_id NOT LIKE '%[^0-9]%')
-    )
-);
-GO
-
-CREATE INDEX IX_User_Phone ON [User] (phone);
-GO
-
 
 CREATE TABLE Vehicle (
     vehicle_id INT PRIMARY KEY IDENTITY(1,1),
@@ -78,7 +77,7 @@ CREATE INDEX IX_Vehicle_ProductionYear ON Vehicle (production_year);
 
 CREATE TABLE Car (
     vehicle_id INT PRIMARY KEY,
-    body_type NVARCHAR(50) NOT NULL,
+    body_type NVARCHAR(50) NULL,
     engine NVARCHAR(100) NULL,
     cylinder_volume INT NULL,
     enginepower INT NULL,
@@ -109,7 +108,7 @@ GO
 
 CREATE TABLE HeavyVehicle(
     vehicle_id INT PRIMARY KEY,
-    heavy_type NVARCHAR(50) NOT NULL,
+    heavy_type NVARCHAR(50) NULL,
     [usage] NVARCHAR(100) NULL,  
     CONSTRAINT FK_HeavyVehicle_Vehicle FOREIGN KEY (vehicle_id) 
         REFERENCES Vehicle(vehicle_id)
@@ -118,18 +117,33 @@ CREATE TABLE HeavyVehicle(
 GO
 
 
-CREATE TABLE Address (
-    address_id INT PRIMARY KEY IDENTITY(1,1),
-    city_id INT NOT NULL,
-    neighborhood NVARCHAR(200) NULL,
-    CONSTRAINT FK_Address_City FOREIGN KEY (city_id) 
-        REFERENCES City(city_id)
-        ON DELETE CASCADE
+CREATE TABLE [User] (
+    userid INT PRIMARY KEY IDENTITY(1,1),
+    phone NVARCHAR(20) NOT NULL,
+    reg_status BIT DEFAULT 0,                 
+    account_status BIT DEFAULT 1,            
+    register_date DATETIME2 NULL,             
+    national_id NVARCHAR(10) NULL,
+    username NVARCHAR(50) NULL,
+    user_auth_id INT NULL,
+    address_id INT NULL,
+
+    CONSTRAINT UQ_User_Phone UNIQUE (phone),
+    CONSTRAINT UQ_User_Username UNIQUE (username),
+
+    CONSTRAINT CHK_User_RegStatus CHECK (reg_status IN (0, 1)),
+    CONSTRAINT CHK_User_AccountStatus CHECK (account_status IN (0, 1)),
+    CONSTRAINT CHK_User_NationalID CHECK (
+        national_id IS NULL OR (LEN(national_id) = 10 AND national_id NOT LIKE '%[^0-9]%')
+    ),
+
+    CONSTRAINT FK_User_Address FOREIGN KEY (address_id) 
+        REFERENCES Address(address_id),
+    CONSTRAINT FK_User_AuthUser FOREIGN KEY (user_auth_id) 
+        REFERENCES auth_user(id)
 );
 GO
 
-CREATE INDEX IX_Address_CityID ON Address (city_id);
-GO
 
 
 CREATE TABLE Advertisement (
@@ -141,30 +155,28 @@ CREATE TABLE Advertisement (
     sell_type NVARCHAR(60) NOT NULL,
     price DECIMAL(18,0) NULL,
     descriptions NVARCHAR(MAX) NULL,
-    published BIT DEFAULT 1,                
+    published BIT DEFAULT 1,
     created_date DATETIME DEFAULT GETDATE(),
     updated_date DATETIME NULL,
-    ad_type NVARCHAR(50) NULL,              
-    car_condition NVARCHAR(50) NULL,          
-    remittance_time NVARCHAR(50) NULL,        
-    km_age INT NULL,                          
-    body_status NVARCHAR(50) NULL,           
-    free_zone BIT DEFAULT 0,                  
-    active_status BIT DEFAULT 1,              
+    ad_type NVARCHAR(50) NULL,
+    car_condition NVARCHAR(50) NULL,
+    km_age INT NULL,
+    body_status NVARCHAR(50) NULL,
+    free_zone BIT DEFAULT 0,
+    active_status BIT DEFAULT 1,
+    
     CONSTRAINT FK_Advertisement_Vehicle FOREIGN KEY (vehicle_id) 
-        REFERENCES Vehicle(vehicle_id)
-        ON DELETE CASCADE,
+        REFERENCES Vehicle(vehicle_id) ON DELETE CASCADE,
     CONSTRAINT FK_Advertisement_User FOREIGN KEY (userid) 
-        REFERENCES [User](userid)
-        ON DELETE CASCADE,
+        REFERENCES [User](userid) ON DELETE CASCADE,
     CONSTRAINT FK_Advertisement_Address FOREIGN KEY (address_id) 
-        REFERENCES Address(address_id)
-        ON DELETE CASCADE,
+        REFERENCES Address(address_id) ON DELETE CASCADE,
+        
     CONSTRAINT CHK_Advertisement_SellType CHECK (
-    sell_type IN (N'نقدی', N'اقساطی', N'توافقی')
+        sell_type IN (N'نقدی', N'اقساطی', N'توافقی', N'حواله')
     ),
     CONSTRAINT CHK_Advertisement_CarCondition CHECK (
-    car_condition IS NULL OR car_condition IN (N'صفر', N'کارکرده')
+        car_condition IS NULL OR car_condition IN (N'صفر', N'کارکرده')
     )
 );
 GO
@@ -207,10 +219,75 @@ CREATE TABLE Instalment (
     second_payment DECIMAL(18,0) NULL,
     payment_per_instalment DECIMAL(18,0) NOT NULL,
     payment_count INT NOT NULL,
-    payment_period NVARCHAR(50) NOT NULL,     
-    delivery_date DATE NULL,
+    payment_period NVARCHAR(50) NOT NULL,
+    delivery_date NVARCHAR(100) NULL,
     CONSTRAINT FK_Instalment_Advertisement FOREIGN KEY (ad_id) 
         REFERENCES Advertisement(ad_id)
         ON DELETE CASCADE
 );
+GO
+
+
+CREATE TABLE Remittance (
+    remittance_id INT PRIMARY KEY IDENTITY(1,1),
+    ad_id INT NOT NULL UNIQUE,                    
+    deposit_amount DECIMAL(18,0) NOT NULL,
+    final_price DECIMAL(18,0) NOT NULL,
+    delivery_time NVARCHAR(50) NOT NULL,
+    CONSTRAINT FK_Remittance_Advertisement
+        FOREIGN KEY (ad_id)
+        REFERENCES Advertisement(ad_id)
+        ON DELETE CASCADE
+);
+GO
+
+CREATE INDEX IX_Remittance_FinalPrice ON Remittance(final_price);
+GO
+
+
+CREATE TABLE Favorite (
+    favorite_id INT IDENTITY(1,1) PRIMARY KEY,
+
+    userid INT NOT NULL,
+    ad_id INT NOT NULL,
+
+    created_date DATETIME2 NOT NULL
+        DEFAULT SYSDATETIME(),
+
+    CONSTRAINT FK_Favorite_User
+        FOREIGN KEY (userid)
+        REFERENCES [User](userid),
+
+    CONSTRAINT FK_Favorite_Advertisement
+        FOREIGN KEY (ad_id)
+        REFERENCES Advertisement(ad_id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT UQ_Favorite_User_Advertisement
+        UNIQUE (userid, ad_id)
+);
+GO
+
+CREATE INDEX IX_Favorite_UserID
+ON Favorite(userid);
+
+CREATE INDEX IX_Favorite_AdvertisementID
+ON Favorite(ad_id);
+GO
+
+
+CREATE TABLE ContactMessages (
+    contact_message_id INT IDENTITY(1,1) PRIMARY KEY,
+    full_name NVARCHAR(150) NOT NULL,
+    phone NVARCHAR(20) NOT NULL,
+    email NVARCHAR(254) NOT NULL,
+    subject NVARCHAR(30) NOT NULL CHECK (subject IN ('support', 'ad', 'cooperation', 'other')),
+    message NVARCHAR(MAX) NOT NULL,
+    created_date DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+    is_read BIT NOT NULL DEFAULT 0
+);
+GO
+
+CREATE INDEX IX_ContactMessages_IsRead ON ContactMessages (is_read);
+CREATE INDEX IX_ContactMessages_CreatedDate ON ContactMessages (created_date);
 GO

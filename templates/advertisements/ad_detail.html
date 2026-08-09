@@ -124,7 +124,7 @@
           <div class="box-icon">🎨</div>
           <div class="box-text"><span>رنگ بدنه</span><strong>{{ ad.vehicle.color_out|default:"—" }}</strong></div>
         </div>
-        {% if ad.cabin_color %}
+        {% if ad.vehicle.color_in %}
           <div class="detail-box">
             <div class="box-icon">🪑</div>
             <div class="box-text"><span>رنگ کابین</span><strong>{{ ad.vehicle.color_in }}</strong></div>
@@ -192,7 +192,9 @@
 
           {% elif ad.sell_type == 'توافقی' %}
             <div style="font-size: 14px; font-weight: 600; color: var(--text); margin-top: 4px;">
+              <br>
               قیمت پس از تماس یا بر اساس توافق تعیین خواهد شد.
+              <br> 
             </div>
 
           {% else %}
