@@ -61,26 +61,43 @@
         <h3>پیام بفرست</h3>
         <p class="hint">فرم زیر رو پر کن، تیم پشتیبانی کاروان در اسرع وقت باهات تماس می‌گیره.</p>
         <div class="form-err" id="contactErr"></div>
-        <form id="contactForm">
+        <form id="contactForm" method='post' action="{% url 'home:contact' %}">
+          {% csrf_token %}
           <div class="field-grid">
-            <div class="field"><label>نام و نام خانوادگی</label><input id="cName" placeholder="مثلا امیرحسین رضایی" required></div>
-            <div class="field"><label>شماره تماس</label><input id="cPhone" placeholder="09xxxxxxxxx" required></div>
+              <div class="field">
+                  <label>نام و نام خانوادگی</label>
+                  <input id="cName" name="full_name" placeholder="مثلا امیرحسین رضایی" required>
+              </div>
+              <div class="field">
+                  <label>شماره تماس</label>
+                  <input id="cPhone" name="phone" placeholder="09xxxxxxxxx" required>
+              </div>
           </div>
-          <div class="field"><label>ایمیل</label><input id="cEmail" type="email" placeholder="example@mail.com" required></div>
+          
           <div class="field">
-            <label>موضوع</label>
-            <select id="cSubject">
-              <option value="support">پشتیبانی فنی</option>
-              <option value="ad">مشکل در آگهی</option>
-              <option value="cooperation">همکاری و تبلیغات</option>
-              <option value="other">سایر موارد</option>
-            </select>
+              <label>ایمیل</label>
+              <input id="cEmail" name="email" type="email" placeholder="example@mail.com" required>
           </div>
-          <div class="field"><label>پیام شما</label><textarea id="cMessage" rows="5" placeholder="توضیح بده چطور می‌تونیم کمکت کنیم…" required></textarea></div>
+          
+          <div class="field">
+              <label>موضوع</label>
+              <select id="cSubject" name="subject">
+                  <option value="support">پشتیبانی فنی</option>
+                  <option value="ad">مشکل در آگهی</option>
+                  <option value="cooperation">همکاری و تبلیغات</option>
+                  <option value="other">سایر موارد</option>
+              </select>
+          </div>
+          
+          <div class="field">
+              <label>پیام شما</label>
+              <textarea id="cMessage" name="message" rows="5" placeholder="توضیح بده چطور می‌تونیم کمکت کنیم…" required></textarea>
+          </div>
+          
           <div class="submit-row">
-            <button type="submit" class="btn btn-amber">ارسال پیام</button>
+              <button type="submit" class="btn btn-amber">ارسال پیام</button>
           </div>
-        </form>
+      </form>
       </div>
       <div class="form-success" id="formSuccess">
         <div class="check">✓</div>

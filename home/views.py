@@ -1,9 +1,13 @@
 from django.db.models import Prefetch, Q
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
 
 from advertisements.models import Advertisement, Image
-from vehicles.models import Car, Motorcycle, Brand
+from vehicles.models import Car, Motorcycle
+from .forms import ContactMessagesForm
 
 
 def index(request):
@@ -123,7 +127,44 @@ def index(request):
 
 
 def contact_view(request):
-    return render(request, "home/contact.html")
+    if request.method == "POST":
+        form = ContactMessagesForm(data=request.POST)
+        
+        if form.is_valid():
+
+            form.save()
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': True,
+                    'message': '✅ پیام شما با موفقیت ارسال شد'
+                })
+            
+            messages.success(request, '✅ پیام شما با موفقیت دریافت شد')
+            return redirect('home:contact')
+        
+        else:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                error_messages = []
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        error_messages.append(f'{field}: {error}')
+                return JsonResponse({
+                    'success': False,
+                    'errors': error_messages,
+                    'message': '❌ لطفاً خطاهای زیر را برطرف کنید: ' + ' | '.join(error_messages)
+                }, status=400)
+            
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'❌ {field}: {error}')
+    
+    form = ContactMessagesForm()
+    context = {
+        "form": form,
+    }
+    return render(request, "home/contact.html", context)
+
 
 def faq_view(request):
     return render(request, "home/faq.html")
