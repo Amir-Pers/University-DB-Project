@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 from accounts.models import User
 from locations.models import Address
@@ -31,6 +32,10 @@ class Advertisement(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse("advertisements:detail", kwargs={"ad_id": self.ad_id})
+    
 
 
 def advertisement_image_upload_path(instance, filename):
