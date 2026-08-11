@@ -1,5 +1,5 @@
 ----------------------------------------------------
--- you should do "python manage.py runserver" first
+-- you should do "python manage.py migrate" first
 ----------------------------------------------------
 
 CREATE TABLE "Province" (
