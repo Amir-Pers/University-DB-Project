@@ -33,10 +33,11 @@ DEBUG = os.environ.get("DEBUG", "True") == "True"
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
+    "backend-xgm-carvan.runflare.cloud",
 ]
 
-if os.environ.get("RENDER_EXTERNAL_HOSTNAME"):
-    ALLOWED_HOSTS.append(os.environ["RENDER_EXTERNAL_HOSTNAME"])
+# if os.environ.get("RENDER_EXTERNAL_HOSTNAME"):
+#     ALLOWED_HOSTS.append(os.environ["RENDER_EXTERNAL_HOSTNAME"])
 
 
 # Application definition
@@ -166,9 +167,11 @@ STORAGES = {
 }
 
 
-CSRF_TRUSTED_ORIGINS = []
+CSRF_TRUSTED_ORIGINS = [
+    "https://backend-xgm-carvan.runflare.cloud",
+]
 
-if os.environ.get("RENDER_EXTERNAL_HOSTNAME"):
-    CSRF_TRUSTED_ORIGINS.append(
-        f"https://{os.environ['RENDER_EXTERNAL_HOSTNAME']}"
-    )
+# if os.environ.get("RENDER_EXTERNAL_HOSTNAME"):
+#     CSRF_TRUSTED_ORIGINS.append(
+#         f"https://{os.environ['RENDER_EXTERNAL_HOSTNAME']}"
+#     )
