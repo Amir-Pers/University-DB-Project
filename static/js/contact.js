@@ -329,12 +329,35 @@ function initFaq() {
 }
 
 /* ==================================================
+   QUICK ACTIONS POPUP MODULE
+   ================================================== */
+
+function initQuickActions() {
+  const chatBtn = document.getElementById("onlineChatBtn");
+  const telegramBtn = document.getElementById("telegramBtn");
+
+  if (chatBtn) {
+    chatBtn.addEventListener("click", function () {
+      showToast("بزودی اضافه خواهد شد");
+    });
+  }
+
+  if (telegramBtn) {
+    telegramBtn.addEventListener("click", function () {
+      showToast("بزودی اضافه خواهد شد");
+    });
+  }
+}
+
+
+/* ==================================================
    MAIN INITIALIZATION
    ================================================== */
 
 function init() {
   initContactForm();
   initFaq();
+  initOnlineChat();
 
   const yearElement = document.getElementById("footYear");
   if (yearElement) {

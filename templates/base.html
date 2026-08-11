@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}کاروان | خرید و فروش خودرو و موتورسیکلت{% endblock %}</title>
+  <title>{% block title %}کارینو ۲۴ | خرید و فروش خودرو و موتورسیکلت{% endblock %}</title>
   
   <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -45,7 +45,11 @@
   <header>
     <div class="nav">
       <a href="{% url 'home:index' %}" class="logo">
-        <div class="mark">🚗</div>کاروان
+        <div class="">
+          <img src="{% static 'images/logo.png' %}" alt="لوگو کارینو ۲۴">
+        </div>
+        <span class="brand-text">کارینو</span>
+        <span class="brand-number">۲۴</span>
       </a>
       <div class="nav-actions">
         <button class="theme-toggle" id="themeToggle" title="تغییر تم">
@@ -80,7 +84,9 @@
       <div class="footer-top">
         <div>
           <div class="footer-brand">
-            <div class="mark">🚗</div>کاروان
+            <div class="mark">
+              <img src="{% static 'images/logo.png' %}" alt="لوگو کارینو ۲۴">
+            </div>
           </div>
           <p class="footer-desc">
             پلتفرم رایگان خرید و فروش خودرو و موتورسیکلت. آگهی‌تو در چند ثانیه ثبت کن و مستقیم با خریدار یا فروشنده در ارتباط باش، بدون واسطه و بدون کارمزد.
@@ -117,7 +123,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© کلیه حقوق مادی و معنوی این وبسایت متعلق به کاروان می‌باشد.</span>
+        <span>© کلیه حقوق مادی و معنوی این وبسایت متعلق به کارینو ۲۴ می‌باشد.</span>
       </div>
     </div>
   </footer>

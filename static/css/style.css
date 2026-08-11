@@ -801,3 +801,88 @@ a.page-link:hover {
   display: block;
   flex-shrink: 0;
 }
+
+/* ============ CARINO 24 BRANDING (CLEAN TYPOGRAPHY) ============ */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-weight: 800;
+  transition: transform 0.25s ease;
+}
+
+.logo:hover {
+  transform: translateY(-1px);
+}
+
+.logo .mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.logo:hover .mark {
+  border-color: var(--amber);
+  background: var(--amber-soft);
+  transform: rotate(-10deg) scale(1.08);
+}
+
+.logo .brand-text {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.5px;
+  transition: color 0.25s ease;
+}
+
+.logo:hover .brand-text {
+  color: var(--amber);
+}
+
+.logo .brand-number {
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--amber) 0%, var(--teal) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: filter 0.3s ease;
+}
+
+.logo:hover .brand-number {
+  filter: brightness(1.2) drop-shadow(0 2px 8px var(--amber-soft));
+}
+
+.logo img {
+  height: 1.8em;        
+  width: auto;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ===== FOOTER LOGO ===== */
+.footer-brand .mark {
+  background: none !important;
+  border-radius: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0;
+  display: inline-flex;  
+  align-items: center;
+}
+
+.footer-brand .mark img {
+  display: block;
+  height: 64px;           
+  width: auto;            
+  flex-shrink: 0;
+}

@@ -9,14 +9,14 @@
 
 <main>
   <div class="breadcrumb reveal">
-    <a href="{% url 'home:index' %}">کاروان</a>
+    <a href="{% url 'home:index' %}">کارینو ۲۴</a>
     <span class="sep">/</span>
     <span>تماس با ما</span>
   </div>
 
   <section class="hero reveal">
     <h1>در <span>تماس</span> باشیم</h1>
-    <p>سوال داری، مشکلی پیش اومده یا پیشنهادی داری؟ تیم کاروان همیشه آماده‌ی شنیدن حرف‌های شماست. پیام بذار، معمولاً کمتر از یک روز کاری جواب می‌دیم.</p>
+    <p>سوال داری، مشکلی پیش اومده یا پیشنهادی داری؟ تیم کارینو ۲۴ همیشه آماده‌ی شنیدن حرف‌های شماست. پیام بذار، معمولاً کمتر از یک روز کاری جواب می‌دیم.</p>
   </section>
 
   <div class="info-grid">
@@ -59,7 +59,7 @@
     <div class="form-card reveal reveal-2">
       <div id="formWrap">
         <h3>پیام بفرست</h3>
-        <p class="hint">فرم زیر رو پر کن، تیم پشتیبانی کاروان در اسرع وقت باهات تماس می‌گیره.</p>
+        <p class="hint">فرم زیر رو پر کن، تیم پشتیبانی کارینو ۲۴ در اسرع وقت باهات تماس می‌گیره.</p>
         <div class="form-err" id="contactErr"></div>
         <form id="contactForm" method='post' action="{% url 'home:contact' %}">
           {% csrf_token %}
@@ -102,7 +102,7 @@
       <div class="form-success" id="formSuccess">
         <div class="check">✓</div>
         <h4>پیامت با موفقیت ارسال شد</h4>
-        <p>ممنون که با کاروان تماس گرفتی، تیم پشتیبانی به‌زودی باهات تماس می‌گیره.</p>
+        <p>ممنون که با کارینو ۲۴ تماس گرفتی، تیم پشتیبانی به‌زودی باهات تماس می‌گیره.</p>
         <button class="btn btn-ghost" id="btnAnotherMsg" style="margin-top:18px;">ارسال پیام دیگر</button>
       </div>
     </div>
@@ -111,8 +111,8 @@
       <h3>راه‌های سریع‌تر</h3>
       <p class="hint">اگه عجله داری، از این راه‌ها هم می‌تونی سریع بهمون برسی.</p>
       <div class="quick-actions">
-        <button class="btn btn-amber">💬 چت آنلاین</button>
-        <button class="btn btn-ghost">✈️ پیام در تلگرام</button>
+        <button class="btn btn-amber" id="onlineChatBtn" class="btn btn-amber">💬 چت آنلاین</button>
+        <button class="btn btn-ghost" id="telegramBtn" class="btn btn-ghost">✈️ پیام در تلگرام</button>
         <a class="btn btn-ghost" href="tel:02122970061">📞 تماس مستقیم</a>
       </div>
 
@@ -145,7 +145,7 @@
     </div>
     <div class="faq-item">
       <div class="faq-q">ثبت آگهی هزینه داره؟<span class="plus">+</span></div>
-      <div class="faq-a"><p>نه، ثبت آگهی در کاروان کاملاً رایگانه و هیچ کارمزدی از خریدار یا فروشنده گرفته نمی‌شه.</p></div>
+      <div class="faq-a"><p>نه، ثبت آگهی در کارینو ۲۴ کاملاً رایگانه و هیچ کارمزدی از خریدار یا فروشنده گرفته نمی‌شه.</p></div>
     </div>
     <div class="faq-item">
       <div class="faq-q">چقدر طول می‌کشه به پیام‌هام جواب بدید؟<span class="plus">+</span></div>
