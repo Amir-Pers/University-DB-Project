@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -33,7 +32,6 @@ DEBUG = os.environ.get("DEBUG", "True") == "True"
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "https://backend-yqw-carvan.runflare.cloud/",
 ]
 
 # if os.environ.get("RENDER_EXTERNAL_HOSTNAME"):
@@ -167,11 +165,10 @@ STORAGES = {
 }
 
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://backend-yqw-carvan.runflare.cloud/",
-]
+CSRF_TRUSTED_ORIGINS = []
 
-# if os.environ.get("RENDER_EXTERNAL_HOSTNAME"):
-#     CSRF_TRUSTED_ORIGINS.append(
-#         f"https://{os.environ['RENDER_EXTERNAL_HOSTNAME']}"
-#     )
+SITE_HOST = os.environ.get("SITE_HOST")
+
+if SITE_HOST:
+    ALLOWED_HOSTS.append(SITE_HOST)
+    CSRF_TRUSTED_ORIGINS.append(f"https://{SITE_HOST}")
