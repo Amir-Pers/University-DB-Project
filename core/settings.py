@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     "locations",
 ]
 
-SITE_ID = 1001
+SITE_ID = 1002
 
 ROBOTS_USE_HOST = True
 ROBOTS_USE_SITEMAP = True
