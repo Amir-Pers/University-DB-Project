@@ -1,13 +1,25 @@
 # University DB Project
 
-A full-stack vehicle marketplace web application developed as a university database project, inspired by the core concepts of **bama.ir**.
+A full-stack vehicle marketplace web application developed as a university database project, inspired by the core concepts of [Bama.ir](https://bama.ir).
 
-The project combines a relational database design with a Django-based backend to provide a practical vehicle marketplace where users can browse advertisements, publish their own listings, manage their accounts, and save advertisements as favorites.
+The project combines relational database design with a Django-based backend to provide a practical vehicle marketplace where users can browse advertisements, publish their own listings, manage their accounts, and save advertisements as favorites.
 
-> **Project Type:** University Database Project
-> **Backend:** Django
-> **Database:** Microsoft SQL Server
-> **Architecture:** Relational Database + Django Web Application
+> **Live Demo:** http://carino24.ir/
+
+**Project Type:** University Database Project
+**Backend:** Django
+**Database:** PostgreSQL
+**Architecture:** Relational Database + Django Web Application
+
+---
+
+## 🌐 Live Demo
+
+The project has been deployed and is currently available online:
+
+**http://carino24.ir/**
+
+The deployed application is called **Carino 24** and provides a platform for buying and selling cars and motorcycles.
 
 ---
 
@@ -17,40 +29,48 @@ The main goal of this project is to design and implement a relational database f
 
 The project was developed in multiple phases:
 
-1. **Database design**
+### 1. Database Design
 
-   * Entity-Relationship Diagram
-   * Relational schema
-   * Primary and foreign keys
-   * Constraints and indexes
+* Entity-Relationship Diagram
+* Relational schema
+* Primary and foreign keys
+* Constraints and indexes
+* Database normalization
 
-2. **SQL implementation**
+### 2. SQL Implementation
 
-   * Database creation
-   * Table creation
-   * Sample data
-   * Constraints and indexes
-   * Stored procedures
-   * Incremental schema modifications
+* Database schema creation
+* Table creation
+* Sample data
+* Constraints and indexes
+* Stored procedures
+* Incremental schema modifications
 
-3. **Django backend**
+### 3. Django Backend
 
-   * Database integration
-   * User accounts
-   * Advertisement management
-   * Vehicle management
-   * Image management
-   * Address and location management
-   * AJAX endpoints
-   * Favorites
+* PostgreSQL database integration
+* User accounts
+* Advertisement management
+* Vehicle management
+* Image management
+* Address and location management
+* AJAX endpoints
+* Favorites
 
-4. **Frontend integration**
+### 4. Frontend Integration
 
-   * Dynamic vehicle selection
-   * Advertisement filtering
-   * User dashboard
-   * Advertisement details
-   * Favorite management
+* Dynamic vehicle selection
+* Advertisement filtering
+* User dashboard
+* Advertisement details
+* Favorite management
+* Responsive web interface
+
+### 5. Deployment
+
+The application has been deployed and is available as a live web application at:
+
+**http://carino24.ir/**
 
 ---
 
@@ -65,7 +85,7 @@ The project was developed in multiple phases:
 * Default address
 * Integration with Django's built-in authentication system
 
-The project uses Django's authentication system for login/authentication while maintaining a separate application-level `User` entity in the SQL Server database.
+The project uses Django's authentication system for login and authentication while maintaining a separate application-level `User` entity in the relational database.
 
 ---
 
@@ -77,11 +97,11 @@ The main vehicle hierarchy is:
 
 ```text
 Brand
-  └── Model
-       └── Vehicle
-            ├── Car
-            ├── Motorcycle
-            └── HeavyVehicle
+ └── Model
+      └── Vehicle
+           ├── Car
+           ├── Motorcycle
+           └── HeavyVehicle
 ```
 
 A `Vehicle` contains information such as:
@@ -102,7 +122,6 @@ For example:
 Vehicle
    │
    ├── Car
-   │
    └── Motorcycle
 ```
 
@@ -207,9 +226,9 @@ Users can specify a default address and advertisements can be associated with an
 
 ## 🗃️ Database Design
 
-The database is implemented using **Microsoft SQL Server**.
+The project uses **PostgreSQL** as its relational database management system.
 
-The project uses relational database concepts including:
+The database design makes use of:
 
 * Primary Keys
 * Foreign Keys
@@ -219,7 +238,8 @@ The project uses relational database concepts including:
 * Check constraints
 * Indexes
 * Cascading deletes
-* Stored procedures
+* Stored procedures/functions
+* Database migrations
 
 Some of the main entities include:
 
@@ -292,9 +312,6 @@ University-DB-Project/
 │   └── ER diagram image
 │
 ├── phase2_sql_scripts/
-│   ├── 01_create_database.sql
-│   ├── 02_create_tables.sql
-│   ├── 03_insert_sample_data.sql
 │   ├── ...
 │   └── ...
 │
@@ -315,9 +332,10 @@ University-DB-Project/
 
 ### Database
 
-* Microsoft SQL Server
-* `mssql-django`
-* `pyodbc`
+* PostgreSQL
+* Django ORM
+* Django Migrations
+* PostgreSQL SQL scripts
 
 ### Frontend
 
@@ -325,11 +343,11 @@ University-DB-Project/
 * CSS
 * JavaScript
 * AJAX / Fetch API
+* Django Templates
 
 ### Other
 
 * Pillow for image handling
-* Django Templates
 * Django Authentication
 
 The exact Python dependencies are listed in `requirements.txt`.
@@ -348,14 +366,14 @@ cd University-DB-Project
 
 ### 2. Create a virtual environment
 
-Windows:
+#### Windows
 
 ```bash
 python -m venv venv
 venv\Scripts\activate
 ```
 
-Linux / macOS:
+#### Linux / macOS
 
 ```bash
 python3 -m venv venv
@@ -372,50 +390,92 @@ pip install -r requirements.txt
 
 ## 🗄️ Database Setup
 
-Create and configure the SQL Server database before running the Django application.
+The project uses **PostgreSQL**.
 
-The SQL scripts are organized sequentially inside:
+Before running the application, make sure PostgreSQL is installed and a PostgreSQL database/user are available.
 
-```text
-phase2_sql_scripts/
-```
-
-The scripts currently include database creation, table creation, sample data, schema modifications, stored procedures, and later database changes.
-
-Run the scripts in their intended numerical order.
-
-For example:
-
-```text
-01_create_database.sql
-02_create_tables.sql
-03_insert_sample_data.sql
-...
-```
-
-> Because later scripts modify the schema created by earlier scripts, executing them in order is recommended.
-
----
-
-## 🔐 Django Configuration
-
-Configure the SQL Server connection in:
+Configure the database connection in:
 
 ```text
 core/settings.py
 ```
 
-Make sure the database configuration matches your local SQL Server installation.
+or using the environment variables expected by your project configuration.
+
+### Important: Run Migrations First
+
+The database schema must first be created using Django migrations.
+
+Run:
+
+```bash
+python manage.py migrate
+```
+
+After the migrations have been successfully applied, execute the SQL scripts inside:
+
+```text
+phase2_sql_scripts/
+```
+
+**The SQL scripts must be executed in their intended numerical order.**
+
+For example:
+
+```text
+01_...
+02_...
+03_...
+...
+```
+
+The correct order is important because some scripts depend on database objects and data created by previous scripts.
+
+### Database Initialization Order
+
+```text
+1. Install PostgreSQL
+        ↓
+2. Configure database connection
+        ↓
+3. Run Django migrations
+        ↓
+4. Execute SQL scripts in order
+        ↓
+5. Run the Django application
+```
+
+> **Note:** Unlike the previous SQL Server version of the project, the database itself is no longer created through the SQL scripts. PostgreSQL and Django migrations are responsible for establishing the required database schema before the additional SQL scripts are executed.
+
+---
+
+## 🔐 Django Configuration
+
+Configure the PostgreSQL connection in:
+
+```text
+core/settings.py
+```
+
+Make sure the database configuration matches your local PostgreSQL installation.
+
+For example, the configuration should contain the appropriate:
+
+* Database name
+* Database user
+* Database password
+* Host
+* Port
 
 Do not commit passwords, secret keys, or other private credentials to the repository.
 
-For a local development environment, use your own database credentials.
+For local development, use your own PostgreSQL credentials.
 
 ---
 
 ## ▶️ Running the Project
 
-After configuring the database:
+After configuring PostgreSQL and initializing the database:
 
 ```bash
 python manage.py runserver
@@ -427,6 +487,10 @@ Then open:
 http://127.0.0.1:8000/
 ```
 
+For the deployed version, visit:
+
+**http://carino24.ir/**
+
 ---
 
 ## 🔄 AJAX Endpoints
@@ -437,15 +501,19 @@ For example, when the user selects a vehicle category:
 
 ```text
 Vehicle Type
-     ↓
-Brands
-     ↓
-Models
+      ↓
+   Brands
+      ↓
+   Models
 ```
 
 The frontend requests the appropriate brands and models from Django endpoints without requiring a full page reload.
 
-This approach is used in the advertisement creation/editing flow and the home page filtering system.
+This approach is used in:
+
+* Advertisement creation
+* Advertisement editing
+* Home page filtering
 
 ---
 
@@ -465,7 +533,7 @@ Advertisement
       └── Motorcycle
 ```
 
-This allows multiple advertisements to reference vehicle entities while keeping vehicle-specific attributes separated from advertisement-specific information.
+This allows vehicle-related information to remain independent from advertisement-specific information while keeping the database normalized.
 
 The project also uses a `Favorite` relationship between users and advertisements:
 
@@ -495,13 +563,21 @@ The repository contains both the editable diagram project and an exported diagra
 
 The database was implemented using a sequence of SQL scripts.
 
-These scripts document the evolution of the database schema throughout development.
+These scripts document the evolution of the database schema and provide additional database-level functionality and sample data.
 
 ### Phase 3 — Django Application
 
 The relational database was integrated with a Django web application.
 
-The Django models use the existing SQL Server schema, with database-managed tables represented using `managed = False` where appropriate.
+Django models, views, templates, authentication, AJAX endpoints, and application logic were implemented as part of this phase.
+
+### Phase 4 — Deployment
+
+The application was deployed as a publicly accessible web application.
+
+The current live version is available at:
+
+**http://carino24.ir/**
 
 ---
 
@@ -536,9 +612,10 @@ The project focuses on connecting theoretical database concepts such as:
 * Indexing
 * Foreign keys
 * Transactions
-* Stored procedures
+* Stored procedures/functions
+* Database migrations
 
-with a practical Django backend.
+with a practical Django backend and a deployed web application.
 
 ---
 
@@ -556,4 +633,16 @@ See the `LICENSE` file for more information.
 
 GitHub: [@Amir-Pers](https://github.com/Amir-Pers)
 
-Repository: https://github.com/Amir-Pers/University-DB-Project
+Repository: [University-DB-Project](https://github.com/Amir-Pers/University-DB-Project)
+
+Live Demo: [Carino 24](http://carino24.ir/)
+
+---
+
+## ⭐ Project Status
+
+The project is currently **deployed and running**.
+
+🚗 **Carino 24 — خرید و فروش خودرو و موتورسیکلت**
+
+🌐 **http://carino24.ir/**
