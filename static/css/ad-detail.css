@@ -35,11 +35,12 @@
   align-items: start;
 }
 
-.ad-sidebar {
-  order: -1;
+/* اصلاح اولویت در نمایشگرهای کوچک (موبایل): باکس اصلی آگهی بالاتر قرار می‌گیرد */
+.ad-main-box {
+  order: 1;
 }
 
-.ad-main-box {
+.ad-sidebar {
   order: 2;
 }
 
@@ -78,10 +79,10 @@
   top: 16px;
   left: 16px;
   z-index: 10;
-  background: rgba(255, 255, 255, 0.2); 
+  background: rgba(0, 0, 0, 0.35); 
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 255, 255, 0.4); 
+  border: 1px solid rgba(255, 255, 255, 0.3); 
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -90,15 +91,15 @@
   justify-content: center;
   font-size: 20px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .favorite-btn-floating:hover {
   transform: scale(1.1);
-  background: rgba(255, 255, 255, 0.45);
-  border-color: rgba(255, 255, 255, 0.6);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.55);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 .favorite-btn-floating:active {
@@ -155,18 +156,25 @@
 
 .detail-main-image {
   width: 100%;
-  height: 440px;
+  height: 460px;
   position: relative;
   border-radius: 18px;
   overflow: hidden;
-  background: var(--card);
+  background: #0d0d0d; /* پس‌زمینه تیره برای پر کردن فضای خالی عکس‌های غیر استاندارد */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* نمایش کامل عکس بدون هیچ‌گونه برش و کات شدن بالا/پایین */
 .detail-main-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
   display: block;
+  margin: 0 auto;
 }
 
 .detail-main-image .no-image {
@@ -184,12 +192,13 @@
   position: absolute;
   bottom: 12px;
   left: 12px;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.65);
   color: #fff;
   font-size: 12px;
   font-weight: 700;
   padding: 4px 10px;
   border-radius: 8px;
+  backdrop-filter: blur(4px);
 }
 
 .thumbnail-gallery {
@@ -219,6 +228,7 @@
   transition: .25s;
   flex-shrink: 0;
   opacity: 0.7;
+  background: #000;
 }
 
 .thumb:hover {
@@ -480,7 +490,7 @@
 
 @media(max-width: 768px) {
   .detail-main-image {
-    height: 260px;
+    height: 340px; /* افزایش ارتفاع کادر اصلی عکس در تبلت و موبایل */
   }
   .ad-main-box,
   .ad-sidebar-card {
@@ -496,7 +506,7 @@
 
 @media(max-width: 480px) {
   .detail-main-image {
-    height: 210px;
+    height: 300px;
   }
   .favorite-btn-floating {
     top: 10px;
