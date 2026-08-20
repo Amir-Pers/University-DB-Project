@@ -1,17 +1,17 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-  // مدیریت نمایش و پنهان‌سازی شماره تماس
   const btn = document.getElementById("showPhoneBtn");
-  const phone = document.getElementById("phoneBox");
+  const card = document.getElementById("sellerContactCard");
 
-  if (btn && phone) {
+  if (btn && card) {
     btn.addEventListener("click", function() {
-      if (phone.style.display === "none" || phone.style.display === "") {
-        phone.style.display = "block";
-        btn.textContent = "🙈 پنهان کردن شماره تماس";
+      card.classList.toggle("revealed");
+      
+      const btnSpan = btn.querySelector("span");
+      if (card.classList.contains("revealed")) {
+        if (btnSpan) btnSpan.textContent = "بستن شماره تماس";
       } else {
-        phone.style.display = "none";
-        btn.textContent = "📞 نمایش شماره تماس";
+        if (btnSpan) btnSpan.textContent = "اطلاعات تماس فروشنده";
       }
     });
   }

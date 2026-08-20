@@ -35,7 +35,6 @@
   align-items: start;
 }
 
-/* اصلاح اولویت در نمایشگرهای کوچک (موبایل): باکس اصلی آگهی بالاتر قرار می‌گیرد */
 .ad-main-box {
   order: 1;
 }
@@ -160,13 +159,12 @@
   position: relative;
   border-radius: 18px;
   overflow: hidden;
-  background: #0d0d0d; /* پس‌زمینه تیره برای پر کردن فضای خالی عکس‌های غیر استاندارد */
+  background: #0d0d0d;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* نمایش کامل عکس بدون هیچ‌گونه برش و کات شدن بالا/پایین */
 .detail-main-image img {
   max-width: 100%;
   max-height: 100%;
@@ -389,38 +387,68 @@
   margin-bottom: 12px;
 }
 
-.contact-btn {
-  width: 100%;
-  padding: 13px;
-  border: none;
-  border-radius: 14px;
-  background: var(--amber);
-  color: #111;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: .25s;
-}
-
-.contact-btn:hover {
-  transform: translateY(-2px);
-}
-
-.phone-box {
-  display: none;
-  margin-top: 10px;
-  text-align: center;
-  padding: 12px;
-  border-radius: 14px;
+/* ================= ساختار جدید کارت تماس ================= */
+.seller-contact-card {
   background: var(--card);
   border: 1px solid var(--line);
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  border-radius: 14px;
+  padding: 6px;
+  overflow: hidden;
+  transition: border-color 0.25s;
+}
+
+.seller-contact-card:hover {
+  border-color: var(--amber);
+}
+
+.contact-action-btn {
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 10px;
+  background: var(--amber);
+  color: #111;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+}
+
+.contact-action-btn .btn-icon {
+  display: flex;
+  align-items: center;
+}
+
+.contact-action-btn:hover {
+  background: #fbc02d;
+}
+
+.phone-display-box {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 10px 8px 10px;
   text-decoration: none;
+}
+
+.seller-contact-card.revealed .phone-display-box {
+  display: flex;
+}
+
+.phone-num-val {
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 900;
   color: var(--amber);
+  letter-spacing: 2px;
   direction: ltr;
 }
+
+/* ======================================================== */
 
 .sidebar-location-list {
   display: flex;
@@ -490,7 +518,7 @@
 
 @media(max-width: 768px) {
   .detail-main-image {
-    height: 340px; /* افزایش ارتفاع کادر اصلی عکس در تبلت و موبایل */
+    height: 340px;
   }
   .ad-main-box,
   .ad-sidebar-card {
